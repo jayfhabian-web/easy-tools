@@ -3,114 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instant Video Embedder</title>
+    <title>Native Stream Player</title>
     <style>
         body {
             background-color: #121212;
-            color: white;
+            color: #fff;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
         h1 { margin-bottom: 20px; }
 
-        input {
-            width: 80%;
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            width: 100%;
             max-width: 600px;
-            padding: 15px;
-            font-size: 16px;
-            border-radius: 30px;
-            border: 2px solid #e62117;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #333;
             background: #222;
             color: white;
             outline: none;
-            text-align: center;
-            margin-bottom: 30px;
-            transition: all 0.3s;
         }
 
-        input:focus {
-            box-shadow: 0 0 15px rgba(230, 33, 23, 0.5);
-            background: #333;
-        }
-
-        .video-container {
-            width: 80%;
-            max-width: 800px;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            display: none; /* Hidden until valid link is pasted */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
+        button {
+            padding: 12px 25px;
+            background: #e62117;
+            color: white;
             border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        .status {
-            color: #888;
+        button:hover { background: #ff3333; }
+
+        /* The Custom Player Wrapper */
+        .video-container {
+            width: 100%;
+            max-width: 900px;
+            background: black;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: none; /* Hidden until loaded */
+            position: relative;
+        }
+
+        /* The actual video element */
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        .status-text {
+            margin-top: 15px;
+            color: #aaa;
             font-size: 14px;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Paste YouTube Link Below</h1>
-    
-    <input type="text" id="linkInput" placeholder="Paste link here (Ctrl+V)..." autofocus>
+    <h1>Direct Stream Player</h1>
 
-    <div class="video-container" id="playerBox">
-        <iframe id="videoFrame" src="" allowfullscreen></iframe>
+    <div class="search-container">
+        <input type="text" id="linkInput" placeholder="Paste YouTube Link here...">
+        <button onclick="fetchAndPlay()">Play</button>
     </div>
 
-    <p class="status" id="statusText">Waiting for link...</p>
+    <div class="video-container" id="videoWrapper">
+        <video id="myPlayer" controls controlsList="nodownload" oncontextmenu="return false;">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <p class="status-text" id="status">Ready.</p>
 
     <script>
-        const input = document.getElementById('linkInput');
-        const playerBox = document.getElementById('playerBox');
-        const videoFrame = document.getElementById('videoFrame');
-        const statusText = document.getElementById('statusText');
+        // We use this public API to find the video file location
+        const API_URL = "https://pipedapi.kavin.rocks";
 
-        // We listen for the "input" event (fires instantly when you paste or type)
-        input.addEventListener('input', function() {
-            const url = input.value.trim();
-            
-            // Regex to find the 11-character YouTube ID
-            // Works on: youtube.com, youtu.be, m.youtube.com
+        async function fetchAndPlay() {
+            const link = document.getElementById('linkInput').value;
+            const status = document.getElementById('status');
+            const player = document.getElementById('myPlayer');
+            const wrapper = document.getElementById('videoWrapper');
+
+            // 1. Extract Video ID
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
+            const match = link.match(regExp);
 
-            if (match && match[2].length === 11) {
-                const videoId = match[2];
-                
-                // CONVERSION HAPPENS HERE:
-                // We inject the ID into a Piped URL (Privacy Proxy)
-                // If 'piped.video' is blocked, change this to 'yewtu.be'
-                const embedUrl = `https://piped.video/embed/${videoId}`;
-                
-                videoFrame.src = embedUrl;
-                playerBox.style.display = 'block';
-                statusText.innerText = "Playing via Proxy (Unblocked)";
-                
-                // Optional: Clear input for a cleaner look
-                // input.value = ""; 
-            } else {
-                // Hide player if link is invalid
-                playerBox.style.display = 'none';
-                videoFrame.src = "";
-                statusText.innerText = "Invalid YouTube link...";
+            if (!match || match[2].length !== 11) {
+                status.innerText = "Error: Invalid YouTube Link";
+                return;
             }
-        });
+
+            const videoId = match[2];
+            status.innerText = "Fetching video stream... (This bypasses geoblocks)";
+            wrapper.style.display = "none";
+
+            try {
+                // 2. Fetch video data from Piped API
+                const response = await fetch(`${API_URL}/streams/${videoId}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    status.innerText = "Error: " + data.error;
+                    return;
+                }
+
+                // 3. Find a valid stream (we prefer mp4)
+                // The API returns multiple formats. We filter for one that has video+audio.
+                const stream = data.videoStreams.find(s => s.mimeType.includes("mp4") && s.quality === "720p") 
+                            || data.videoStreams.find(s => s.mimeType.includes("mp4"));
+
+                if (stream) {
+                    status.innerText = `Playing: ${data.title}`;
+                    
+                    // 4. Set the native video player source to the raw stream URL
+                    player.src = stream.url;
+                    wrapper.style.display = "block";
+                    player.play();
+                } else {
+                    status.innerText = "Error: No compatible video stream found.";
+                }
+
+            } catch (err) {
+                console.error(err);
+                status.innerText = "Error connecting to proxy API. Try again later.";
+            }
+        }
     </script>
 
 </body>
