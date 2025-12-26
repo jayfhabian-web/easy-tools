@@ -54,11 +54,13 @@
             margin-bottom: 25px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.3);
+            flex-wrap: wrap; /* Allows wrapping on small screens */
+            justify-content: center;
         }
         .tab-btn {
-            background: transparent; border: none; padding: 10px 25px;
+            background: transparent; border: none; padding: 10px 20px;
             border-radius: 40px; cursor: pointer; font-weight: 600;
-            color: white; transition: all 0.3s ease; font-size: 0.95rem;
+            color: white; transition: all 0.3s ease; font-size: 0.9rem;
         }
         .tab-btn:hover { background: rgba(255,255,255,0.1); }
         .tab-btn.active {
@@ -83,13 +85,13 @@
         
         /* INPUTS & BUTTONS */
         label { font-weight: 600; font-size: 0.9rem; color: #666; display: block; margin-top: 15px; }
-        input, select {
+        input, select, textarea {
             width: 100%; padding: 14px; margin: 8px 0;
             border: 2px solid #eee; border-radius: 10px;
             box-sizing: border-box; font-size: 1rem;
-            transition: border 0.2s; background: #f9f9f9;
+            transition: border 0.2s; background: #f9f9f9; font-family: inherit;
         }
-        input:focus, select:focus { border-color: #764ba2; outline: none; background: white; }
+        input:focus, select:focus, textarea:focus { border-color: #764ba2; outline: none; background: white; }
         
         button.action-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -117,7 +119,7 @@
             font-size: 1.3rem; margin: 15px 0; word-break: break-all;
         }
 
-        /* --- COMPLIANCE WALL (TERMS & COOKIES) --- */
+        /* --- COMPLIANCE WALL --- */
         .compliance-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 9999;
@@ -175,6 +177,13 @@
         }
         @keyframes shine { 0% {left: -50%;} 100% {left: 150%;} }
 
+        /* CLEANER TOOL STYLE */
+        .clean-result {
+            background: #e8f5e9; color: #2e7d32; padding: 15px;
+            border-radius: 8px; margin-top: 15px; word-break: break-all;
+            display: none; border: 1px solid #c8e6c9;
+        }
+
         /* ADS & FOOTER */
         .ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; margin-top: 30px; }
         .ad-card {
@@ -203,17 +212,17 @@
     <div id="complianceWall" class="compliance-overlay" style="display:flex;">
         <div class="compliance-card">
             <h2 style="border:none; margin-bottom: 5px;">🍪 Terms & Privacy</h2>
-            <p style="margin-top:0; color:#666;">Before you can use <strong>SafeTools</strong>, you must accept our terms of service and data policy.</p>
+            <p style="margin-top:0; color:#666;">Before you can use <strong>SafeTools</strong>, you must accept our terms of service.</p>
             
             <div class="terms-scroll">
                 <strong>1. Acceptance of Terms</strong><br>
                 By using SafeTools, you agree to be bound by these terms. If you do not agree, please close this page.<br><br>
-                <strong>2. Limitation of Liability</strong><br>
-                SafeTools and its creator, Fhabian Feliciano, are not liable for any damages, data loss, or legal issues arising from the use of these tools. You use this software entirely at your own risk.<br><br>
+                <strong>2. Limitation of Liability (The "As Is" Clause)</strong><br>
+                SafeTools is provided "as is" without warranty of any kind. The creator (Fhabian Feliciano) is not liable for any damages, data loss, or legal issues arising from the use of these tools.<br><br>
                 <strong>3. User Responsibility</strong><br>
-                You agree not to use the QR or Password tools for illegal purposes, malware distribution, or hacking. You are solely responsible for the content you process.<br><br>
-                <strong>4. Local Data & Cookies</strong><br>
-                We use browser "Local Storage" (similar to cookies) to save your history and preferences on your device. We do not track you across the web or sell your data.
+                You agree not to use the QR or Password tools for illegal purposes, malware distribution, or hacking. You are solely responsible for your actions.<br><br>
+                <strong>4. Local Data & Privacy</strong><br>
+                We use browser "Local Storage" to save your history on your device. We do not track you across the web or sell your data.
             </div>
 
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
@@ -239,12 +248,30 @@
     </div>
 
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab('tab-converter')">Converter</button>
+        <button class="tab-btn active" onclick="openTab('tab-cleaner')">Link Cleaner</button>
+        <button class="tab-btn" onclick="openTab('tab-converter')">Converter</button>
         <button class="tab-btn" onclick="openTab('tab-qr')">QR Code</button>
         <button class="tab-btn" onclick="openTab('tab-password')">Password</button>
     </div>
 
-    <div id="tab-converter" class="tool-content active-tool">
+    <div id="tab-cleaner" class="tool-content active-tool">
+        <h2>🧹 Link Cleaner</h2>
+        <p style="color:#666;">Remove tracking parameters from URLs to stop companies from following you.</p>
+        
+        <input type="text" id="dirtyUrl" placeholder="Paste a messy link here...">
+        <button class="action-btn" onclick="cleanLink()">Clean Link</button>
+        
+        <div id="cleanResultBox" class="clean-result">
+            <strong>Cleaned Link:</strong><br>
+            <a id="cleanLinkAnchor" href="#" target="_blank" style="color:#2e7d32; font-weight:bold;"></a>
+        </div>
+        
+        <div style="margin-top:15px; font-size:0.8rem; color:#888;">
+            * Removes: utm_, fbclid, gclid, ref, source, and more.
+        </div>
+    </div>
+
+    <div id="tab-converter" class="tool-content">
         <h2>🖼️ Image Converter</h2>
         <p style="color:#666;">Transform images without uploading them.</p>
         <label>1. Select Image</label>
@@ -255,7 +282,7 @@
             <option value="image/png">PNG</option>
             <option value="image/webp">WebP</option>
             <option value="image/bmp">BMP</option>
-        </select>
+            <option value="image/x-icon">ICO (Favicon)</option> </select>
         <canvas id="canvas" style="display:none;"></canvas>
         <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
         <div class="warning-box">
@@ -345,34 +372,21 @@
 
         // --- COMPLIANCE LOGIC ---
         function checkCompliance() {
-            // Check if user has already accepted
             if (localStorage.getItem('fhabian_terms_accepted') === 'true') {
                 document.getElementById('complianceWall').style.display = 'none';
             } else {
                 document.getElementById('complianceWall').style.display = 'flex';
             }
         }
-        
         function acceptTerms() {
             const checkbox = document.getElementById('termsCheck');
-            if (!checkbox.checked) {
-                alert("Please check the box to agree to the terms.");
-                return;
-            }
-            // Save acceptance to Local Storage
+            if (!checkbox.checked) { alert("Please check the box to agree to the terms."); return; }
             localStorage.setItem('fhabian_terms_accepted', 'true');
-            // Hide the wall
             document.getElementById('complianceWall').style.display = 'none';
         }
+        window.onload = function() { checkCompliance(); renderHistory(); };
 
-        // Run compliance check immediately on load
-        window.onload = function() {
-            checkCompliance();
-            renderHistory();
-        };
-
-        // --- EXISTING LOGIC BELOW ---
-
+        // TAB LOGIC
         function openTab(tabId) {
             const contents = document.getElementsByClassName('tool-content');
             for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
@@ -401,6 +415,33 @@
             });
         }
         function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
+
+        // --- LINK CLEANER LOGIC (NEW) ---
+        function cleanLink() {
+            let input = document.getElementById('dirtyUrl').value.trim();
+            if (!input) return;
+
+            try {
+                // Add https if missing so URL object works
+                if (!input.startsWith('http')) input = 'https://' + input;
+                
+                const urlObj = new URL(input);
+                const paramsToStrip = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'ref', 'source', 'tracker'];
+                
+                paramsToStrip.forEach(param => urlObj.searchParams.delete(param));
+                
+                const cleanUrl = urlObj.toString();
+                
+                document.getElementById('cleanResultBox').style.display = 'block';
+                const link = document.getElementById('cleanLinkAnchor');
+                link.href = cleanUrl;
+                link.innerText = cleanUrl;
+                
+                addToHistory("Cleaned Link", "Removed trackers");
+            } catch (e) {
+                alert("Invalid URL. Please check the text.");
+            }
+        }
         
         // CONVERTER
         const fileInput = document.getElementById('fileInput');
@@ -424,7 +465,10 @@
                 const newUrl = canvas.toDataURL(selectedFormat, 0.9);
                 const link = document.createElement('a');
                 let ext = ".jpg";
-                if (selectedFormat === "image/png") ext = ".png"; if (selectedFormat === "image/webp") ext = ".webp"; if (selectedFormat === "image/bmp") ext = ".bmp";
+                if (selectedFormat === "image/png") ext = ".png"; 
+                if (selectedFormat === "image/webp") ext = ".webp"; 
+                if (selectedFormat === "image/bmp") ext = ".bmp";
+                if (selectedFormat === "image/x-icon") ext = ".ico";
                 link.download = 'converted-image' + ext;
                 link.href = newUrl; link.click();
                 addToHistory("Converted Image", `To ${ext.toUpperCase()}`);
@@ -441,28 +485,18 @@
             document.getElementById('qr-input-link').style.display = (mode === 'link') ? 'block' : 'none';
             document.getElementById('qr-input-wifi').style.display = (mode === 'wifi') ? 'block' : 'none';
         }
-
         function attemptQR() {
             if (currentQRMode === 'wifi') {
                 const ssid = document.getElementById("wifiName").value;
                 if(!ssid) { alert("Please enter Network Name"); return; }
                 document.getElementById('safetyModal').style.display = 'flex';
-            } else {
-                generateQR();
-            }
+            } else { generateQR(); }
         }
-
-        function confirmWifiGen() {
+        function confirmWifiGen() { document.getElementById('safetyModal').style.display = 'none'; generateQR(); }
+        function cancelWifiGen() { 
             document.getElementById('safetyModal').style.display = 'none';
-            generateQR();
+            document.getElementById("qrcode").innerHTML = "<div class='blocked-qr'>🔒</div>";
         }
-
-        function cancelWifiGen() {
-            document.getElementById('safetyModal').style.display = 'none';
-            const container = document.getElementById("qrcode");
-            container.innerHTML = "<div class='blocked-qr'>🔒</div>";
-        }
-
         function generateQR() {
             const container = document.getElementById("qrcode");
             let qrText = "";
