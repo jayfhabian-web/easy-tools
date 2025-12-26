@@ -184,7 +184,19 @@
             display: none; border: 1px solid #c8e6c9;
         }
 
-        /* --- PRIVACY CURTAIN (NEW) --- */
+        /* --- INSPECTOR TOOL STYLES (NEW) --- */
+        .preview-container {
+            margin-top: 20px; text-align: center; display: none;
+            background: #eee; border-radius: 10px; padding: 10px;
+        }
+        .preview-img { width: 100%; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .danger-alert {
+            background: #ffebee; color: #c62828; padding: 15px;
+            border-radius: 8px; margin-top: 15px; border: 1px solid #ef9a9a;
+            display: none; text-align: left;
+        }
+
+        /* --- PRIVACY CURTAIN --- */
         #privacyCurtain {
             display: none;
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -193,19 +205,11 @@
             align-items: center; justify-content: center;
             cursor: pointer;
         }
-        .bouncing-logo {
-            font-size: 5rem;
-            animation: pulse 2s infinite;
-            user-select: none;
-        }
+        .bouncing-logo { font-size: 5rem; animation: pulse 2s infinite; user-select: none; }
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
             100% { transform: scale(1); opacity: 0.8; }
-        }
-        .curtain-hint {
-            position: absolute; bottom: 30px; 
-            font-family: monospace; color: #666; font-size: 0.9rem;
         }
 
         /* ADS & FOOTER */
@@ -237,23 +241,16 @@
         <div class="compliance-card">
             <h2 style="border:none; margin-bottom: 5px;">🍪 Terms & Privacy</h2>
             <p style="margin-top:0; color:#666;">Before you can use <strong>SafeTools</strong>, you must accept our terms of service.</p>
-            
             <div class="terms-scroll">
-                <strong>1. Acceptance of Terms</strong><br>
-                By using SafeTools, you agree to be bound by these terms. If you do not agree, please close this page.<br><br>
-                <strong>2. Limitation of Liability</strong><br>
-                SafeTools is provided "as is". The creator (Fhabian Feliciano) is not liable for any damages, data loss, or legal issues arising from the use of these tools.<br><br>
-                <strong>3. User Responsibility</strong><br>
-                You agree not to use the QR or Password tools for illegal purposes. You are solely responsible for your actions.<br><br>
-                <strong>4. Local Data & Privacy</strong><br>
-                We use browser "Local Storage" to save your history on your device. We do not track you across the web.
+                <strong>1. Acceptance</strong><br>By using SafeTools, you agree to these terms.<br><br>
+                <strong>2. "As Is"</strong><br>The creator (Fhabian Feliciano) is not liable for any damages or data loss.<br><br>
+                <strong>3. Link Inspector Disclaimer</strong><br>The Link Inspector provides a visual preview and basic checks. It cannot guarantee a site is 100% safe. Always use caution.<br><br>
+                <strong>4. Local Data</strong><br>We use Local Storage to save history. No tracking.
             </div>
-
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
                 <input type="checkbox" id="termsCheck" style="width:20px; height:20px; margin:0;">
                 <label for="termsCheck" style="margin:0; font-weight:400; font-size:0.9rem;">I have read and agree to the Terms.</label>
             </div>
-
             <button class="compliance-btn" onclick="acceptTerms()">Accept & Continue</button>
         </div>
     </div>
@@ -269,36 +266,45 @@
         <div class="subtitle">Private • Secure • Free</div>
     </header>
 
-    <div class="privacy-banner">
-        <span style="font-size: 1.5rem;">🔒</span>
-        <div>
-            <strong>Your Privacy Guaranteed</strong><br>
-            Files are processed 100% locally on your device.
-        </div>
-    </div>
-
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab('tab-shield')">Privacy Shield</button>
-        <button class="tab-btn" onclick="openTab('tab-cleaner')">Link Cleaner</button>
+        <button class="tab-btn active" onclick="openTab('tab-inspector')">🕵️ Inspector</button>
+        <button class="tab-btn" onclick="openTab('tab-shield')">Privacy</button>
+        <button class="tab-btn" onclick="openTab('tab-cleaner')">Cleaner</button>
         <button class="tab-btn" onclick="openTab('tab-converter')">Converter</button>
         <button class="tab-btn" onclick="openTab('tab-qr')">QR Code</button>
         <button class="tab-btn" onclick="openTab('tab-password')">Password</button>
     </div>
 
-    <div id="tab-shield" class="tool-content active-tool">
-        <h2>🛡️ Privacy Shield</h2>
-        <p style="color:#666;">Need to step away? Hide your screen instantly to prevent people from reading your data.</p>
+    <div id="tab-inspector" class="tool-content active-tool">
+        <h2>🕵️ Link Inspector</h2>
+        <p style="color:#666;">Preview a site safely without visiting it. We check for download files and let you see the page.</p>
         
-        <div class="warning-box" style="margin-bottom: 20px; background: #e3f2fd; color: #0d47a1; border-color: #2196f3;">
-            <strong>Tip:</strong> Use this in coffee shops, libraries, or school when you walk away from your laptop.
+        <input type="text" id="inspectUrl" placeholder="Enter suspicious link here (e.g. google.com)">
+        <button class="action-btn" onclick="inspectLink()">Inspect Link</button>
+
+        <div id="dangerAlert" class="danger-alert">
+            <strong>⚠️ WARNING: POTENTIAL DOWNLOAD</strong><br>
+            This link ends in a file extension (like .exe or .zip). It might try to install software on your computer. <strong>Do not open it</strong> unless you trust the sender 100%.
         </div>
 
+        <div id="previewBox" class="preview-container">
+            <h3 style="margin:0 0 10px 0; font-size:1rem;">Visual Preview:</h3>
+            <img id="siteScreenshot" class="preview-img" src="" alt="Site Preview">
+            
+            <a id="vtLink" href="#" target="_blank" style="display:block; margin-top:15px; padding:10px; background:#f0f0f0; text-align:center; border-radius:8px; text-decoration:none; color:#333; font-weight:bold; border:1px solid #ddd;">
+                🔍 Check this link on VirusTotal
+            </a>
+        </div>
+    </div>
+
+    <div id="tab-shield" class="tool-content">
+        <h2>🛡️ Privacy Shield</h2>
+        <p style="color:#666;">Hide your screen instantly.</p>
         <button class="action-btn" onclick="togglePrivacyCurtain()" style="background: black; color: white;">⬛ Activate Blackout Mode</button>
     </div>
 
     <div id="tab-cleaner" class="tool-content">
         <h2>🧹 Link Cleaner</h2>
-        <p style="color:#666;">Remove tracking parameters from URLs to stop companies from following you.</p>
         <input type="text" id="dirtyUrl" placeholder="Paste a messy link here...">
         <button class="action-btn" onclick="cleanLink()">Clean Link</button>
         <div id="cleanResultBox" class="clean-result">
@@ -309,7 +315,6 @@
 
     <div id="tab-converter" class="tool-content">
         <h2>🖼️ Image Converter</h2>
-        <p style="color:#666;">Transform images without uploading them.</p>
         <label>1. Select Image</label>
         <input type="file" id="fileInput" accept="image/*">
         <label>2. Output Format</label>
@@ -317,8 +322,7 @@
             <option value="image/jpeg">JPG</option>
             <option value="image/png">PNG</option>
             <option value="image/webp">WebP</option>
-            <option value="image/bmp">BMP</option>
-            <option value="image/x-icon">ICO (Favicon)</option>
+            <option value="image/x-icon">ICO</option>
         </select>
         <canvas id="canvas" style="display:none;"></canvas>
         <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
@@ -330,13 +334,8 @@
             <button class="mode-btn active-mode" onclick="setQRMode('link', this)">Link / Text</button>
             <button class="mode-btn" onclick="setQRMode('wifi', this)">WiFi Login</button>
         </div>
-        <div id="qr-input-link">
-            <input type="text" id="linkInput" placeholder="Paste link here (e.g. https://google.com)">
-        </div>
-        <div id="qr-input-wifi" style="display:none;">
-            <input type="text" id="wifiName" placeholder="WiFi Network Name (SSID)">
-            <input type="text" id="wifiPass" placeholder="WiFi Password">
-        </div>
+        <div id="qr-input-link"><input type="text" id="linkInput" placeholder="Paste link here"></div>
+        <div id="qr-input-wifi" style="display:none;"><input type="text" id="wifiName" placeholder="WiFi SSID"><input type="text" id="wifiPass" placeholder="WiFi Password"></div>
         <button class="action-btn" onclick="attemptQR()">Generate QR Code</button>
         <div id="qrcode" style="margin-top:25px; display:flex; justify-content:center; padding: 20px; background:white; border-radius:10px; min-height:168px; align-items:center;"></div>
     </div>
@@ -347,13 +346,9 @@
             <button class="mode-btn active-mode" onclick="setPassMode('random', this)">Random</button>
             <button class="mode-btn" onclick="setPassMode('memorable', this)">Memorable</button>
         </div>
-        <div id="pass-input-memorable" style="display:none;">
-            <p style="font-size:0.9rem; color:#666;">Enter a word you can remember:</p>
-            <input type="text" id="baseWord" placeholder="Type a word (e.g. Pizza)">
-        </div>
+        <div id="pass-input-memorable" style="display:none;"><input type="text" id="baseWord" placeholder="Type a word"></div>
         <div id="passwordResult" class="password-display">Click Generate</div>
         <button class="action-btn" onclick="generatePassword()">Generate Password</button>
-        <button class="action-btn" onclick="copyPassword()" style="background: #aab7b8; margin-top:10px; color:#2d3436;">Copy to Clipboard</button>
     </div>
 
     <div class="history-container">
@@ -379,20 +374,16 @@
 
     <div class="legal-footer">
         <p>Built by <strong>Fhabian Feliciano</strong> • Co-piloted by Google Gemini</p>
-        <p style="opacity: 0.7;"><strong>Disclaimer:</strong> SafeTools is a client-side utility.</p>
-        <p>&copy; 2024 SafeTools. All rights reserved.</p>
+        <p>&copy; 2024 SafeTools.</p>
     </div>
 
     <div id="safetyModal" class="modal">
         <div class="modal-content">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🛡️</div>
             <h3 style="margin:0 0 10px 0; color:#dc3545;">Safety Check</h3>
-            <p style="color:#555; font-size:0.9rem; line-height:1.5;">
-                <strong>Warning:</strong> Do not use this tool to facilitate malicious networks.
-            </p>
+            <p>Do not use this tool to facilitate malicious networks.</p>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="cancelWifiGen()">Cancel</button>
-                <button class="btn-confirm" onclick="confirmWifiGen()">I Agree, Continue</button>
+                <button class="btn-confirm" onclick="confirmWifiGen()">Continue</button>
             </div>
         </div>
     </div>
@@ -402,7 +393,6 @@
         let currentQRMode = 'link';
         let currentPassMode = 'random';
 
-        // --- COMPLIANCE ---
         function checkCompliance() {
             if (localStorage.getItem('fhabian_terms_accepted') === 'true') {
                 document.getElementById('complianceWall').style.display = 'none';
@@ -417,21 +407,12 @@
         }
         window.onload = function() { checkCompliance(); renderHistory(); };
 
-        // --- PRIVACY CURTAIN (New Function) ---
         function togglePrivacyCurtain() {
             const curtain = document.getElementById('privacyCurtain');
-            if (curtain.style.display === 'flex') {
-                curtain.style.display = 'none';
-            } else {
-                curtain.style.display = 'flex';
-                // Request full screen if possible for maximum effect
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                }
-            }
+            if (curtain.style.display === 'flex') { curtain.style.display = 'none'; } 
+            else { curtain.style.display = 'flex'; if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); }
         }
 
-        // TABS
         function openTab(tabId) {
             const contents = document.getElementsByClassName('tool-content');
             for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
@@ -441,7 +422,6 @@
             event.currentTarget.classList.add('active');
         }
 
-        // HISTORY
         function addToHistory(action, detail) {
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
             const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -461,7 +441,44 @@
         }
         function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
 
-        // LINK CLEANER
+        // --- LINK INSPECTOR LOGIC (NEW) ---
+        function inspectLink() {
+            let url = document.getElementById('inspectUrl').value.trim();
+            if (!url) return;
+            if (!url.startsWith('http')) url = 'https://' + url;
+
+            // 1. Check for dangerous extensions (The "Download Check")
+            const dangerousExtensions = ['.exe', '.zip', '.rar', '.7z', '.msi', '.bat', '.cmd', '.sh', '.apk', '.dmg', '.iso'];
+            const urlLower = url.toLowerCase();
+            let isDanger = false;
+            
+            // Basic string check for extension at end of URL
+            dangerousExtensions.forEach(ext => {
+                if (urlLower.endsWith(ext) || urlLower.includes(ext + "?")) {
+                    isDanger = true;
+                }
+            });
+
+            const alertBox = document.getElementById('dangerAlert');
+            if (isDanger) {
+                alertBox.style.display = 'block';
+            } else {
+                alertBox.style.display = 'none';
+            }
+
+            // 2. Generate Screenshot Preview
+            // We use a free placeholder service (Thum.io) because we can't screenshot natively
+            document.getElementById('previewBox').style.display = 'block';
+            document.getElementById('siteScreenshot').src = "https://image.thum.io/get/width/400/crop/800/" + url;
+
+            // 3. Generate VirusTotal Link
+            const vtUrl = "https://www.virustotal.com/gui/search/" + encodeURIComponent(url);
+            document.getElementById('vtLink').href = vtUrl;
+
+            addToHistory("Inspected Link", isDanger ? "⚠️ DANGER DETECTED" : "Safe Preview");
+        }
+
+        // --- EXISTING TOOLS ---
         function cleanLink() {
             let input = document.getElementById('dirtyUrl').value.trim();
             if (!input) return;
@@ -478,7 +495,6 @@
             } catch (e) { alert("Invalid URL."); }
         }
         
-        // CONVERTER
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -502,7 +518,6 @@
                 let ext = ".jpg";
                 if (selectedFormat === "image/png") ext = ".png"; 
                 if (selectedFormat === "image/webp") ext = ".webp"; 
-                if (selectedFormat === "image/bmp") ext = ".bmp";
                 if (selectedFormat === "image/x-icon") ext = ".ico";
                 link.download = 'converted-image' + ext;
                 link.href = newUrl; link.click();
@@ -511,7 +526,6 @@
             img.src = URL.createObjectURL(file);
         });
 
-        // QR & PASS LOGIC (Existing)
         function setQRMode(mode, btn) {
             currentQRMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
@@ -522,27 +536,23 @@
         }
         function attemptQR() {
             if (currentQRMode === 'wifi') {
-                const ssid = document.getElementById("wifiName").value;
-                if(!ssid) { alert("Please enter Network Name"); return; }
+                if(!document.getElementById("wifiName").value) { alert("Enter Network Name"); return; }
                 document.getElementById('safetyModal').style.display = 'flex';
             } else { generateQR(); }
         }
         function confirmWifiGen() { document.getElementById('safetyModal').style.display = 'none'; generateQR(); }
-        function cancelWifiGen() { 
-            document.getElementById('safetyModal').style.display = 'none';
-            document.getElementById("qrcode").innerHTML = "<div class='blocked-qr'>🔒</div>";
-        }
+        function cancelWifiGen() { document.getElementById('safetyModal').style.display = 'none'; document.getElementById("qrcode").innerHTML = "<div class='blocked-qr'>🔒</div>"; }
         function generateQR() {
             const container = document.getElementById("qrcode");
             let qrText = "";
-            let historyText = "";
-            if (currentQRMode === 'link') { qrText = document.getElementById("linkInput").value; historyText = "Link QR"; } 
-            else { const ssid = document.getElementById("wifiName").value; const pass = document.getElementById("wifiPass").value; qrText = `WIFI:T:WPA;S:${ssid};P:${pass};;`; historyText = "WiFi QR"; }
+            if (currentQRMode === 'link') { qrText = document.getElementById("linkInput").value; } 
+            else { qrText = `WIFI:T:WPA;S:${document.getElementById("wifiName").value};P:${document.getElementById("wifiPass").value};;`; }
             if(qrText === "") return;
             container.innerHTML = ""; 
             new QRCode(container, { text: qrText, width: 128, height: 128 });
-            addToHistory("QR Created", historyText);
+            addToHistory("QR Created", currentQRMode);
         }
+
         function setPassMode(mode, btn) {
             currentPassMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
@@ -558,8 +568,7 @@
                 if (!base) { alert("Please type a word first!"); return; }
                 let cleanBase = base.charAt(0).toUpperCase() + base.slice(1).toLowerCase();
                 cleanBase = cleanBase.replace(/a/g, "4").replace(/e/g, "3").replace(/i/g, "1").replace(/o/g, "0").replace(/s/g, "$");
-                const randomNum = Math.floor(Math.random() * 99) + 10;
-                password = cleanBase + "#" + randomNum;
+                password = cleanBase + "#" + (Math.floor(Math.random() * 99) + 10);
             } else {
                 for (let i = 0; i < 16; i++) {
                     const randomValues = new Uint32Array(1);
@@ -568,13 +577,7 @@
                 }
             }
             document.getElementById("passwordResult").innerText = password;
-            addToHistory("Password", currentPassMode === 'memorable' ? "Memorable" : "Random");
-        }
-        function copyPassword() {
-            const text = document.getElementById("passwordResult").innerText;
-            if (text.includes("Click Generate")) return;
-            navigator.clipboard.writeText(text);
-            alert("Copied!");
+            addToHistory("Password", currentPassMode);
         }
     </script>
 </body>
