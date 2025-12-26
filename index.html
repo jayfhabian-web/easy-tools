@@ -54,7 +54,7 @@
             margin-bottom: 25px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.3);
-            flex-wrap: wrap; /* Allows wrapping on small screens */
+            flex-wrap: wrap; 
             justify-content: center;
         }
         .tab-btn {
@@ -184,6 +184,30 @@
             display: none; border: 1px solid #c8e6c9;
         }
 
+        /* --- PRIVACY CURTAIN (NEW) --- */
+        #privacyCurtain {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: black; z-index: 20000;
+            color: white; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .bouncing-logo {
+            font-size: 5rem;
+            animation: pulse 2s infinite;
+            user-select: none;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        .curtain-hint {
+            position: absolute; bottom: 30px; 
+            font-family: monospace; color: #666; font-size: 0.9rem;
+        }
+
         /* ADS & FOOTER */
         .ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; margin-top: 30px; }
         .ad-card {
@@ -217,12 +241,12 @@
             <div class="terms-scroll">
                 <strong>1. Acceptance of Terms</strong><br>
                 By using SafeTools, you agree to be bound by these terms. If you do not agree, please close this page.<br><br>
-                <strong>2. Limitation of Liability (The "As Is" Clause)</strong><br>
-                SafeTools is provided "as is" without warranty of any kind. The creator (Fhabian Feliciano) is not liable for any damages, data loss, or legal issues arising from the use of these tools.<br><br>
+                <strong>2. Limitation of Liability</strong><br>
+                SafeTools is provided "as is". The creator (Fhabian Feliciano) is not liable for any damages, data loss, or legal issues arising from the use of these tools.<br><br>
                 <strong>3. User Responsibility</strong><br>
-                You agree not to use the QR or Password tools for illegal purposes, malware distribution, or hacking. You are solely responsible for your actions.<br><br>
+                You agree not to use the QR or Password tools for illegal purposes. You are solely responsible for your actions.<br><br>
                 <strong>4. Local Data & Privacy</strong><br>
-                We use browser "Local Storage" to save your history on your device. We do not track you across the web or sell your data.
+                We use browser "Local Storage" to save your history on your device. We do not track you across the web.
             </div>
 
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
@@ -232,6 +256,12 @@
 
             <button class="compliance-btn" onclick="acceptTerms()">Accept & Continue</button>
         </div>
+    </div>
+
+    <div id="privacyCurtain" onclick="togglePrivacyCurtain()">
+        <div class="bouncing-logo">🛡️</div>
+        <div style="margin-top:20px; font-size:1.5rem; font-weight:bold;">SafeTools Protected</div>
+        <div class="curtain-hint">Click anywhere to unlock screen</div>
     </div>
 
     <header>
@@ -248,26 +278,32 @@
     </div>
 
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab('tab-cleaner')">Link Cleaner</button>
+        <button class="tab-btn active" onclick="openTab('tab-shield')">Privacy Shield</button>
+        <button class="tab-btn" onclick="openTab('tab-cleaner')">Link Cleaner</button>
         <button class="tab-btn" onclick="openTab('tab-converter')">Converter</button>
         <button class="tab-btn" onclick="openTab('tab-qr')">QR Code</button>
         <button class="tab-btn" onclick="openTab('tab-password')">Password</button>
     </div>
 
-    <div id="tab-cleaner" class="tool-content active-tool">
+    <div id="tab-shield" class="tool-content active-tool">
+        <h2>🛡️ Privacy Shield</h2>
+        <p style="color:#666;">Need to step away? Hide your screen instantly to prevent people from reading your data.</p>
+        
+        <div class="warning-box" style="margin-bottom: 20px; background: #e3f2fd; color: #0d47a1; border-color: #2196f3;">
+            <strong>Tip:</strong> Use this in coffee shops, libraries, or school when you walk away from your laptop.
+        </div>
+
+        <button class="action-btn" onclick="togglePrivacyCurtain()" style="background: black; color: white;">⬛ Activate Blackout Mode</button>
+    </div>
+
+    <div id="tab-cleaner" class="tool-content">
         <h2>🧹 Link Cleaner</h2>
         <p style="color:#666;">Remove tracking parameters from URLs to stop companies from following you.</p>
-        
         <input type="text" id="dirtyUrl" placeholder="Paste a messy link here...">
         <button class="action-btn" onclick="cleanLink()">Clean Link</button>
-        
         <div id="cleanResultBox" class="clean-result">
             <strong>Cleaned Link:</strong><br>
             <a id="cleanLinkAnchor" href="#" target="_blank" style="color:#2e7d32; font-weight:bold;"></a>
-        </div>
-        
-        <div style="margin-top:15px; font-size:0.8rem; color:#888;">
-            * Removes: utm_, fbclid, gclid, ref, source, and more.
         </div>
     </div>
 
@@ -282,12 +318,10 @@
             <option value="image/png">PNG</option>
             <option value="image/webp">WebP</option>
             <option value="image/bmp">BMP</option>
-            <option value="image/x-icon">ICO (Favicon)</option> </select>
+            <option value="image/x-icon">ICO (Favicon)</option>
+        </select>
         <canvas id="canvas" style="display:none;"></canvas>
         <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
-        <div class="warning-box">
-            <strong>⚠️ Legal Disclaimer:</strong> Please only convert files you own.
-        </div>
     </div>
 
     <div id="tab-qr" class="tool-content">
@@ -354,9 +388,7 @@
             <div style="font-size: 3rem; margin-bottom: 10px;">🛡️</div>
             <h3 style="margin:0 0 10px 0; color:#dc3545;">Safety Check</h3>
             <p style="color:#555; font-size:0.9rem; line-height:1.5;">
-                <strong>Warning:</strong> Do not use this tool to facilitate malicious networks, spread malware, or harm others. 
-                <br><br>
-                By clicking continue, you agree to use this tool responsibly.
+                <strong>Warning:</strong> Do not use this tool to facilitate malicious networks.
             </p>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="cancelWifiGen()">Cancel</button>
@@ -370,7 +402,7 @@
         let currentQRMode = 'link';
         let currentPassMode = 'random';
 
-        // --- COMPLIANCE LOGIC ---
+        // --- COMPLIANCE ---
         function checkCompliance() {
             if (localStorage.getItem('fhabian_terms_accepted') === 'true') {
                 document.getElementById('complianceWall').style.display = 'none';
@@ -379,14 +411,27 @@
             }
         }
         function acceptTerms() {
-            const checkbox = document.getElementById('termsCheck');
-            if (!checkbox.checked) { alert("Please check the box to agree to the terms."); return; }
+            if (!document.getElementById('termsCheck').checked) { alert("Please check the box."); return; }
             localStorage.setItem('fhabian_terms_accepted', 'true');
             document.getElementById('complianceWall').style.display = 'none';
         }
         window.onload = function() { checkCompliance(); renderHistory(); };
 
-        // TAB LOGIC
+        // --- PRIVACY CURTAIN (New Function) ---
+        function togglePrivacyCurtain() {
+            const curtain = document.getElementById('privacyCurtain');
+            if (curtain.style.display === 'flex') {
+                curtain.style.display = 'none';
+            } else {
+                curtain.style.display = 'flex';
+                // Request full screen if possible for maximum effect
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                }
+            }
+        }
+
+        // TABS
         function openTab(tabId) {
             const contents = document.getElementsByClassName('tool-content');
             for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
@@ -416,31 +461,21 @@
         }
         function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
 
-        // --- LINK CLEANER LOGIC (NEW) ---
+        // LINK CLEANER
         function cleanLink() {
             let input = document.getElementById('dirtyUrl').value.trim();
             if (!input) return;
-
             try {
-                // Add https if missing so URL object works
                 if (!input.startsWith('http')) input = 'https://' + input;
-                
                 const urlObj = new URL(input);
                 const paramsToStrip = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'ref', 'source', 'tracker'];
-                
                 paramsToStrip.forEach(param => urlObj.searchParams.delete(param));
-                
                 const cleanUrl = urlObj.toString();
-                
                 document.getElementById('cleanResultBox').style.display = 'block';
                 const link = document.getElementById('cleanLinkAnchor');
-                link.href = cleanUrl;
-                link.innerText = cleanUrl;
-                
+                link.href = cleanUrl; link.innerText = cleanUrl;
                 addToHistory("Cleaned Link", "Removed trackers");
-            } catch (e) {
-                alert("Invalid URL. Please check the text.");
-            }
+            } catch (e) { alert("Invalid URL."); }
         }
         
         // CONVERTER
@@ -476,7 +511,7 @@
             img.src = URL.createObjectURL(file);
         });
 
-        // QR CODE
+        // QR & PASS LOGIC (Existing)
         function setQRMode(mode, btn) {
             currentQRMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
@@ -501,22 +536,13 @@
             const container = document.getElementById("qrcode");
             let qrText = "";
             let historyText = "";
-            if (currentQRMode === 'link') {
-                qrText = document.getElementById("linkInput").value;
-                historyText = "Link QR";
-            } else {
-                const ssid = document.getElementById("wifiName").value;
-                const pass = document.getElementById("wifiPass").value;
-                qrText = `WIFI:T:WPA;S:${ssid};P:${pass};;`;
-                historyText = "WiFi QR";
-            }
+            if (currentQRMode === 'link') { qrText = document.getElementById("linkInput").value; historyText = "Link QR"; } 
+            else { const ssid = document.getElementById("wifiName").value; const pass = document.getElementById("wifiPass").value; qrText = `WIFI:T:WPA;S:${ssid};P:${pass};;`; historyText = "WiFi QR"; }
             if(qrText === "") return;
             container.innerHTML = ""; 
             new QRCode(container, { text: qrText, width: 128, height: 128 });
             addToHistory("QR Created", historyText);
         }
-
-        // PASSWORD
         function setPassMode(mode, btn) {
             currentPassMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
