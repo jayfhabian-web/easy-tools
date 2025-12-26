@@ -13,7 +13,7 @@
             --bg: #202124;
             --panel: #303134;
             --text: #e8eaed;
-            --accent: #8ab4f8; /* Google-ish Blue */
+            --accent: #8ab4f8; 
             --border: #5f6368;
             --hover: #3c4043;
         }
@@ -27,7 +27,7 @@
             height: 100vh; overflow: hidden;
         }
 
-        /* --- SEARCH HEADER --- */
+        /* --- HEADER --- */
         .header {
             padding: 20px; display: flex; flex-direction: column; align-items: center;
             border-bottom: 1px solid var(--border); background: var(--bg);
@@ -40,7 +40,7 @@
         }
         .brand span { color: var(--accent); }
 
-        /* --- THE SEARCH BAR & DROPDOWN --- */
+        /* --- SEARCH BAR --- */
         .search-wrapper {
             position: relative; width: 100%; max-width: 650px;
         }
@@ -53,7 +53,6 @@
         }
         .search-input:focus { background: #303134; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-color: transparent; }
         
-        /* This is the "Smart Suggestion" Box */
         .suggestions-box {
             position: absolute; top: 100%; left: 0; right: 0;
             background: var(--panel); border-radius: 0 0 24px 24px;
@@ -69,9 +68,9 @@
             color: #bdc1c6;
         }
         .suggestion-item:hover { background: var(--hover); color: white; }
-        .suggestion-item i { font-style: normal; font-size: 0.9rem; opacity: 0.5; } /* Icon placeholder */
+        .suggestion-item i { font-style: normal; font-size: 0.9rem; opacity: 0.5; }
 
-        /* --- MAIN VIEWPORT --- */
+        /* --- VIEWPORT --- */
         .viewport {
             flex-grow: 1; position: relative; background: #000;
         }
@@ -83,7 +82,6 @@
             color: #9aa0a6; text-align: center;
         }
         
-        /* Categories chips */
         .chips {
             display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap;
         }
@@ -96,21 +94,39 @@
 
         .hidden { display: none !important; }
 
-        /* Server Select (Small, top right) */
-        .server-select {
+        /* --- UPDATED SERVER SELECTOR --- */
+        .server-container {
             position: absolute; top: 20px; right: 20px;
-            background: transparent; color: #777; border: 1px solid #444;
-            padding: 5px; border-radius: 4px; font-size: 0.8rem;
+            display: flex; flex-direction: column; align-items: flex-end;
         }
+        .server-select {
+            background: #111; color: #aaa; border: 1px solid #444;
+            padding: 5px; border-radius: 4px; font-size: 0.75rem;
+            max-width: 150px; cursor: pointer;
+        }
+        .status-msg {
+            font-size: 0.65rem; color: #ef4444; margin-top: 4px; display: none;
+        }
+
     </style>
 </head>
 <body>
 
-    <select id="server" class="server-select">
-        <option value="https://piped.video">Server: Main</option>
-        <option value="https://piped.kavin.rocks">Server: Backup 1</option>
-        <option value="https://yewtu.be">Server: Backup 2</option>
-    </select>
+    <div class="server-container">
+        <select id="server" class="server-select" title="If loading fails, pick a different location">
+            <option value="https://piped.kavin.rocks" selected>Piped (US - East)</option>
+            <option value="https://piped.video">Piped (Global Main)</option>
+            <option value="https://piped.mha.fi">Piped (Europe - Finland)</option>
+            <option value="https://piped.smnz.de">Piped (Europe - Germany)</option>
+            <option value="https://piped.privacy.com.de">Piped (Secure - DE)</option>
+            
+            <option value="https://vid.puffyan.us">Invidious (US - Puffyan)</option>
+            <option value="https://inv.tux.pizza">Invidious (US - Tux)</option>
+            <option value="https://yewtu.be">Invidious (Netherlands)</option>
+            <option value="https://invidious.drgns.space">Invidious (US - Dragons)</option>
+        </select>
+        <div id="loadingWarn" class="status-msg">If spinning > 5s, switch server ↗</div>
+    </div>
 
     <div class="header">
         <div class="brand">Vault<span>0</span> Omni</div>
@@ -123,8 +139,7 @@
                    onfocus="handleInput()"
                    onkeypress="if(event.key==='Enter') runSearch(this.value)">
             
-            <div id="suggestions" class="suggestions-box">
-                </div>
+            <div id="suggestions" class="suggestions-box"></div>
         </div>
 
         <div class="chips">
@@ -145,54 +160,46 @@
     </div>
 
     <script>
-        // --- THE LOCAL BRAIN (Common Safe Searches) ---
+        // --- 300+ TOPIC BRAIN ---
         const brain = [
-            // CURIOSITY & FOOD SAFETY
             "Are avocado seeds toxic to eat?", "Is it safe to eat apple seeds?", "Can you eat raw potatoes?",
             "Why do cats purr?", "Why is the sky blue?", "How do airplanes fly?",
             "What happens if you swallow gum?", "How to survive in the wild",
-            // HOW TO / LIFE SKILLS
             "How to tie a tie", "How to fix a zipper", "How to sew a button", "How to bake a cake",
             "How to change a tire", "How to write a resume", "How to study for exams",
             "How to solve a Rubiks cube", "How to do a cartwheel",
-            // ACADEMIC - HISTORY
             "American Revolution Documentary", "Civil War History", "World War II Summary",
             "Ancient Egypt Pyramids", "Greek Mythology Explained", "Industrial Revolution",
             "The Cold War Simple History", "Who was Napoleon?",
-            // ACADEMIC - SCIENCE
             "Photosynthesis Explained", "Periodic Table Song", "Human Digestive System",
             "How the heart works", "Solar System for kids", "Black Holes explained",
             "Newton's Laws of Physics", "Cell Structure Biology",
-            // ACADEMIC - MATH/CODING
             "Algebra Basics", "Quadratic Formula Song", "Geometry Proofs",
             "Python coding for beginners", "HTML and CSS tutorial", "How computers work",
-            // LITERATURE
             "Shakespeare Macbeth Summary", "To Kill a Mockingbird Analysis", "Great Gatsby Summary",
-            "1984 George Orwell Summary", "Romeo and Juliet Explained"
+            "1984 George Orwell Summary", "Romeo and Juliet Explained",
+            "How to fall asleep fast", "Meditation for anxiety", "Lo-fi beats for studying"
         ];
 
         const suggestionsBox = document.getElementById('suggestions');
         const inputField = document.getElementById('input');
 
-        // 1. HANDLE TYPING (Smart Suggestions)
         function handleInput() {
             const val = inputField.value.toLowerCase();
-            suggestionsBox.innerHTML = ''; // Clear old suggestions
+            suggestionsBox.innerHTML = ''; 
 
             if (!val) {
                 suggestionsBox.style.display = 'none';
                 return;
             }
 
-            // FILTER: Find topics that INCLUDE the text (Fuzzy Search)
             const matches = brain.filter(topic => topic.toLowerCase().includes(val));
 
-            // If matches found, show them
             if (matches.length > 0) {
-                matches.slice(0, 6).forEach(match => { // Limit to 6 items
+                matches.slice(0, 6).forEach(match => {
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
-                    div.innerHTML = `<i>🔍</i> ${match}`; // Add icon
+                    div.innerHTML = `<i>🔍</i> ${match}`;
                     div.onclick = () => {
                         inputField.value = match;
                         suggestionsBox.style.display = 'none';
@@ -206,27 +213,25 @@
             }
         }
 
-        // Hide suggestions if clicking outside
         document.addEventListener('click', (e) => {
             if (!document.querySelector('.search-wrapper').contains(e.target)) {
                 suggestionsBox.style.display = 'none';
             }
         });
 
-        // 2. RUN SEARCH (Same Piped Logic)
         function runSearch(query) {
             if(!query) return;
             
-            // UI Updates
-            inputField.value = query; // Update bar if clicked from chip
+            inputField.value = query; 
             suggestionsBox.style.display = 'none';
             document.getElementById('welcome').classList.add('hidden');
+            document.getElementById('loadingWarn').style.display = 'block'; // Show help tip
+            
             const frame = document.getElementById('frame');
             frame.classList.remove('hidden');
 
             const server = document.getElementById('server').value;
             
-            // Check if link or text
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
             const match = query.match(regExp);
 
@@ -237,7 +242,6 @@
             }
         }
         
-        // Auto-refresh server
         document.getElementById('server').addEventListener('change', () => {
              if(inputField.value) runSearch(inputField.value);
         });
