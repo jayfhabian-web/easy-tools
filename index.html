@@ -8,18 +8,18 @@
     
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --bg-body: #f1f5f9;
+            --primary: #3b82f6; /* Brighter, modern blue */
+            --primary-dark: #2563eb;
+            --bg-body: #f8fafc;
             --bg-card: #ffffff;
-            --text-main: #334155;
+            --text-main: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
-            --radius: 12px;
+            --radius: 16px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
@@ -31,142 +31,260 @@
 
         /* --- HEADER --- */
         header {
-            background: white; width: 100%; padding: 20px 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            width: 100%;
+            padding: 15px 0;
             border-bottom: 1px solid var(--border);
-            display: flex; flex-direction: column; align-items: center;
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .header-content { max-width: 1000px; width: 90%; display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; font-size: 1.5rem; color: #1e293b; display: flex; align-items: center; gap: 10px; }
-        .trust-badge { background: #ecfdf5; color: #047857; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #d1fae5; }
+        .header-content {
+            max-width: 1000px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { margin: 0; font-size: 1.4rem; color: #0f172a; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+        .trust-badge {
+            background: #f0fdf4;
+            color: #15803d;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid #dcfce7;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
         /* --- HERO --- */
-        .hero { text-align: center; padding: 30px 20px; max-width: 700px; }
-        .hero h2 { font-size: 1.8rem; margin-bottom: 10px; color: #0f172a; }
-        .hero p { color: var(--text-light); line-height: 1.6; font-size: 0.95rem; }
+        .hero { text-align: center; padding: 40px 20px; max-width: 650px; }
+        .hero h2 { font-size: 2.2rem; margin-bottom: 15px; color: #0f172a; letter-spacing: -1px; }
+        .hero p { color: var(--text-light); line-height: 1.6; font-size: 1rem; }
 
         /* --- GRID --- */
         .grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px; max-width: 1100px; width: 90%; margin-bottom: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            width: 90%;
+            margin-bottom: 60px;
         }
 
         /* --- CARDS --- */
         .card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 25px; transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--primary); }
-        .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+        .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .icon-box {
-            width: 40px; height: 40px; background: #eff6ff; color: var(--primary);
+            width: 48px; height: 48px;
+            background: #eff6ff;
+            color: var(--primary);
             display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; font-size: 1.2rem;
+            border-radius: 12px;
+            font-size: 1.5rem;
         }
-        .card h3 { margin: 0; font-size: 1.1rem; color: #1e293b; }
-        .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px; line-height: 1.5; }
+        .card h3 { margin: 0; font-size: 1.15rem; font-weight: 600; color: #1e293b; }
+        .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px; line-height: 1.5; min-height: 40px; }
 
-        /* --- CONTROLS --- */
-        input, textarea, button {
-            width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px;
-            border: 1px solid var(--border); font-size: 0.9rem; margin-bottom: 10px;
+        /* --- INPUTS & BUTTONS --- */
+        input, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
             font-family: inherit;
+            background: #f8fafc;
+            transition: 0.2s;
         }
-        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: #fff; }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         
-        button { background: var(--primary); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: var(--primary-dark); }
+        button {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        button:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        
         button.secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
-        button.secondary:hover { background: #f8fafc; }
+        button.secondary:hover { background: #f1f5f9; border-color: #cbd5e1; }
 
         .result-area {
-            background: #f8fafc; padding: 10px; border-radius: 6px; font-family: monospace;
-            font-size: 0.85rem; color: #334155; display: none; border: 1px solid var(--border); word-break: break-all;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #334155;
+            display: none;
+            border: 1px solid var(--border);
+            word-break: break-all;
+            margin-top: 10px;
         }
         .result-area.active { display: block; animation: fadeIn 0.3s; }
 
-        /* --- PRIVACY CURTAIN (LOCK SCREEN) --- */
+        /* --- POLISHED LOCK SCREEN (PRIVACY CURTAIN) --- */
         #privacyCurtain {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; z-index: 10000; flex-direction: column;
-            align-items: center; justify-content: center; color: white;
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #0f172a; /* Deep dark blue */
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            backdrop-filter: blur(5px);
         }
-        #lockInput { width: 200px; text-align: center; letter-spacing: 5px; font-size: 1.5rem; margin-bottom: 20px; border: none; }
-        .lock-note { color: #64748b; font-size: 0.8rem; margin-top: 20px; max-width: 300px; text-align: center; }
+
+        /* The Glass Card */
+        .lock-card {
+            background: rgba(30, 41, 59, 0.6); /* Translucent dark slate */
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px); /* Frosted glass effect */
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .lock-logo { font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 1px; margin-bottom: 20px; display:block;}
+        .lock-icon { font-size: 3.5rem; margin-bottom: 15px; display: inline-block; filter: drop-shadow(0 0 15px rgba(250, 204, 21, 0.3)); }
+        
+        .lock-title { margin: 0 0 5px 0; font-size: 1.5rem; font-weight: 600; color: white; }
+        .lock-status { font-size: 0.85rem; color: #94a3b8; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .pulse-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
+
+        #unlockPin {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.8rem;
+            text-align: center;
+            letter-spacing: 12px;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        #unlockPin::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 2px; font-size: 1rem; font-weight: 400; }
+        #unlockPin:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+
+        .unlock-btn {
+            background: var(--primary);
+            color: white;
+            font-size: 1rem;
+            padding: 15px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .unlock-btn:hover { background: var(--primary-dark); transform: scale(1.02); }
 
         /* --- FOOTER --- */
-        footer { margin-top: auto; padding: 40px 0; color: var(--text-light); font-size: 0.8rem; text-align: center; border-top: 1px solid var(--border); width: 100%; background: white;}
+        footer { margin-top: auto; padding: 40px 0; color: var(--text-light); font-size: 0.85rem; text-align: center; border-top: 1px solid var(--border); width: 100%; background: white;}
         
+        /* Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
-        .shake { animation: shake 0.3s ease-in-out; border-color: #ef4444 !important; color: #ef4444 !important; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulse { 0% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { opacity: 1; } }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-8px);} 75% {transform: translateX(8px);} }
+        .shake { animation: shake 0.3s ease-in-out; border-color: #ef4444 !important; }
 
     </style>
 </head>
 <body>
 
     <div id="privacyCurtain">
-        <div style="font-size: 3rem; margin-bottom: 20px;">🔒</div>
-        <h2 style="margin-top:0; font-weight: 300;">Screen Locked</h2>
-        <input type="password" id="unlockPin" placeholder="PIN" maxlength="4" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
-        <button onclick="attemptUnlock()" style="width: 200px; background: white; color: #0f172a;">Unlock</button>
-        <div class="lock-note">Your computer is still running. This prevents casual viewing while you step away.</div>
+        <div class="lock-card">
+            <span class="lock-logo">🛡️ SAFETOOLS</span>
+            <div class="lock-icon">🔒</div>
+            <h2 class="lock-title">Screen Locked</h2>
+            <div class="lock-status"><div class="pulse-dot"></div> System Active & Running</div>
+            
+            <input type="password" id="unlockPin" placeholder="Enter PIN" maxlength="4" autocomplete="off">
+            <button class="unlock-btn" onclick="attemptUnlock()">Unlock Session</button>
+        </div>
     </div>
 
     <header>
         <div class="header-content">
             <h1>🛡️ SafeTools</h1>
-            <div class="trust-badge">v3.0 • Offline Secure</div>
+            <div class="trust-badge">
+                <span style="font-size:1rem;">🔒</span> Client-Side Secure
+            </div>
         </div>
     </header>
 
     <div class="hero">
-        <h2>Professional Privacy Suite</h2>
-        <p>A collection of client-side utilities to secure your data, scrub metadata, and protect your screen.</p>
+        <h2>Your Data. Your Device.</h2>
+        <p>A professional suite of privacy utilities. Everything runs locally in your browser. No servers, no tracking, no uploads.</p>
     </div>
 
     <div class="grid">
 
-        <div class="card" style="border-color: var(--primary);">
+        <div class="card">
             <div class="card-top">
                 <div class="icon-box">🔒</div>
                 <h3>Privacy Curtain</h3>
             </div>
             <div class="card-desc">
-                Locks the browser window with a PIN. Useful if you are downloading files and need to step away without sleeping the PC.
+                Securely hide your screen while keeping background tasks (downloads, rendering) running.
             </div>
-            <input type="number" id="setPin" placeholder="Set 4-digit PIN (e.g. 1234)" maxlength="4">
-            <button onclick="engageLock()">Engage Lock</button>
-            <div style="font-size:0.75rem; color:#64748b; margin-top:10px;">
-                * Press F11 for full security effect.
+            <label style="font-size:0.8rem; font-weight:600; color:#64748b; margin-bottom:5px; display:block;">Set 4-Digit PIN</label>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="setPin" placeholder="1234" maxlength="4" style="text-align:center; letter-spacing:3px; margin-bottom:0;">
+                <button onclick="engageLock()">Lock</button>
             </div>
         </div>
 
         <div class="card">
             <div class="card-top">
                 <div class="icon-box">📷</div>
-                <h3>Image Anonymizer</h3>
+                <h3>Metadata Scrubber</h3>
             </div>
             <div class="card-desc">
-                Removes hidden metadata (GPS location, Camera model, Date) by re-processing the image pixels locally.
+                Remove hidden GPS and camera data from photos before sharing them online.
             </div>
             <input type="file" id="imgInput" accept="image/*">
-            <button onclick="scrubImage()" class="secondary">Scrub & Download</button>
+            <button onclick="scrubImage()" class="secondary" style="margin-top:5px;">Process Image</button>
             <div id="scrubResult" class="result-area"></div>
             <canvas id="scrubCanvas" style="display:none;"></canvas>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <div class="icon-box">🔑</div>
-                <h3>Secure Password Gen</h3>
-            </div>
-            <div class="card-desc">Create strong, un-guessable passwords locally.</div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
-                <label>Length</label> <span id="lenVal">16</span>
-            </div>
-            <input type="range" id="lenRange" min="8" max="32" value="16" oninput="document.getElementById('lenVal').innerText = this.value">
-            <button onclick="generatePass()">Generate</button>
-            <div id="passResult" class="result-area" style="cursor:pointer; font-weight:bold; color:var(--primary); text-align:center;" onclick="copyPass()"></div>
         </div>
 
         <div class="card">
@@ -174,10 +292,13 @@
                 <div class="icon-box">📁</div>
                 <h3>Malware Hash Scan</h3>
             </div>
-            <div class="card-desc">Generates a SHA-256 fingerprint of files to check against virus databases without uploading the file.</div>
+            <div class="card-desc">
+                Check files against virus databases without uploading them. Uses SHA-256 fingerprints.
+            </div>
             <input type="file" id="fileHashInput">
             <div id="hashResult" class="result-area">
-                <span id="hashOutput"></span>
+                <div style="font-weight:bold; margin-bottom:5px;">File Fingerprint:</div>
+                <span id="hashOutput" style="font-size:0.75rem;">Waiting...</span>
                 <a id="vtLink" href="#" target="_blank" style="display:block; margin-top:10px; color:var(--primary); text-decoration:none; font-weight:bold;">🔎 Check VirusTotal</a>
             </div>
         </div>
@@ -187,20 +308,36 @@
                 <div class="icon-box">🔗</div>
                 <h3>Link Inspector</h3>
             </div>
-            <div class="card-desc">Detect dangerous file extensions in URLs.</div>
-            <input type="text" id="urlInput" placeholder="https://example.com/file.exe">
-            <button onclick="inspectLink()" class="secondary">Inspect</button>
+            <div class="card-desc">
+                Analyze URLs for dangerous extensions (.exe, .scr) or unencrypted HTTP connections.
+            </div>
+            <input type="text" id="urlInput" placeholder="https://example.com/file.zip">
+            <button onclick="inspectLink()" class="secondary" style="margin-top:5px;">Analyze URL</button>
             <div id="linkResult" class="result-area"></div>
         </div>
 
         <div class="card">
             <div class="card-top">
-                <div class="icon-box">🔐</div>
-                <h3>Message Vault</h3>
+                <div class="icon-box">🔑</div>
+                <h3>Password Generator</h3>
             </div>
-            <div class="card-desc">Encrypt text with AES-GCM.</div>
+            <div class="card-desc">Generate military-grade passwords locally on your device.</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem; color:#64748b;">
+                <span>Length</span> <span id="lenVal" style="font-weight:bold; color:var(--primary);">16</span>
+            </div>
+            <input type="range" id="lenRange" min="8" max="64" value="16" oninput="document.getElementById('lenVal').innerText = this.value">
+            <button onclick="generatePass()">Generate New</button>
+            <div id="passResult" class="result-area" style="text-align:center; font-weight:bold; cursor:pointer;" onclick="copyPass()"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="icon-box">💬</div>
+                <h3>Secure Message</h3>
+            </div>
+            <div class="card-desc">Encrypt text messages using AES-GCM password protection.</div>
             <input type="password" id="msgPass" placeholder="Shared Password">
-            <textarea id="msgText" rows="2" placeholder="Message or Encrypted Code"></textarea>
+            <textarea id="msgText" rows="2" placeholder="Secret Message..."></textarea>
             <div style="display:flex; gap:10px;">
                 <button onclick="encryptMsg()">Encrypt</button>
                 <button class="secondary" onclick="decryptMsg()">Decrypt</button>
@@ -211,52 +348,55 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 SafeTools. All operations run locally in your browser.</p>
-        <p style="font-size:0.75rem; color:#94a3b8;">Not a substitute for system-level security or antivirus software.</p>
+        <p>&copy; 2024 SafeTools. Open Source & Privacy Focused.</p>
+        <p style="font-size:0.75rem; color:#94a3b8; max-width:500px; margin:10px auto;">
+            Disclaimer: SafeTools runs entirely in your browser. No data is sent to our servers. 
+            This tool is not a replacement for system-level antivirus software.
+        </p>
     </footer>
 
     <script>
         /* --- 1. PRIVACY CURTAIN LOGIC --- */
-        let activePin = "0000";
+        let activePin = "";
         
         function engageLock() {
             const input = document.getElementById('setPin').value;
-            if (input.length !== 4) { alert("Please set a 4-digit PIN first."); return; }
+            if (input.length < 4) { alert("Please set a 4-digit PIN."); return; }
             
             activePin = input;
             const curtain = document.getElementById('privacyCurtain');
             curtain.style.display = 'flex';
             
-            // Try to go fullscreen for better effect
+            // Attempt Fullscreen for better immersion
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(e => console.log(e));
             }
             
-            document.getElementById('unlockPin').value = "";
-            document.getElementById('unlockPin').focus();
+            const unlockInput = document.getElementById('unlockPin');
+            unlockInput.value = "";
+            setTimeout(() => unlockInput.focus(), 100);
         }
 
         function attemptUnlock() {
             const input = document.getElementById('unlockPin');
             if (input.value === activePin) {
-                // Unlock Success
+                // Success
                 document.getElementById('privacyCurtain').style.display = 'none';
                 if (document.exitFullscreen) document.exitFullscreen().catch(e => console.log(e));
             } else {
-                // Unlock Fail
+                // Fail Animation
                 input.classList.add('shake');
                 input.value = "";
-                setTimeout(() => input.classList.remove('shake'), 300);
+                setTimeout(() => input.classList.remove('shake'), 400);
             }
         }
-        
-        // Allow "Enter" key to unlock
+
+        // Allow Enter key to unlock
         document.getElementById('unlockPin').addEventListener("keypress", function(event) {
             if (event.key === "Enter") attemptUnlock();
         });
 
-
-        /* --- 2. IMAGE SCRUBBER LOGIC --- */
+        /* --- 2. IMAGE SCRUBBER --- */
         function scrubImage() {
             const input = document.getElementById('imgInput');
             const res = document.getElementById('scrubResult');
@@ -266,32 +406,69 @@
             if (input.files.length === 0) { alert("Select an image first."); return; }
             
             res.classList.add('active');
-            res.innerText = "Processing...";
+            res.innerText = "Processing pixel data...";
 
             const img = new Image();
             img.src = URL.createObjectURL(input.files[0]);
             
             img.onload = function() {
-                // Set canvas to image size
                 canvas.width = img.width;
                 canvas.height = img.height;
+                ctx.drawImage(img, 0, 0); // Drawing to canvas strips metadata
                 
-                // Draw image to canvas (This strips metadata automatically!)
-                ctx.drawImage(img, 0, 0);
-                
-                // Export as new clean file
                 canvas.toBlob(function(blob) {
                     const url = URL.createObjectURL(blob);
                     res.innerHTML = `
-                        <span style="color:var(--primary)">✅ Metadata Scrubbed!</span><br>
-                        <a href="${url}" download="safe_image.png" style="font-weight:bold; color:#0f172a;">Download Safe Copy</a>
+                        <div style="color:#15803d; font-weight:bold; margin-bottom:5px;">✅ Metadata Scrubbed</div>
+                        <a href="${url}" download="safe_image.png" style="display:block; padding:8px; background:#dcfce7; color:#166534; text-decoration:none; text-align:center; border-radius:6px;">Download Safe Copy</a>
                     `;
                 }, 'image/png');
             }
         }
 
+        /* --- 3. HASH SCANNER --- */
+        document.getElementById('fileHashInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const box = document.getElementById('hashResult');
+            const out = document.getElementById('hashOutput');
+            const link = document.getElementById('vtLink');
+            
+            box.classList.add('active');
+            out.innerText = "Computing SHA-256...";
+            
+            try {
+                const buf = await file.arrayBuffer();
+                const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+                const hashArr = Array.from(new Uint8Array(hashBuf));
+                const hashHex = hashArr.map(b => b.toString(16).padStart(2, '0')).join('');
+                
+                out.innerText = hashHex;
+                link.href = `https://www.virustotal.com/gui/file/${hashHex}`;
+            } catch(e) { out.innerText = "Error reading file."; }
+        });
 
-        /* --- 3. PASSWORD GEN --- */
+        /* --- 4. LINK INSPECTOR --- */
+        function inspectLink() {
+            let url = document.getElementById('urlInput').value.trim();
+            const res = document.getElementById('linkResult');
+            res.classList.add('active');
+            
+            if(!url) { res.innerText = "Enter a URL."; return; }
+            if(!url.startsWith('http')) url = "http://" + url;
+            
+            try {
+                const u = new URL(url);
+                const exts = ['.exe','.zip','.msi','.bat','.sh','.apk','.scr'];
+                let risk = exts.some(x => u.pathname.toLowerCase().endsWith(x));
+                
+                if(risk) res.innerHTML = `<span style="color:#dc2626">⚠️ <strong>Risk:</strong> File download detected.</span>`;
+                else if(u.protocol === 'http:') res.innerHTML = `<span style="color:#d97706">⚠️ <strong>Unsecured:</strong> Using HTTP.</span>`;
+                else res.innerHTML = `<span style="color:#16a34a">✅ <strong>Standard:</strong> HTTPS Secured.</span>`;
+            } catch(e) { res.innerText = "Invalid URL format."; }
+        }
+
+        /* --- 5. PASS GEN --- */
         function generatePass() {
             const len = document.getElementById('lenRange').value;
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
@@ -306,56 +483,10 @@
         }
         function copyPass() {
             const txt = document.getElementById('passResult').innerText;
-            if(txt) { navigator.clipboard.writeText(txt); alert("Copied!"); }
+            if(txt) { navigator.clipboard.writeText(txt); alert("Password Copied!"); }
         }
 
-
-        /* --- 4. HASH SCANNER --- */
-        document.getElementById('fileHashInput').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if(!file) return;
-            
-            const box = document.getElementById('hashResult');
-            const out = document.getElementById('hashOutput');
-            const link = document.getElementById('vtLink');
-            
-            box.classList.add('active');
-            out.innerText = "Calculating...";
-            
-            try {
-                const buf = await file.arrayBuffer();
-                const hashBuf = await crypto.subtle.digest('SHA-256', buf);
-                const hashArr = Array.from(new Uint8Array(hashBuf));
-                const hashHex = hashArr.map(b => b.toString(16).padStart(2, '0')).join('');
-                
-                out.innerText = hashHex;
-                link.href = `https://www.virustotal.com/gui/file/${hashHex}`;
-            } catch(e) { out.innerText = "Error."; }
-        });
-
-
-        /* --- 5. LINK INSPECTOR --- */
-        function inspectLink() {
-            let url = document.getElementById('urlInput').value.trim();
-            const res = document.getElementById('linkResult');
-            res.classList.add('active');
-            
-            if(!url) { res.innerText = "Enter URL"; return; }
-            if(!url.startsWith('http')) url = "http://" + url;
-            
-            try {
-                const u = new URL(url);
-                const exts = ['.exe','.zip','.msi','.bat','.sh','.apk'];
-                let risk = exts.some(x => u.pathname.toLowerCase().endsWith(x));
-                
-                if(risk) res.innerHTML = `<span style="color:#ef4444">⚠️ <strong>Risk:</strong> Direct file download detected.</span>`;
-                else if(u.protocol === 'http:') res.innerHTML = `<span style="color:#f59e0b">⚠️ <strong>Unsecured:</strong> Uses HTTP (No encryption).</span>`;
-                else res.innerHTML = `<span style="color:#10b981">✅ <strong>Standard:</strong> HTTPS Secured.</span>`;
-            } catch(e) { res.innerText = "Invalid URL"; }
-        }
-
-
-        /* --- 6. CRYPTO VAULT --- */
+        /* --- 6. CRYPTO --- */
         async function getKey(password) {
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), {name:"PBKDF2"}, false, ["deriveKey"]);
@@ -364,13 +495,11 @@
                 keyMaterial, {name:"AES-GCM", length:256}, true, ["encrypt", "decrypt"]
             );
         }
-
         async function encryptMsg() {
             const txt = document.getElementById('msgText').value;
             const pass = document.getElementById('msgPass').value;
             const res = document.getElementById('msgResult');
-            if(!txt || !pass) { alert("Need text & password"); return; }
-            
+            if(!txt || !pass) { alert("Enter text & password"); return; }
             try {
                 const key = await getKey(pass);
                 const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -380,13 +509,11 @@
                 res.innerHTML = `<strong>Encrypted:</strong><br>${btoa(data)}`;
             } catch(e) { alert("Error"); }
         }
-
         async function decryptMsg() {
             const txt = document.getElementById('msgText').value;
             const pass = document.getElementById('msgPass').value;
             const res = document.getElementById('msgResult');
-            if(!txt || !pass) { alert("Need code & password"); return; }
-            
+            if(!txt || !pass) { alert("Enter encrypted code & password"); return; }
             try {
                 const key = await getKey(pass);
                 const json = JSON.parse(atob(txt));
@@ -394,10 +521,10 @@
                 const data = new Uint8Array(json.data);
                 const dec = await crypto.subtle.decrypt({name:"AES-GCM", iv:iv}, key, data);
                 res.classList.add('active');
-                res.innerHTML = `<strong>Decrypted:</strong><br><span style="color:#10b981">${new TextDecoder().decode(dec)}</span>`;
+                res.innerHTML = `<strong>Decrypted:</strong><br><span style="color:#16a34a">${new TextDecoder().decode(dec)}</span>`;
             } catch(e) { 
                 res.classList.add('active');
-                res.innerHTML = `<span style="color:#ef4444">Failed. Wrong password?</span>`; 
+                res.innerHTML = `<span style="color:#dc2626">Decryption Failed.</span>`; 
             }
         }
     </script>
