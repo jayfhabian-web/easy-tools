@@ -117,6 +117,31 @@
             font-size: 1.3rem; margin: 15px 0; word-break: break-all;
         }
 
+        /* --- COMPLIANCE WALL (TERMS & COOKIES) --- */
+        .compliance-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 9999;
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .compliance-card {
+            background: white; width: 90%; max-width: 500px;
+            padding: 30px; border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            text-align: left;
+        }
+        .terms-scroll {
+            height: 150px; overflow-y: auto; background: #f8f9fa;
+            border: 1px solid #ddd; padding: 10px; margin: 15px 0;
+            font-size: 0.8rem; color: #555; border-radius: 8px;
+        }
+        .compliance-btn {
+            background: #28a745; color: white; border: none; padding: 15px;
+            border-radius: 8px; width: 100%; font-size: 1rem; font-weight: bold;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .compliance-btn:hover { background: #218838; }
+
         /* --- SAFETY MODAL --- */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0;
@@ -135,17 +160,14 @@
         .btn-cancel { background: #eee; color: #333; flex: 1; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; }
         .btn-confirm { background: #dc3545; color: white; flex: 1; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; }
 
-        /* --- BLOCKED QR EFFECT --- */
+        /* BLOCKED QR EFFECT */
         .blocked-qr {
             width: 128px; height: 128px;
             background: linear-gradient(135deg, #00c6ff, #0072ff);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 2rem;
-            position: relative; overflow: hidden;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 2rem; position: relative; overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 114, 255, 0.5);
         }
-        /* The "Shine" Animation */
         .blocked-qr::after {
             content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
@@ -177,6 +199,31 @@
     </style>
 </head>
 <body>
+
+    <div id="complianceWall" class="compliance-overlay" style="display:flex;">
+        <div class="compliance-card">
+            <h2 style="border:none; margin-bottom: 5px;">🍪 Terms & Privacy</h2>
+            <p style="margin-top:0; color:#666;">Before you can use <strong>SafeTools</strong>, you must accept our terms of service and data policy.</p>
+            
+            <div class="terms-scroll">
+                <strong>1. Acceptance of Terms</strong><br>
+                By using SafeTools, you agree to be bound by these terms. If you do not agree, please close this page.<br><br>
+                <strong>2. Limitation of Liability</strong><br>
+                SafeTools and its creator, Fhabian Feliciano, are not liable for any damages, data loss, or legal issues arising from the use of these tools. You use this software entirely at your own risk.<br><br>
+                <strong>3. User Responsibility</strong><br>
+                You agree not to use the QR or Password tools for illegal purposes, malware distribution, or hacking. You are solely responsible for the content you process.<br><br>
+                <strong>4. Local Data & Cookies</strong><br>
+                We use browser "Local Storage" (similar to cookies) to save your history and preferences on your device. We do not track you across the web or sell your data.
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <input type="checkbox" id="termsCheck" style="width:20px; height:20px; margin:0;">
+                <label for="termsCheck" style="margin:0; font-weight:400; font-size:0.9rem;">I have read and agree to the Terms.</label>
+            </div>
+
+            <button class="compliance-btn" onclick="acceptTerms()">Accept & Continue</button>
+        </div>
+    </div>
 
     <header>
         <h1>SafeTools</h1>
@@ -218,21 +265,17 @@
 
     <div id="tab-qr" class="tool-content">
         <h2>🔗 Smart QR Code</h2>
-        
         <div class="mode-toggle">
             <button class="mode-btn active-mode" onclick="setQRMode('link', this)">Link / Text</button>
             <button class="mode-btn" onclick="setQRMode('wifi', this)">WiFi Login</button>
         </div>
-
         <div id="qr-input-link">
             <input type="text" id="linkInput" placeholder="Paste link here (e.g. https://google.com)">
         </div>
-
         <div id="qr-input-wifi" style="display:none;">
             <input type="text" id="wifiName" placeholder="WiFi Network Name (SSID)">
             <input type="text" id="wifiPass" placeholder="WiFi Password">
         </div>
-
         <button class="action-btn" onclick="attemptQR()">Generate QR Code</button>
         <div id="qrcode" style="margin-top:25px; display:flex; justify-content:center; padding: 20px; background:white; border-radius:10px; min-height:168px; align-items:center;"></div>
     </div>
@@ -300,6 +343,36 @@
         let currentQRMode = 'link';
         let currentPassMode = 'random';
 
+        // --- COMPLIANCE LOGIC ---
+        function checkCompliance() {
+            // Check if user has already accepted
+            if (localStorage.getItem('fhabian_terms_accepted') === 'true') {
+                document.getElementById('complianceWall').style.display = 'none';
+            } else {
+                document.getElementById('complianceWall').style.display = 'flex';
+            }
+        }
+        
+        function acceptTerms() {
+            const checkbox = document.getElementById('termsCheck');
+            if (!checkbox.checked) {
+                alert("Please check the box to agree to the terms.");
+                return;
+            }
+            // Save acceptance to Local Storage
+            localStorage.setItem('fhabian_terms_accepted', 'true');
+            // Hide the wall
+            document.getElementById('complianceWall').style.display = 'none';
+        }
+
+        // Run compliance check immediately on load
+        window.onload = function() {
+            checkCompliance();
+            renderHistory();
+        };
+
+        // --- EXISTING LOGIC BELOW ---
+
         function openTab(tabId) {
             const contents = document.getElementsByClassName('tool-content');
             for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
@@ -328,8 +401,7 @@
             });
         }
         function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
-        window.onload = renderHistory;
-
+        
         // CONVERTER
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
@@ -360,7 +432,7 @@
             img.src = URL.createObjectURL(file);
         });
 
-        // QR CODE LOGIC
+        // QR CODE
         function setQRMode(mode, btn) {
             currentQRMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
@@ -371,13 +443,11 @@
         }
 
         function attemptQR() {
-            // If in WiFi mode, show the safety modal first!
             if (currentQRMode === 'wifi') {
                 const ssid = document.getElementById("wifiName").value;
                 if(!ssid) { alert("Please enter Network Name"); return; }
                 document.getElementById('safetyModal').style.display = 'flex';
             } else {
-                // Link mode - just generate immediately
                 generateQR();
             }
         }
@@ -397,7 +467,6 @@
             const container = document.getElementById("qrcode");
             let qrText = "";
             let historyText = "";
-
             if (currentQRMode === 'link') {
                 qrText = document.getElementById("linkInput").value;
                 historyText = "Link QR";
@@ -407,14 +476,13 @@
                 qrText = `WIFI:T:WPA;S:${ssid};P:${pass};;`;
                 historyText = "WiFi QR";
             }
-
             if(qrText === "") return;
             container.innerHTML = ""; 
             new QRCode(container, { text: qrText, width: 128, height: 128 });
             addToHistory("QR Created", historyText);
         }
 
-        // PASSWORD LOGIC
+        // PASSWORD
         function setPassMode(mode, btn) {
             currentPassMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
