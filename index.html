@@ -3,838 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeTools | Private & Secure</title>
-    
+    <title>SafeTools | Privacy & Security Suite</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        /* --- GLOBAL STYLES --- */
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text: #e2e8f0;
+            --bg-card: #1e293b;
+        }
+
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            background-color: var(--primary);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0;
-            padding: 20px;
             min-height: 100vh;
-            transition: background 0.2s;
         }
 
-        /* INTRUDER MODE (Flashing Red) */
-        body.intruder-alert {
-            animation: redFlash 0.5s infinite;
-        }
-        @keyframes redFlash {
-            0% { background: #ff0000; }
-            50% { background: #000000; }
-            100% { background: #ff0000; }
-        }
-
-        /* HEADER & GEAR */
-        header { text-align: center; margin-bottom: 20px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); position: relative; width: 100%; max-width: 500px; }
-        h1 { margin: 0; font-size: 2.5rem; letter-spacing: -1px; }
-        .subtitle { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; font-weight: 300; }
-        
-        .gear-btn {
-            position: absolute; top: 0; right: 0;
-            background: rgba(255,255,255,0.2); border: none;
-            color: white; font-size: 1.5rem; padding: 10px;
-            border-radius: 50%; cursor: pointer; transition: background 0.3s;
-        }
-        .gear-btn:hover { background: rgba(255,255,255,0.4); }
-
-        /* TABS */
-        .tab-bar {
-            display: flex;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px;
-            border-radius: 50px;
-            margin-bottom: 25px;
+        /* HEADER */
+        header {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            flex-wrap: wrap; 
-            justify-content: center;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .tab-btn {
-            background: transparent; border: none; padding: 10px 20px;
-            border-radius: 40px; cursor: pointer; font-weight: 600;
-            color: white; transition: all 0.3s ease; font-size: 0.9rem;
-        }
-        .tab-btn:hover { background: rgba(255,255,255,0.1); }
-        .tab-btn.active {
-            background-color: white; color: #764ba2;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        h1 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle { font-size: 0.9rem; color: #94a3b8; margin-top: 5px; }
+
+        /* GRID LAYOUT */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            width: 95%;
+            margin: 40px 0;
         }
 
-        /* TOOL CARDS */
-        .tool-content {
-            display: none;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2.5rem; border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            max-width: 500px; width: 100%;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-sizing: border-box;
-        }
-        .tool-content.active-tool { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        h2 { color: #4a4a4a; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-top: 0; display:flex; align-items:center; gap:10px; }
-        
-        /* INPUTS & BUTTONS */
-        label { font-weight: 600; font-size: 0.9rem; color: #666; display: block; margin-top: 15px; }
-        input, select, textarea {
-            width: 100%; padding: 14px; margin: 8px 0;
-            border: 2px solid #eee; border-radius: 10px;
-            box-sizing: border-box; font-size: 1rem;
-            transition: border 0.2s; background: #f9f9f9; font-family: inherit;
-        }
-        input:focus, select:focus, textarea:focus { border-color: #764ba2; outline: none; background: white; }
-        
-        button.action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; border: none; padding: 15px;
-            border-radius: 10px; cursor: pointer; font-size: 1rem;
-            width: 100%; font-weight: 700; margin-top: 20px;
+        /* CARDS */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255,255,255,0.05);
             transition: transform 0.2s;
         }
-        button.action-btn:hover { transform: translateY(-2px); }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        
+        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .card-icon { font-size: 1.5rem; background: rgba(59, 130, 246, 0.1); padding: 10px; border-radius: 10px; }
+        h2 { margin: 0; font-size: 1.2rem; color: white; }
 
-        /* --- PRIVACY CURTAIN 6.0 (TRIPWIRE & GOOFY) --- */
-        #privacyCurtain {
+        /* FORM ELEMENTS */
+        label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #94a3b8; font-weight: 600; }
+        
+        input, textarea, select {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: inherit;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            transition: border 0.2s;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+
+        button {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background: #2563eb; }
+        button.secondary { background: #334155; margin-top: 10px; }
+        button.secondary:hover { background: #475569; }
+
+        /* OUTPUT BOXES */
+        .result-box {
+            background: #0f172a;
+            border: 1px dashed #334155;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            word-break: break-all;
             display: none;
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #0f172a; z-index: 20000;
-            color: white; flex-direction: column;
-            align-items: center; justify-content: center;
-            user-select: none;
-            overflow: hidden;
-            transition: top 0.5s ease-in-out;
         }
-
-        /* The Bouncing Goofy Text */
-        .goofy-bouncer {
-            position: absolute;
-            font-size: 3rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.05);
-            pointer-events: none;
-            animation: bounceX 3s infinite alternate ease-in-out, bounceY 4s infinite alternate ease-in-out;
-            z-index: 0;
-            white-space: nowrap;
-        }
-        @keyframes bounceX { from { left: 0; transform: rotate(-10deg); } to { left: calc(100% - 300px); transform: rotate(10deg); } }
-        @keyframes bounceY { from { top: 0; } to { top: calc(100% - 100px); } }
-
-        /* Lock Icon Animation */
-        .main-lock-icon { font-size: 4rem; margin-bottom: 20px; z-index: 2; transition: transform 0.3s; cursor: pointer; }
-        .main-lock-icon.shaking { animation: shake 0.5s; color: #ff4757; }
-        .main-lock-icon.unlocking { transform: scale(1.2); color: #2ed573; }
-        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
-
-        /* The 3 Inputs Container */
-        .lock-inputs-container {
-            display: flex; flex-direction: column; align-items: center; gap: 20px;
-            z-index: 2; background: rgba(0,0,0,0.5); padding: 25px;
-            border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .section-label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-
-        /* 1. PIN PAD UI */
-        .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 180px; }
-        .pin-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: white; padding: 10px; border-radius: 8px; font-size: 1rem; cursor: pointer;
-        }
-        .pin-btn:active { background: white; color: black; }
-        .pin-display { font-family: monospace; letter-spacing: 5px; font-size: 1.5rem; height: 30px; color: #00ff9d; margin-bottom: 10px; }
-
-        /* 2. TEXT PASS UI */
-        .pass-input-lock {
-            background: rgba(0,0,0,0.3); border: 1px solid #555; color: white;
-            padding: 10px; border-radius: 5px; text-align: center; width: 180px;
-        }
-
-        /* 3. ARROW PAD UI */
-        .d-pad { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 150px; }
-        .d-btn { 
-            background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); 
-            color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
-            display:flex; align-items:center; justify-content:center;
-        }
-        .d-btn:active { background: #00ff9d; color: black; }
-        /* Grid Positioning for Cross Shape */
-        .d-up { grid-column: 2; grid-row: 1; }
-        .d-left { grid-column: 1; grid-row: 2; }
-        .d-center { grid-column: 2; grid-row: 2; border:none; background:transparent; font-size:0.8rem; color:#888;}
-        .d-right { grid-column: 3; grid-row: 2; }
-        .d-down { grid-column: 2; grid-row: 3; }
+        .result-box.visible { display: block; }
         
-        .arrow-display { font-family: monospace; font-size: 1.2rem; height: 25px; color: #fab1a0; margin-bottom: 5px; letter-spacing: 2px; }
+        /* STRENGTH METER */
+        .strength-bar { height: 6px; background: #334155; border-radius: 3px; margin-top: -10px; margin-bottom: 15px; overflow: hidden; }
+        .strength-fill { height: 100%; width: 0%; transition: width 0.3s, background 0.3s; }
 
-        /* Settings Selection Cards */
-        .lock-selection { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
-        .lock-option {
-            background: #f8f9fa; border: 2px solid #eee; padding: 15px;
-            border-radius: 10px; cursor: pointer; text-align: left;
-            transition: all 0.2s; display: flex; align-items: center; gap: 15px;
-        }
-        .lock-option:hover { border-color: #a18cd1; }
-        .lock-option.selected { border-color: #764ba2; background: #f3e5f5; }
+        /* FOOTER */
+        footer { margin-top: auto; padding: 30px; color: #64748b; font-size: 0.8rem; text-align: center; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
-        /* --- SETTINGS/HISTORY MODAL --- */
-        .modal {
-            display: none; position: fixed; z-index: 10000; left: 0; top: 0;
-            width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; padding: 25px; border-radius: 15px;
-            width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: popIn 0.3s ease; position: relative;
-        }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999; }
-        
-        .history-item { border-bottom: 1px solid #eee; padding: 12px 0; font-size: 0.9rem; display: flex; justify-content: space-between; }
-        .timestamp { background: #eee; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; color: #666; }
-
-        /* --- COMPLIANCE --- */
-        .compliance-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 9999;
-            backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .compliance-card { background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 15px; text-align: left; }
-        .terms-scroll { height: 100px; overflow-y: auto; background: #f8f9fa; border: 1px solid #ddd; padding: 10px; margin: 15px 0; font-size: 0.8rem; }
-        
-        /* ADS */
-        .ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; margin-top: 30px; }
-        .ad-card {
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
-            background-size: 400% 400%; animation: gradientBG 5s ease infinite;
-            border-radius: 15px; padding: 20px; text-decoration: none;
-            color: white; position: relative; overflow: hidden;
-            transition: transform 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center;
-        }
-        .ad-card:hover { transform: scale(1.03); }
-        .ad-card.secondary { background: linear-gradient(45deg, #4facfe, #00f2fe); background-size: 400% 400%; }
-        .ad-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; text-transform: uppercase; }
-        .ad-title { font-weight: 800; font-size: 1.2rem; display: block; margin-bottom: 5px; }
-        .ad-desc { font-size: 0.8rem; opacity: 0.9; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        .legal-footer { margin-top: auto; padding-top: 40px; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.8); max-width: 500px; line-height: 1.6; }
+        /* HASH LOADER */
+        .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; margin-right: 5px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
-    <div id="complianceWall" class="compliance-overlay" style="display:flex;">
-        <div class="compliance-card">
-            <h2 style="border:none; margin-bottom: 5px;">🍪 Updated Policy</h2>
-            <p style="margin-top:0; color:#666;">Select your security preference.</p>
-            <div class="terms-scroll">
-                1. General Acceptance: By using SafeTools, you agree to these terms.<br>
-                2. Security: You may now choose between PIN, Password, or Arrow Sequence.<br>
-                3. Intruder Alert: Switching tabs or exiting fullscreen while locked will trigger an alarm.<br>
-                4. Liability: Use these tools responsibly.
-            </div>
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
-                <input type="checkbox" id="termsCheck" style="width:20px; height:20px; margin:0;">
-                <label for="termsCheck" style="margin:0; font-weight:400; font-size:0.9rem;">I agree to the Updated Terms.</label>
-            </div>
-            <button class="compliance-btn" onclick="acceptTerms()" style="background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer;">Accept & Continue</button>
-        </div>
-    </div>
-
-    <div id="privacyCurtain">
-        <div id="bouncingText" class="goofy-bouncer">Safe Tools</div>
-        
-        <div id="intruderMessage" style="display:none; color: red; font-size: 2rem; font-weight: 900; animation: shake 0.5s infinite; text-align:center;">
-            ⚠️ INTRUDER DETECTED ⚠️<br>
-            <span style="font-size:1rem; color:white;">RETURN TO FULLSCREEN</span>
-        </div>
-
-        <div id="mainLockIcon" class="main-lock-icon">🔒</div>
-        <div id="lockMsg" style="color: #ff4757; font-weight: bold; font-family: monospace; height: 20px; opacity:0; transition:opacity 0.2s;">ACCESS DENIED</div>
-
-        <div class="lock-inputs-container">
-            
-            <div style="text-align:center;">
-                <div class="section-label">PIN Pad</div>
-                <div class="pin-display" id="pinDisplay">****</div>
-                <div class="pin-pad">
-                    <button class="pin-btn" onclick="enterLockInput('pin', '1')">1</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '2')">2</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '3')">3</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '4')">4</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '5')">5</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '6')">6</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '7')">7</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '8')">8</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '9')">9</button>
-                    <button class="pin-btn" onclick="clearPin()" style="color:#ff6b6b">C</button>
-                    <button class="pin-btn" onclick="enterLockInput('pin', '0')">0</button>
-                    <button class="pin-btn" onclick="submitLock('pin')" style="color:#51cf66">></button>
-                </div>
-            </div>
-
-            <hr style="width:100%; border:0; border-top:1px solid rgba(255,255,255,0.2);">
-
-            <div style="text-align:center; width:100%;">
-                <div class="section-label">Password</div>
-                <div style="display:flex; gap:5px;">
-                    <input type="password" id="lockPassInput" class="pass-input-lock" placeholder="Enter Password...">
-                    <button class="pin-btn" onclick="submitLock('pass')">></button>
-                </div>
-            </div>
-
-            <hr style="width:100%; border:0; border-top:1px solid rgba(255,255,255,0.2);">
-
-            <div style="text-align:center;">
-                <div class="section-label">Direction Lock</div>
-                <div class="arrow-display" id="arrowDisplay"></div>
-                <div class="d-pad">
-                    <button class="d-btn d-up" onclick="enterLockInput('arrow', 'U')">▲</button>
-                    <button class="d-btn d-left" onclick="enterLockInput('arrow', 'L')">◀</button>
-                    <div class="d-btn d-center" onclick="submitLock('arrows')">OK</div>
-                    <button class="d-btn d-right" onclick="enterLockInput('arrow', 'R')">▶</button>
-                    <button class="d-btn d-down" onclick="enterLockInput('arrow', 'D')">▼</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="toggleSettings()">×</span>
-            <h2 style="border:none;">⚙️ Settings</h2>
-            
-            <h3 style="margin-bottom:10px; color:#333;">History</h3>
-            <div id="historyList"></div>
-            <button onclick="clearHistory()" style="background:none; border:none; color:#e74c3c; cursor:pointer; margin-top:10px; font-weight:bold;">Clear History</button>
-        </div>
-    </div>
-
     <header>
         <h1>SafeTools</h1>
-        <div class="subtitle">Private • Secure • Free</div>
-        <button class="gear-btn" onclick="toggleSettings()">⚙️</button>
+        <div class="subtitle">Client-Side Privacy & Security Utilities</div>
     </header>
 
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="openTab('tab-shield')">Privacy Shield</button>
-        <button class="tab-btn" onclick="openTab('tab-inspector')">Inspector</button>
-        <button class="tab-btn" onclick="openTab('tab-cleaner')">Cleaner</button>
-        <button class="tab-btn" onclick="openTab('tab-converter')">Converter</button>
-        <button class="tab-btn" onclick="openTab('tab-qr')">QR Code</button>
-        <button class="tab-btn" onclick="openTab('tab-password')">Password</button>
-    </div>
+    <div class="container">
 
-    <div id="tab-shield" class="tool-content active-tool">
-        <h2>🛡️ Privacy Shield 6.0</h2>
-        <p style="color:#666;">Select Lock Type. <strong>Intruder Alert</strong> will sound if someone exits fullscreen.</p>
-        
-        <div class="lock-selection">
-            <div class="lock-option selected" id="opt-pin" onclick="selectLockType('pin')">
-                <span style="font-size:1.5rem;">🔢</span>
-                <div style="flex:1;">
-                    <strong>Type A: 4-Digit PIN</strong>
-                    <input type="password" id="setPinInput" placeholder="Set PIN (e.g. 1234)" style="width:100%; margin-top:5px; padding:8px;" onclick="event.stopPropagation()">
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">📁</div>
+                <h2>File Integrity Check</h2>
             </div>
-
-            <div class="lock-option" id="opt-pass" onclick="selectLockType('pass')">
-                <span style="font-size:1.5rem;">✍️</span>
-                <div style="flex:1;">
-                    <strong>Type B: Secret Password</strong>
-                    <input type="password" id="setPassInput" placeholder="Set Word (e.g. apple)" style="width:100%; margin-top:5px; padding:8px;" onclick="event.stopPropagation()">
-                </div>
-            </div>
-
-            <div class="lock-option" id="opt-arrows" onclick="selectLockType('arrows')">
-                <span style="font-size:1.5rem;">🕹️</span>
-                <div style="flex:1;">
-                    <strong>Type C: Arrow Sequence</strong>
-                    <p style="font-size:0.8rem; color:#666; margin:5px 0;">Use the D-Pad to enter a code (e.g. Up, Up, Down).</p>
-                    <div style="display:flex; gap:5px; margin-top:5px;">
-                        <input type="text" id="setArrowInput" placeholder="Click arrows below..." readonly style="width:100%; padding:8px; cursor:not-allowed;">
-                        <button onclick="clearSetArrows(event)" style="padding:5px 10px; cursor:pointer;">Clear</button>
-                    </div>
-                    <div style="display:flex; gap:5px; margin-top:5px; justify-content:center;">
-                        <button onclick="addSetArrow(event, 'U')">▲</button>
-                        <button onclick="addSetArrow(event, 'D')">▼</button>
-                        <button onclick="addSetArrow(event, 'L')">◀</button>
-                        <button onclick="addSetArrow(event, 'R')">▶</button>
-                    </div>
-                </div>
+            <p style="font-size:0.9rem; color:#94a3b8; margin-top:0;">
+                Calculates the SHA-256 hash of a file locally. Use this fingerprint to check if the file is known malware on VirusTotal.
+            </p>
+            <input type="file" id="fileInput">
+            <div id="hashResult" class="result-box">
+                <strong>SHA-256 Hash:</strong><br>
+                <span id="hashOutput">Waiting for file...</span>
+                <a id="vtLink" href="#" target="_blank" style="display:none; margin-top:10px; color: var(--accent); font-weight:bold;">🔎 Check on VirusTotal</a>
             </div>
         </div>
 
-        <button class="action-btn" onclick="activateShield()" style="background: black; color: white;">⬛ Lock Screen</button>
-    </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔐</div>
+                <h2>Secure Message</h2>
+            </div>
+            <p style="font-size:0.9rem; color:#94a3b8; margin-top:0;">
+                Encrypt text using AES-GCM. The data never leaves your browser.
+            </p>
+            
+            <label>Message</label>
+            <textarea id="msgInput" rows="3" placeholder="Type secret message..."></textarea>
+            
+            <label>Encryption Password</label>
+            <input type="password" id="msgPass" placeholder="Shared secret key">
+            
+            <div style="display:flex; gap:10px;">
+                <button onclick="encryptMessage()">Encrypt</button>
+                <button onclick="decryptMessage()" class="secondary" style="margin-top:0;">Decrypt</button>
+            </div>
 
-    <div id="tab-inspector" class="tool-content">
-        <h2>🕵️ Link Inspector</h2>
-        <input type="text" id="inspectUrl" placeholder="Enter suspicious link here">
-        <button class="action-btn" onclick="inspectLink()">Inspect Link</button>
-        <div id="dangerAlert" class="danger-alert">
-            <strong>⚠️ WARNING: POTENTIAL DOWNLOAD</strong><br>
-            This link ends in a file extension. <strong>Do not open it</strong> unless you trust the sender 100%.
+            <div id="cryptoResult" class="result-box"></div>
         </div>
-        <div id="previewBox" class="preview-container">
-            <h3 style="margin:0 0 10px 0; font-size:1rem;">Visual Preview:</h3>
-            <img id="siteScreenshot" class="preview-img" src="" alt="Site Preview">
-            <a id="vtLink" href="#" target="_blank" style="display:block; margin-top:15px; padding:10px; background:#f0f0f0; text-align:center; border-radius:8px; text-decoration:none; color:#333; font-weight:bold; border:1px solid #ddd;">
-                🔍 Check on VirusTotal
-            </a>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🔑</div>
+                <h2>Password Fortress</h2>
+            </div>
+            <label>Test Password</label>
+            <input type="text" id="passInput" placeholder="Type to test strength..." oninput="checkStrength()">
+            <div class="strength-bar"><div id="strengthFill" class="strength-fill"></div></div>
+            <div id="strengthText" style="font-size:0.8rem; margin-bottom:15px; color:#94a3b8;">Strength: Too short</div>
+            
+            <button onclick="generateStrongPass()">Generate Secure Password</button>
+            <div id="genPassResult" class="result-box" style="text-align:center; font-size:1.1rem; color:var(--success);"></div>
         </div>
-    </div>
 
-    <div id="tab-cleaner" class="tool-content">
-        <h2>🧹 Link Cleaner</h2>
-        <input type="text" id="dirtyUrl" placeholder="Paste a messy link here...">
-        <button class="action-btn" onclick="cleanLink()">Clean Link</button>
-        <div id="cleanResultBox" class="clean-result">
-            <strong>Cleaned Link:</strong><br>
-            <a id="cleanLinkAnchor" href="#" target="_blank" style="color:#2e7d32; font-weight:bold;"></a>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">🕵️</div>
+                <h2>Link Inspector</h2>
+            </div>
+            <label>Suspicious Link</label>
+            <input type="text" id="urlInput" placeholder="https://example.com/file.exe">
+            <button onclick="analyzeLink()">Analyze URL</button>
+            <div id="linkResult" class="result-box"></div>
         </div>
+
     </div>
 
-    <div id="tab-converter" class="tool-content">
-        <h2>🖼️ Image Converter</h2>
-        <input type="file" id="fileInput" accept="image/*">
-        <select id="formatSelect" style="margin-top:10px;">
-            <option value="image/jpeg">JPG</option>
-            <option value="image/png">PNG</option>
-            <option value="image/webp">WebP</option>
-            <option value="image/x-icon">ICO</option>
-        </select>
-        <canvas id="canvas" style="display:none;"></canvas>
-        <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
-    </div>
-
-    <div id="tab-qr" class="tool-content">
-        <h2>🔗 Smart QR Code</h2>
-        <div class="mode-toggle">
-            <button class="mode-btn active-mode" onclick="setQRMode('link', this)">Link / Text</button>
-            <button class="mode-btn" onclick="setQRMode('wifi', this)">WiFi Login</button>
-        </div>
-        <div id="qr-input-link"><input type="text" id="linkInput" placeholder="Paste link here"></div>
-        <div id="qr-input-wifi" style="display:none;"><input type="text" id="wifiName" placeholder="WiFi SSID"><input type="text" id="wifiPass" placeholder="WiFi Password"></div>
-        <button class="action-btn" onclick="attemptQR()">Generate QR Code</button>
-        <div id="qrcode" style="margin-top:25px; display:flex; justify-content:center; padding: 20px; background:white; border-radius:10px; min-height:168px; align-items:center;"></div>
-    </div>
-
-    <div id="tab-password" class="tool-content">
-        <h2>🔐 Secure Password</h2>
-        <div class="mode-toggle">
-            <button class="mode-btn active-mode" onclick="setPassMode('random', this)">Random</button>
-            <button class="mode-btn" onclick="setPassMode('memorable', this)">Memorable</button>
-        </div>
-        <div id="pass-input-memorable" style="display:none;"><input type="text" id="baseWord" placeholder="Type a word"></div>
-        <div id="passwordResult" class="password-display">Click Generate</div>
-        <button class="action-btn" onclick="generatePassword()">Generate Password</button>
-    </div>
-
-    <div class="ad-grid">
-        <a href="https://gemini.google.com" target="_blank" class="ad-card">
-            <span class="ad-badge">Co-Pilot</span>
-            <span class="ad-title">Gemini AI ✨</span>
-            <span class="ad-desc">The AI that helped build this site.</span>
-        </a>
-        <a href="YOUR_CHANNEL_LINK_HERE" target="_blank" class="ad-card secondary">
-            <span class="ad-badge">Creator</span>
-            <span class="ad-title">Fhabian's Channel 📺</span>
-            <span class="ad-desc">Check out my videos & content!</span>
-        </a>
-    </div>
-
-    <div class="legal-footer">
-        <p>Built by <strong>Fhabian Feliciano</strong> • Co-piloted by Google Gemini</p>
+    <footer>
+        <p><strong>Privacy Notice:</strong> All operations are performed locally in your browser (Client-Side).<br>No files, passwords, or messages are ever uploaded to a server.</p>
         <p>&copy; 2024 SafeTools.</p>
-    </div>
-
-    <div id="safetyModal" class="modal" style="z-index:10001;">
-        <div class="modal-content">
-            <h3 style="margin:0 0 10px 0; color:#dc3545;">Safety Check</h3>
-            <p>Do not use this tool to facilitate malicious networks.</p>
-            <div class="modal-buttons">
-                <button style="background:#eee; flex:1; padding:10px; border:none; border-radius:5px; cursor:pointer;" onclick="cancelWifiGen()">Cancel</button>
-                <button style="background:#dc3545; color:white; flex:1; padding:10px; border:none; border-radius:5px; cursor:pointer;" onclick="confirmWifiGen()">Continue</button>
-            </div>
-        </div>
-    </div>
+    </footer>
 
     <script>
-        // GLOBALS
-        let currentQRMode = 'link';
-        let currentPassMode = 'random';
-        
-        // LOCK GLOBALS
-        let chosenLockType = 'pin';
-        let savedKey = "1234";
-        let tempPin = "";
-        let tempArrows = "";
-        let isLockedState = false;
-        
-        // AUDIO CONTEXT FOR SIREN
-        let audioCtx;
-        let oscillator;
-        let gainNode;
+        // --- 1. FILE HASH SCANNER (SHA-256) ---
+        document.getElementById('fileInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-        // --- COMPLIANCE & INIT ---
-        function checkCompliance() {
-            if (localStorage.getItem('isLocked') === 'true') {
-                chosenLockType = localStorage.getItem('lockType') || 'pin';
-                savedKey = localStorage.getItem('lockKey') || '1234';
-                showLockScreen();
-                return;
-            }
-            const accepted = localStorage.getItem('fhabian_terms_v2_accepted');
-            if (accepted === 'true') {
-                document.getElementById('complianceWall').style.display = 'none';
-            } else {
-                document.getElementById('complianceWall').style.display = 'flex';
-            }
-        }
-        function acceptTerms() {
-            if (!document.getElementById('termsCheck').checked) { alert("Please check the box."); return; }
-            localStorage.setItem('fhabian_terms_v2_accepted', 'true');
-            document.getElementById('complianceWall').style.display = 'none';
-        }
-        window.onload = function() { checkCompliance(); renderHistory(); };
-
-        // --- LOCK CONFIGURATION ---
-        function selectLockType(type) {
-            chosenLockType = type;
-            document.querySelectorAll('.lock-option').forEach(el => el.classList.remove('selected'));
-            document.getElementById('opt-'+type).classList.add('selected');
-        }
-
-        // Setting Arrows in Config
-        function addSetArrow(e, dir) {
-            e.stopPropagation();
-            const input = document.getElementById('setArrowInput');
-            if(input.value.length < 10) input.value += dir;
-        }
-        function clearSetArrows(e) {
-            e.stopPropagation();
-            document.getElementById('setArrowInput').value = "";
-        }
-
-        function activateShield() {
-            let keyToSave = "";
-            if(chosenLockType === 'pin') {
-                keyToSave = document.getElementById('setPinInput').value;
-                if(keyToSave.length !== 4 || isNaN(keyToSave)) { alert("Enter a 4-digit PIN."); return; }
-            } else if (chosenLockType === 'pass') {
-                keyToSave = document.getElementById('setPassInput').value.trim();
-                if(keyToSave.length < 1) { alert("Enter a password."); return; }
-            } else if (chosenLockType === 'arrows') {
-                keyToSave = document.getElementById('setArrowInput').value;
-                if(keyToSave.length < 2) { alert("Enter at least 2 directions."); return; }
-            }
-
-            // INIT AUDIO CONTEXT (Needs user gesture)
-            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-
-            savedKey = keyToSave;
-            localStorage.setItem('lockType', chosenLockType);
-            localStorage.setItem('lockKey', savedKey);
-            localStorage.setItem('isLocked', 'true');
-            isLockedState = true;
+            const output = document.getElementById('hashOutput');
+            const box = document.getElementById('hashResult');
+            const vtLink = document.getElementById('vtLink');
             
-            showLockScreen();
-            
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-        }
+            box.classList.add('visible');
+            output.innerHTML = '<span class="spinner"></span> Computing Hash...';
+            vtLink.style.display = 'none';
 
-        function showLockScreen() {
-            const curtain = document.getElementById('privacyCurtain');
-            curtain.style.display = 'flex';
-            curtain.style.top = '0';
-            
-            // RESET VISUALS
-            document.body.classList.remove('intruder-alert');
-            document.getElementById('intruderMessage').style.display = 'none';
-            document.getElementById('bouncingText').innerText = "Safe Tools";
-            document.getElementById('mainLockIcon').innerText = "🔒";
-            document.getElementById('mainLockIcon').classList.remove('unlocking');
-            
-            // Reset Inputs
-            tempPin = ""; updatePinDisplay();
-            tempArrows = ""; document.getElementById('arrowDisplay').innerText = "";
-            document.getElementById('lockPassInput').value = "";
-        }
-
-        // --- TRIPWIRE SYSTEM ---
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement && isLockedState) {
-                triggerAlarm();
-            }
-        });
-
-        window.addEventListener('blur', () => {
-            if (isLockedState) triggerAlarm();
-        });
-
-        function triggerAlarm() {
-            // Visuals
-            document.body.classList.add('intruder-alert');
-            document.getElementById('bouncingText').innerText = "";
-            document.getElementById('intruderMessage').style.display = 'block';
-            
-            // Audio Siren
-            if(audioCtx) {
-                oscillator = audioCtx.createOscillator();
-                gainNode = audioCtx.createGain();
-                
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-                oscillator.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.5);
-                
-                // Siren LFO logic requires more code, simpler oscillation here:
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                
-                // Create a rhythmic loop manually
-                let flag = true;
-                const sirenInterval = setInterval(() => {
-                    if(!isLockedState) { clearInterval(sirenInterval); oscillator.stop(); return; }
-                    oscillator.frequency.setValueAtTime(flag ? 880 : 440, audioCtx.currentTime);
-                    flag = !flag;
-                }, 300);
-            }
-        }
-
-        // --- LOCK INTERACTION ---
-        function enterLockInput(source, val) {
-            if (source === 'pin') {
-                if(tempPin.length < 4) { tempPin += val; updatePinDisplay(); }
-            } else if (source === 'arrow') {
-                if(tempArrows.length < 12) { 
-                    tempArrows += val; 
-                    const arrowSymbols = {'U':'▲', 'D':'▼', 'L':'◀', 'R':'▶'};
-                    document.getElementById('arrowDisplay').innerText += arrowSymbols[val];
-                }
-            }
-        }
-        
-        function clearPin() { tempPin = ""; updatePinDisplay(); }
-        
-        function updatePinDisplay() {
-            let str = "";
-            for(let i=0; i<4; i++) {
-                if(i < tempPin.length) str += "*";
-                else str += "_";
-            }
-            document.getElementById('pinDisplay').innerText = str;
-        }
-
-        function submitLock(methodUsed) {
-            let success = false;
-            if (methodUsed === chosenLockType) {
-                if (chosenLockType === 'pin' && tempPin === savedKey) success = true;
-                else if (chosenLockType === 'pass' && document.getElementById('lockPassInput').value === savedKey) success = true;
-                else if (chosenLockType === 'arrows' && tempArrows === savedKey) success = true;
-            }
-
-            if (success) {
-                performUnlock();
-            } else {
-                triggerFail();
-            }
-        }
-
-        function performUnlock() {
-            const icon = document.getElementById('mainLockIcon');
-            icon.innerText = "🔓";
-            icon.classList.add('unlocking');
-            
-            // Stop Alarm
-            if(oscillator) { try { oscillator.stop(); } catch(e){} }
-            document.body.classList.remove('intruder-alert');
-            
-            setTimeout(() => {
-                const curtain = document.getElementById('privacyCurtain');
-                curtain.style.top = '-100vh';
-                localStorage.setItem('isLocked', 'false');
-                isLockedState = false;
-                if (document.exitFullscreen) document.exitFullscreen();
-                setTimeout(() => { curtain.style.display = 'none'; }, 500);
-            }, 500);
-        }
-
-        function triggerFail() {
-            const icon = document.getElementById('mainLockIcon');
-            const msg = document.getElementById('lockMsg');
-            icon.classList.add('shaking');
-            msg.style.opacity = '1';
-            setTimeout(() => { icon.classList.remove('shaking'); }, 500);
-            setTimeout(() => { msg.style.opacity = '0'; }, 1000);
-            tempPin = ""; updatePinDisplay();
-            tempArrows = ""; document.getElementById('arrowDisplay').innerText = "";
-            document.getElementById('lockPassInput').value = "";
-        }
-
-        // --- SETTINGS / HISTORY ---
-        function toggleSettings() {
-            const modal = document.getElementById('settingsModal');
-            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-        }
-        function renderHistory() {
-            const list = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
-            list.innerHTML = "";
-            if (history.length === 0) { list.innerHTML = "<p style='color:#999; text-align:center;'>No recent activity</p>"; return; }
-            history.forEach(item => {
-                list.innerHTML += `<div class="history-item"><div><strong>${item.action}</strong> <span style="color:#666"> - ${item.detail}</span></div><div class="timestamp">${item.time}</div></div>`;
-            });
-        }
-        function addToHistory(action, detail) {
-            const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
-            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            history.unshift({ action, detail, time: timestamp });
-            if(history.length > 5) history.pop(); 
-            localStorage.setItem('safeToolsHistory', JSON.stringify(history));
-            renderHistory();
-        }
-        function clearHistory() { 
-            if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } 
-        }
-
-        // --- TABS & TOOLS ---
-        function openTab(tabId) {
-            const contents = document.getElementsByClassName('tool-content');
-            for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
-            const buttons = document.getElementsByClassName('tab-btn');
-            for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
-            document.getElementById(tabId).classList.add('active-tool');
-            event.currentTarget.classList.add('active');
-        }
-
-        function inspectLink() {
-            let url = document.getElementById('inspectUrl').value.trim();
-            if (!url) return;
-            if (!url.startsWith('http')) url = 'https://' + url;
-            const dangerousExtensions = ['.exe', '.zip', '.rar', '.7z', '.msi', '.bat', '.cmd', '.sh', '.apk', '.dmg', '.iso'];
-            let isDanger = false;
-            dangerousExtensions.forEach(ext => {
-                if (url.toLowerCase().endsWith(ext) || url.toLowerCase().includes(ext + "?")) isDanger = true;
-            });
-            document.getElementById('dangerAlert').style.display = isDanger ? 'block' : 'none';
-            document.getElementById('previewBox').style.display = 'block';
-            document.getElementById('siteScreenshot').src = "https://image.thum.io/get/width/400/crop/800/" + url;
-            document.getElementById('vtLink').href = "https://www.virustotal.com/gui/search/" + encodeURIComponent(url);
-            addToHistory("Inspected Link", isDanger ? "⚠️ DANGER DETECTED" : "Safe Preview");
-        }
-
-        function cleanLink() {
-            let input = document.getElementById('dirtyUrl').value.trim();
-            if (!input) return;
             try {
-                if (!input.startsWith('http')) input = 'https://' + input;
-                const urlObj = new URL(input);
-                const paramsToStrip = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', 'gclid', 'ref', 'source'];
-                paramsToStrip.forEach(param => urlObj.searchParams.delete(param));
-                document.getElementById('cleanResultBox').style.display = 'block';
-                const link = document.getElementById('cleanLinkAnchor');
-                link.href = urlObj.toString(); link.innerText = urlObj.toString();
-                addToHistory("Cleaned Link", "Removed trackers");
-            } catch (e) { alert("Invalid URL."); }
-        }
-        
-        // CONVERTER
-        const fileInput = document.getElementById('fileInput');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const convertBtn = document.getElementById('convertBtn');
-        const formatSelect = document.getElementById('formatSelect');
-        fileInput.addEventListener('change', function(e) {
-            if(e.target.files.length === 0) return;
-            convertBtn.style.display = 'block'; convertBtn.innerText = "Convert & Download";
-        });
-        convertBtn.addEventListener('click', function() {
-            const file = fileInput.files[0];
-            if(!file) return;
-            const img = new Image();
-            img.onload = function() {
-                canvas.width = img.width; canvas.height = img.height;
-                ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-                const newUrl = canvas.toDataURL(formatSelect.value, 0.9);
-                const link = document.createElement('a');
-                link.download = 'converted-image';
-                link.href = newUrl; link.click();
-                addToHistory("Converted Image", "Success");
+                const arrayBuffer = await file.arrayBuffer();
+                const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                output.innerText = hashHex;
+                vtLink.href = `https://www.virustotal.com/gui/file/${hashHex}`;
+                vtLink.style.display = 'inline-block';
+            } catch (err) {
+                output.innerText = "Error reading file.";
             }
-            img.src = URL.createObjectURL(file);
         });
 
-        // QR
-        function setQRMode(mode, btn) {
-            currentQRMode = mode;
-            const btns = btn.parentElement.getElementsByClassName('mode-btn');
-            for(let b of btns) b.classList.remove('active-mode');
-            btn.classList.add('active-mode');
-            document.getElementById('qr-input-link').style.display = (mode === 'link') ? 'block' : 'none';
-            document.getElementById('qr-input-wifi').style.display = (mode === 'wifi') ? 'block' : 'none';
-        }
-        function attemptQR() {
-            if (currentQRMode === 'wifi') {
-                if(!document.getElementById("wifiName").value) { alert("Enter Network Name"); return; }
-                document.getElementById('safetyModal').style.display = 'flex';
-            } else { generateQR(); }
-        }
-        function confirmWifiGen() { document.getElementById('safetyModal').style.display = 'none'; generateQR(); }
-        function cancelWifiGen() { document.getElementById('safetyModal').style.display = 'none'; }
-        function generateQR() {
-            const container = document.getElementById("qrcode");
-            let qrText = "";
-            if (currentQRMode === 'link') { qrText = document.getElementById("linkInput").value; } 
-            else { qrText = `WIFI:T:WPA;S:${document.getElementById("wifiName").value};P:${document.getElementById("wifiPass").value};;`; }
-            if(qrText === "") return;
-            container.innerHTML = ""; 
-            new QRCode(container, { text: qrText, width: 128, height: 128 });
-            addToHistory("QR Created", currentQRMode);
+        // --- 2. AES ENCRYPTION/DECRYPTION ---
+        async function getKey(password) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+            return crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt: enc.encode("SafeToolsSalt"), iterations: 100000, hash: "SHA-256" },
+                keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
+            );
         }
 
-        // PASSWORD
-        function setPassMode(mode, btn) {
-            currentPassMode = mode;
-            const btns = btn.parentElement.getElementsByClassName('mode-btn');
-            for(let b of btns) b.classList.remove('active-mode');
-            btn.classList.add('active-mode');
-            document.getElementById('pass-input-memorable').style.display = (mode === 'memorable') ? 'block' : 'none';
+        async function encryptMessage() {
+            const text = document.getElementById('msgInput').value;
+            const pass = document.getElementById('msgPass').value;
+            const resBox = document.getElementById('cryptoResult');
+
+            if(!text || !pass) { alert("Enter text and a password."); return; }
+
+            try {
+                const key = await getKey(pass);
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(text);
+                
+                const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
+                
+                // Combine IV and Encrypted Data for easy sharing
+                const ivArr = Array.from(iv);
+                const encArr = Array.from(new Uint8Array(encrypted));
+                const json = JSON.stringify({iv: ivArr, data: encArr});
+                
+                resBox.classList.add('visible');
+                resBox.innerHTML = `<strong>Encrypted (Copy this):</strong><br>${btoa(json)}`;
+            } catch(e) { console.error(e); alert("Encryption failed."); }
         }
-        function generatePassword() {
-            let password = "";
-            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*";
-            if (currentPassMode === 'memorable') {
-                const base = document.getElementById('baseWord').value.trim();
-                if (!base) { alert("Please type a word first!"); return; }
-                let cleanBase = base.charAt(0).toUpperCase() + base.slice(1).toLowerCase();
-                cleanBase = cleanBase.replace(/a/g, "4").replace(/e/g, "3").replace(/i/g, "1").replace(/o/g, "0").replace(/s/g, "$");
-                password = cleanBase + "#" + (Math.floor(Math.random() * 99) + 10);
-            } else {
-                for (let i = 0; i < 16; i++) {
-                    const randomValues = new Uint32Array(1);
-                    window.crypto.getRandomValues(randomValues);
-                    password += chars[randomValues[0] % chars.length];
+
+        async function decryptMessage() {
+            const text = document.getElementById('msgInput').value;
+            const pass = document.getElementById('msgPass').value;
+            const resBox = document.getElementById('cryptoResult');
+
+            if(!text || !pass) { alert("Paste encrypted code and password."); return; }
+
+            try {
+                const key = await getKey(pass);
+                const strData = atob(text);
+                const json = JSON.parse(strData);
+                
+                const iv = new Uint8Array(json.iv);
+                const data = new Uint8Array(json.data);
+                
+                const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
+                const decoded = new TextDecoder().decode(decrypted);
+                
+                resBox.classList.add('visible');
+                resBox.innerHTML = `<strong>Decrypted Message:</strong><br><span style="color:var(--success)">${decoded}</span>`;
+            } catch(e) { 
+                resBox.classList.add('visible');
+                resBox.innerHTML = `<span style="color:var(--danger)">Decryption Failed. Wrong password?</span>`;
+            }
+        }
+
+        // --- 3. PASSWORD STRENGTH ---
+        function checkStrength() {
+            const pass = document.getElementById('passInput').value;
+            const bar = document.getElementById('strengthFill');
+            const txt = document.getElementById('strengthText');
+            let strength = 0;
+
+            if (pass.length > 7) strength += 20;
+            if (pass.length > 12) strength += 20;
+            if (/[A-Z]/.test(pass)) strength += 20;
+            if (/[0-9]/.test(pass)) strength += 20;
+            if (/[^A-Za-z0-9]/.test(pass)) strength += 20;
+
+            bar.style.width = strength + "%";
+            
+            if(strength < 40) { bar.style.background = "#ef4444"; txt.innerText = "Weak"; }
+            else if(strength < 80) { bar.style.background = "#f59e0b"; txt.innerText = "Moderate"; }
+            else { bar.style.background = "#10b981"; txt.innerText = "Strong"; }
+        }
+
+        function generateStrongPass() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            let pass = "";
+            const array = new Uint32Array(20);
+            window.crypto.getRandomValues(array);
+            for(let i=0; i<20; i++) {
+                pass += chars[array[i] % chars.length];
+            }
+            const box = document.getElementById('genPassResult');
+            box.classList.add('visible');
+            box.innerText = pass;
+        }
+
+        // --- 4. LINK ANALYZER ---
+        function analyzeLink() {
+            let url = document.getElementById('urlInput').value.trim();
+            const resBox = document.getElementById('linkResult');
+            resBox.classList.add('visible');
+
+            if (!url) { resBox.innerHTML = "Please enter a URL."; return; }
+            if (!url.startsWith('http')) url = "http://" + url;
+
+            try {
+                const urlObj = new URL(url);
+                const suspiciousExts = ['.exe', '.zip', '.scr', '.bat', '.cmd', '.sh', '.msi', '.apk'];
+                let risk = false;
+
+                suspiciousExts.forEach(ext => {
+                    if(urlObj.pathname.toLowerCase().endsWith(ext)) risk = true;
+                });
+
+                if (risk) {
+                    resBox.innerHTML = `<strong style="color:var(--danger)">⚠️ High Risk Detected</strong><br>This link points directly to a downloadable file (${urlObj.pathname}). Do not click unless you trust the source.`;
+                } else if (urlObj.protocol === 'http:') {
+                    resBox.innerHTML = `<strong style="color:#f59e0b">⚠️ Unsecured Connection</strong><br>This site uses HTTP, not HTTPS. Your data is not encrypted.`;
+                } else {
+                    resBox.innerHTML = `<strong style="color:var(--success)">✅ Standard Link</strong><br>No obvious file extensions detected. <a href="https://www.virustotal.com/gui/home/url" target="_blank" style="color:var(--accent)">Check on VirusTotal to be sure.</a>`;
                 }
+            } catch (e) {
+                resBox.innerHTML = "Invalid URL format.";
             }
-            document.getElementById("passwordResult").innerText = password;
-            addToHistory("Password", currentPassMode);
         }
     </script>
 </body>
