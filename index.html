@@ -8,20 +8,18 @@
     
     <style>
         :root {
-            --primary: #2563eb; /* Trustworthy Blue */
+            --primary: #2563eb;
             --primary-dark: #1e40af;
-            --bg-body: #f8fafc;
+            --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --text-main: #334155;
             --text-light: #64748b;
             --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
             --radius: 12px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
@@ -31,224 +29,130 @@
             min-height: 100vh;
         }
 
-        /* HEADER */
+        /* --- HEADER --- */
         header {
-            background: white;
-            width: 100%;
-            padding: 20px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: white; width: 100%; padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center;
         }
-        .header-content {
-            max-width: 1000px;
-            width: 90%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .header-content { max-width: 1000px; width: 90%; display: flex; justify-content: space-between; align-items: center; }
         h1 { margin: 0; font-size: 1.5rem; color: #1e293b; display: flex; align-items: center; gap: 10px; }
-        .trust-badge {
-            background: #ecfdf5;
-            color: #047857;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border: 1px solid #d1fae5;
-        }
+        .trust-badge { background: #ecfdf5; color: #047857; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #d1fae5; }
 
-        /* HERO SECTION */
-        .hero {
-            text-align: center;
-            padding: 40px 20px;
-            max-width: 700px;
-        }
-        .hero h2 { font-size: 2rem; margin-bottom: 10px; color: #0f172a; }
-        .hero p { color: var(--text-light); line-height: 1.6; }
+        /* --- HERO --- */
+        .hero { text-align: center; padding: 30px 20px; max-width: 700px; }
+        .hero h2 { font-size: 1.8rem; margin-bottom: 10px; color: #0f172a; }
+        .hero p { color: var(--text-light); line-height: 1.6; font-size: 0.95rem; }
 
-        /* GRID */
+        /* --- GRID --- */
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-            max-width: 1100px;
-            width: 90%;
-            margin-bottom: 50px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px; max-width: 1100px; width: 90%; margin-bottom: 50px;
         }
 
-        /* CARDS */
+        /* --- CARDS --- */
         .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 30px;
-            transition: box-shadow 0.3s, transform 0.2s;
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 25px; transition: transform 0.2s, box-shadow 0.2s;
         }
-        .card:hover {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            transform: translateY(-3px);
-            border-color: var(--primary);
-        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--primary); }
         .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .icon-box {
-            width: 45px; height: 45px;
-            background: #eff6ff;
-            color: var(--primary);
+            width: 40px; height: 40px; background: #eff6ff; color: var(--primary);
             display: flex; align-items: center; justify-content: center;
-            border-radius: 10px;
-            font-size: 1.4rem;
+            border-radius: 8px; font-size: 1.2rem;
         }
         .card h3 { margin: 0; font-size: 1.1rem; color: #1e293b; }
         .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px; line-height: 1.5; }
 
-        /* INPUTS & CONTROLS */
-        .control-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; }
-        input[type="text"], input[type="password"], textarea, input[type="file"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-            background: #f8fafc;
-            transition: border 0.2s;
+        /* --- CONTROLS --- */
+        input, textarea, button {
+            width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px;
+            border: 1px solid var(--border); font-size: 0.9rem; margin-bottom: 10px;
+            font-family: inherit;
         }
-        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: white; }
-
-        button {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); background: #fff; }
+        
+        button { background: var(--primary); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         button:hover { background: var(--primary-dark); }
-        button.secondary { background: white; border: 1px solid var(--border); color: var(--text-main); margin-top: 10px; }
-        button.secondary:hover { background: #f1f5f9; }
+        button.secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        button.secondary:hover { background: #f8fafc; }
 
-        /* RESULTS */
         .result-area {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            color: #334155;
-            word-break: break-all;
-            display: none;
-            border: 1px solid var(--border);
+            background: #f8fafc; padding: 10px; border-radius: 6px; font-family: monospace;
+            font-size: 0.85rem; color: #334155; display: none; border: 1px solid var(--border); word-break: break-all;
         }
-        .result-area.active { display: block; animation: fadeIn 0.3s ease; }
+        .result-area.active { display: block; animation: fadeIn 0.3s; }
+
+        /* --- PRIVACY CURTAIN (LOCK SCREEN) --- */
+        #privacyCurtain {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a; z-index: 10000; flex-direction: column;
+            align-items: center; justify-content: center; color: white;
+        }
+        #lockInput { width: 200px; text-align: center; letter-spacing: 5px; font-size: 1.5rem; margin-bottom: 20px; border: none; }
+        .lock-note { color: #64748b; font-size: 0.8rem; margin-top: 20px; max-width: 300px; text-align: center; }
+
+        /* --- FOOTER --- */
+        footer { margin-top: auto; padding: 40px 0; color: var(--text-light); font-size: 0.8rem; text-align: center; border-top: 1px solid var(--border); width: 100%; background: white;}
+        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* PRIVACY AUDIT TABLE */
-        .audit-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
-        .audit-row:last-child { border-bottom: none; }
-        .audit-label { color: var(--text-light); }
-        .audit-val { font-weight: 600; color: #1e293b; }
-
-        /* FOOTER */
-        footer {
-            margin-top: auto;
-            border-top: 1px solid var(--border);
-            width: 100%;
-            background: white;
-            padding: 40px 0;
-            text-align: center;
-        }
-        .footer-content { max-width: 600px; margin: 0 auto; padding: 0 20px; }
-        .footer-note { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
-        .disclaimer { margin-top: 20px; font-size: 0.75rem; color: #94a3b8; }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+        .shake { animation: shake 0.3s ease-in-out; border-color: #ef4444 !important; color: #ef4444 !important; }
 
     </style>
 </head>
 <body>
 
+    <div id="privacyCurtain">
+        <div style="font-size: 3rem; margin-bottom: 20px;">🔒</div>
+        <h2 style="margin-top:0; font-weight: 300;">Screen Locked</h2>
+        <input type="password" id="unlockPin" placeholder="PIN" maxlength="4" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+        <button onclick="attemptUnlock()" style="width: 200px; background: white; color: #0f172a;">Unlock</button>
+        <div class="lock-note">Your computer is still running. This prevents casual viewing while you step away.</div>
+    </div>
+
     <header>
         <div class="header-content">
             <h1>🛡️ SafeTools</h1>
-            <div class="trust-badge">🔒 Client-Side Secure</div>
+            <div class="trust-badge">v3.0 • Offline Secure</div>
         </div>
     </header>
 
     <div class="hero">
-        <h2>Your Data Stays With You.</h2>
-        <p>A suite of open-source privacy utilities that run entirely in your web browser. 
-        No servers, no databases, and no tracking. Everything happens on your device.</p>
+        <h2>Professional Privacy Suite</h2>
+        <p>A collection of client-side utilities to secure your data, scrub metadata, and protect your screen.</p>
     </div>
 
     <div class="grid">
 
-        <div class="card">
+        <div class="card" style="border-color: var(--primary);">
             <div class="card-top">
-                <div class="icon-box">👁️</div>
-                <h3>Browser Privacy Audit</h3>
+                <div class="icon-box">🔒</div>
+                <h3>Privacy Curtain</h3>
             </div>
-            <div class="card-desc">See what information your browser reveals to websites you visit automatically.</div>
-            
-            <button onclick="runAudit()">Run Privacy Audit</button>
-            <div id="auditResult" class="result-area">
-                </div>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <div class="icon-box">📁</div>
-                <h3>Malware Hash Scanner</h3>
+            <div class="card-desc">
+                Locks the browser window with a PIN. Useful if you are downloading files and need to step away without sleeping the PC.
             </div>
-            <div class="card-desc">Generates a unique digital fingerprint (SHA-256) of your file to check against virus databases. The file is <strong>never uploaded</strong>.</div>
-            
-            <input type="file" id="fileInput">
-            <div id="hashResult" class="result-area">
-                <div style="margin-bottom:5px; font-weight:bold;">File Fingerprint:</div>
-                <span id="hashOutput">...</span>
-                <a id="vtLink" href="#" target="_blank" style="display:block; margin-top:10px; color:var(--primary); text-decoration:none; font-weight:bold;">🔎 Search VirusTotal Database</a>
+            <input type="number" id="setPin" placeholder="Set 4-digit PIN (e.g. 1234)" maxlength="4">
+            <button onclick="engageLock()">Engage Lock</button>
+            <div style="font-size:0.75rem; color:#64748b; margin-top:10px;">
+                * Press F11 for full security effect.
             </div>
         </div>
 
         <div class="card">
             <div class="card-top">
-                <div class="icon-box">🔐</div>
-                <h3>Private Message Vault</h3>
+                <div class="icon-box">📷</div>
+                <h3>Image Anonymizer</h3>
             </div>
-            <div class="card-desc">Encrypt sensitive text with a password using military-grade AES-GCM encryption.</div>
-            
-            <div class="control-group">
-                <label>Message</label>
-                <textarea id="msgInput" rows="2" placeholder="Secret text..."></textarea>
+            <div class="card-desc">
+                Removes hidden metadata (GPS location, Camera model, Date) by re-processing the image pixels locally.
             </div>
-            <div class="control-group">
-                <label>Encryption Password</label>
-                <input type="password" id="msgPass" placeholder="Shared key">
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button onclick="encryptMessage()">Encrypt</button>
-                <button class="secondary" onclick="decryptMessage()">Decrypt</button>
-            </div>
-            <div id="cryptoResult" class="result-area"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <div class="icon-box">🔗</div>
-                <h3>Link Inspector</h3>
-            </div>
-            <div class="card-desc">Analyze URLs for dangerous file extensions or unencrypted connections before you click.</div>
-            
-            <input type="text" id="urlInput" placeholder="https://example.com/invoice.exe">
-            <button onclick="analyzeLink()" style="margin-top:10px;">Inspect URL</button>
-            <div id="linkResult" class="result-area"></div>
+            <input type="file" id="imgInput" accept="image/*">
+            <button onclick="scrubImage()" class="secondary">Scrub & Download</button>
+            <div id="scrubResult" class="result-area"></div>
+            <canvas id="scrubCanvas" style="display:none;"></canvas>
         </div>
 
         <div class="card">
@@ -257,186 +161,243 @@
                 <h3>Secure Password Gen</h3>
             </div>
             <div class="card-desc">Create strong, un-guessable passwords locally.</div>
-            
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <label>Length: <span id="lenDisplay">16</span></label>
-                <input type="range" id="lenRange" min="8" max="64" value="16" oninput="document.getElementById('lenDisplay').innerText = this.value">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                <label>Length</label> <span id="lenVal">16</span>
             </div>
-            <button onclick="generatePass()">Generate Password</button>
-            <div id="passResult" class="result-area" style="text-align:center; font-size:1.1rem; color:var(--primary); font-weight:bold; cursor:pointer;" onclick="copyPass()">
-                Click Generate
+            <input type="range" id="lenRange" min="8" max="32" value="16" oninput="document.getElementById('lenVal').innerText = this.value">
+            <button onclick="generatePass()">Generate</button>
+            <div id="passResult" class="result-area" style="cursor:pointer; font-weight:bold; color:var(--primary); text-align:center;" onclick="copyPass()"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="icon-box">📁</div>
+                <h3>Malware Hash Scan</h3>
             </div>
+            <div class="card-desc">Generates a SHA-256 fingerprint of files to check against virus databases without uploading the file.</div>
+            <input type="file" id="fileHashInput">
+            <div id="hashResult" class="result-area">
+                <span id="hashOutput"></span>
+                <a id="vtLink" href="#" target="_blank" style="display:block; margin-top:10px; color:var(--primary); text-decoration:none; font-weight:bold;">🔎 Check VirusTotal</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="icon-box">🔗</div>
+                <h3>Link Inspector</h3>
+            </div>
+            <div class="card-desc">Detect dangerous file extensions in URLs.</div>
+            <input type="text" id="urlInput" placeholder="https://example.com/file.exe">
+            <button onclick="inspectLink()" class="secondary">Inspect</button>
+            <div id="linkResult" class="result-area"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-top">
+                <div class="icon-box">🔐</div>
+                <h3>Message Vault</h3>
+            </div>
+            <div class="card-desc">Encrypt text with AES-GCM.</div>
+            <input type="password" id="msgPass" placeholder="Shared Password">
+            <textarea id="msgText" rows="2" placeholder="Message or Encrypted Code"></textarea>
+            <div style="display:flex; gap:10px;">
+                <button onclick="encryptMsg()">Encrypt</button>
+                <button class="secondary" onclick="decryptMsg()">Decrypt</button>
+            </div>
+            <div id="msgResult" class="result-area"></div>
         </div>
 
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-note">
-                <strong>Transparent Security:</strong> This site functions entirely offline. You can disconnect your internet and these tools will still work. Right-click and select "View Page Source" to verify the code.
-            </div>
-            <div class="disclaimer">
-                &copy; 2024 SafeTools. Use responsibly. Not a substitute for antivirus software.
-            </div>
-        </div>
+        <p>&copy; 2024 SafeTools. All operations run locally in your browser.</p>
+        <p style="font-size:0.75rem; color:#94a3b8;">Not a substitute for system-level security or antivirus software.</p>
     </footer>
 
     <script>
-        // --- 1. PRIVACY AUDIT ---
-        function runAudit() {
-            const res = document.getElementById('auditResult');
-            res.classList.add('active');
+        /* --- 1. PRIVACY CURTAIN LOGIC --- */
+        let activePin = "0000";
+        
+        function engageLock() {
+            const input = document.getElementById('setPin').value;
+            if (input.length !== 4) { alert("Please set a 4-digit PIN first."); return; }
             
-            // Gather data
-            const ua = navigator.userAgent;
-            const screenRes = `${window.screen.width} x ${window.screen.height}`;
-            const lang = navigator.language;
-            const cores = navigator.hardwareConcurrency || 'Unknown';
-            const platform = navigator.platform;
-            const cookies = navigator.cookieEnabled ? "Enabled (Tracking Possible)" : "Disabled";
-
-            res.innerHTML = `
-                <div class="audit-row"><span class="audit-label">OS/Platform</span><span class="audit-val">${platform}</span></div>
-                <div class="audit-row"><span class="audit-label">Screen Res</span><span class="audit-val">${screenRes}</span></div>
-                <div class="audit-row"><span class="audit-label">Language</span><span class="audit-val">${lang}</span></div>
-                <div class="audit-row"><span class="audit-label">CPU Cores</span><span class="audit-val">${cores}</span></div>
-                <div class="audit-row"><span class="audit-label">Cookies</span><span class="audit-val">${cookies}</span></div>
-                <div style="margin-top:10px; font-size:0.8rem; color:#64748b;">
-                    <strong>User Agent:</strong><br>${ua}
-                </div>
-            `;
+            activePin = input;
+            const curtain = document.getElementById('privacyCurtain');
+            curtain.style.display = 'flex';
+            
+            // Try to go fullscreen for better effect
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(e => console.log(e));
+            }
+            
+            document.getElementById('unlockPin').value = "";
+            document.getElementById('unlockPin').focus();
         }
 
-        // --- 2. FILE HASH ---
-        document.getElementById('fileInput').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const box = document.getElementById('hashResult');
-            const output = document.getElementById('hashOutput');
-            const vtLink = document.getElementById('vtLink');
-            
-            box.classList.add('active');
-            output.innerText = "Calculating...";
-            
-            try {
-                const buffer = await file.arrayBuffer();
-                const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                
-                output.innerText = hashHex;
-                vtLink.href = `https://www.virustotal.com/gui/file/${hashHex}`;
-                vtLink.style.display = 'block';
-            } catch(e) { output.innerText = "Error reading file."; }
+        function attemptUnlock() {
+            const input = document.getElementById('unlockPin');
+            if (input.value === activePin) {
+                // Unlock Success
+                document.getElementById('privacyCurtain').style.display = 'none';
+                if (document.exitFullscreen) document.exitFullscreen().catch(e => console.log(e));
+            } else {
+                // Unlock Fail
+                input.classList.add('shake');
+                input.value = "";
+                setTimeout(() => input.classList.remove('shake'), 300);
+            }
+        }
+        
+        // Allow "Enter" key to unlock
+        document.getElementById('unlockPin').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") attemptUnlock();
         });
 
-        // --- 3. ENCRYPTION ---
+
+        /* --- 2. IMAGE SCRUBBER LOGIC --- */
+        function scrubImage() {
+            const input = document.getElementById('imgInput');
+            const res = document.getElementById('scrubResult');
+            const canvas = document.getElementById('scrubCanvas');
+            const ctx = canvas.getContext('2d');
+
+            if (input.files.length === 0) { alert("Select an image first."); return; }
+            
+            res.classList.add('active');
+            res.innerText = "Processing...";
+
+            const img = new Image();
+            img.src = URL.createObjectURL(input.files[0]);
+            
+            img.onload = function() {
+                // Set canvas to image size
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw image to canvas (This strips metadata automatically!)
+                ctx.drawImage(img, 0, 0);
+                
+                // Export as new clean file
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    res.innerHTML = `
+                        <span style="color:var(--primary)">✅ Metadata Scrubbed!</span><br>
+                        <a href="${url}" download="safe_image.png" style="font-weight:bold; color:#0f172a;">Download Safe Copy</a>
+                    `;
+                }, 'image/png');
+            }
+        }
+
+
+        /* --- 3. PASSWORD GEN --- */
+        function generatePass() {
+            const len = document.getElementById('lenRange').value;
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            let pass = "";
+            const array = new Uint32Array(len);
+            crypto.getRandomValues(array);
+            for(let i=0; i<len; i++) pass += chars[array[i] % chars.length];
+            
+            const res = document.getElementById('passResult');
+            res.classList.add('active');
+            res.innerText = pass;
+        }
+        function copyPass() {
+            const txt = document.getElementById('passResult').innerText;
+            if(txt) { navigator.clipboard.writeText(txt); alert("Copied!"); }
+        }
+
+
+        /* --- 4. HASH SCANNER --- */
+        document.getElementById('fileHashInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const box = document.getElementById('hashResult');
+            const out = document.getElementById('hashOutput');
+            const link = document.getElementById('vtLink');
+            
+            box.classList.add('active');
+            out.innerText = "Calculating...";
+            
+            try {
+                const buf = await file.arrayBuffer();
+                const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+                const hashArr = Array.from(new Uint8Array(hashBuf));
+                const hashHex = hashArr.map(b => b.toString(16).padStart(2, '0')).join('');
+                
+                out.innerText = hashHex;
+                link.href = `https://www.virustotal.com/gui/file/${hashHex}`;
+            } catch(e) { out.innerText = "Error."; }
+        });
+
+
+        /* --- 5. LINK INSPECTOR --- */
+        function inspectLink() {
+            let url = document.getElementById('urlInput').value.trim();
+            const res = document.getElementById('linkResult');
+            res.classList.add('active');
+            
+            if(!url) { res.innerText = "Enter URL"; return; }
+            if(!url.startsWith('http')) url = "http://" + url;
+            
+            try {
+                const u = new URL(url);
+                const exts = ['.exe','.zip','.msi','.bat','.sh','.apk'];
+                let risk = exts.some(x => u.pathname.toLowerCase().endsWith(x));
+                
+                if(risk) res.innerHTML = `<span style="color:#ef4444">⚠️ <strong>Risk:</strong> Direct file download detected.</span>`;
+                else if(u.protocol === 'http:') res.innerHTML = `<span style="color:#f59e0b">⚠️ <strong>Unsecured:</strong> Uses HTTP (No encryption).</span>`;
+                else res.innerHTML = `<span style="color:#10b981">✅ <strong>Standard:</strong> HTTPS Secured.</span>`;
+            } catch(e) { res.innerText = "Invalid URL"; }
+        }
+
+
+        /* --- 6. CRYPTO VAULT --- */
         async function getKey(password) {
             const enc = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+            const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), {name:"PBKDF2"}, false, ["deriveKey"]);
             return crypto.subtle.deriveKey(
-                { name: "PBKDF2", salt: enc.encode("SafeToolsSalt"), iterations: 100000, hash: "SHA-256" },
-                keyMaterial, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]
+                {name:"PBKDF2", salt:enc.encode("SafeToolsSalt"), iterations:100000, hash:"SHA-256"},
+                keyMaterial, {name:"AES-GCM", length:256}, true, ["encrypt", "decrypt"]
             );
         }
 
-        async function encryptMessage() {
-            const text = document.getElementById('msgInput').value;
+        async function encryptMsg() {
+            const txt = document.getElementById('msgText').value;
             const pass = document.getElementById('msgPass').value;
-            const resBox = document.getElementById('cryptoResult');
-
-            if(!text || !pass) { alert("Please enter text and a password."); return; }
-
+            const res = document.getElementById('msgResult');
+            if(!txt || !pass) { alert("Need text & password"); return; }
+            
             try {
                 const key = await getKey(pass);
                 const iv = crypto.getRandomValues(new Uint8Array(12));
-                const encoded = new TextEncoder().encode(text);
-                const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
-                
-                const combinedData = JSON.stringify({
-                    iv: Array.from(iv),
-                    data: Array.from(new Uint8Array(encrypted))
-                });
-                
-                resBox.classList.add('active');
-                resBox.innerHTML = `<strong>Encrypted Block (Copy this):</strong><br>${btoa(combinedData)}`;
-            } catch(e) { alert("Encryption Error"); }
+                const enc = await crypto.subtle.encrypt({name:"AES-GCM", iv:iv}, key, new TextEncoder().encode(txt));
+                const data = JSON.stringify({ iv: Array.from(iv), data: Array.from(new Uint8Array(enc)) });
+                res.classList.add('active');
+                res.innerHTML = `<strong>Encrypted:</strong><br>${btoa(data)}`;
+            } catch(e) { alert("Error"); }
         }
 
-        async function decryptMessage() {
-            const text = document.getElementById('msgInput').value;
+        async function decryptMsg() {
+            const txt = document.getElementById('msgText').value;
             const pass = document.getElementById('msgPass').value;
-            const resBox = document.getElementById('cryptoResult');
+            const res = document.getElementById('msgResult');
+            if(!txt || !pass) { alert("Need code & password"); return; }
             
-            if(!text || !pass) { alert("Paste encrypted block and enter password."); return; }
-
             try {
                 const key = await getKey(pass);
-                const json = JSON.parse(atob(text));
+                const json = JSON.parse(atob(txt));
                 const iv = new Uint8Array(json.iv);
                 const data = new Uint8Array(json.data);
-                
-                const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
-                const decoded = new TextDecoder().decode(decrypted);
-                
-                resBox.classList.add('active');
-                resBox.innerHTML = `<strong>Decrypted:</strong><br><span style="color:var(--success)">${decoded}</span>`;
+                const dec = await crypto.subtle.decrypt({name:"AES-GCM", iv:iv}, key, data);
+                res.classList.add('active');
+                res.innerHTML = `<strong>Decrypted:</strong><br><span style="color:#10b981">${new TextDecoder().decode(dec)}</span>`;
             } catch(e) { 
-                resBox.classList.add('active');
-                resBox.innerHTML = `<span style="color:var(--danger)">Decryption Failed. Incorrect password or data.</span>`;
-            }
-        }
-
-        // --- 4. LINK INSPECTOR ---
-        function analyzeLink() {
-            let url = document.getElementById('urlInput').value.trim();
-            const resBox = document.getElementById('linkResult');
-            resBox.classList.add('active');
-
-            if (!url) { resBox.innerText = "Please enter a URL."; return; }
-            if (!url.startsWith('http')) url = "http://" + url;
-
-            try {
-                const urlObj = new URL(url);
-                const suspicious = ['.exe', '.zip', '.scr', '.bat', '.sh', '.apk', '.msi'];
-                let isRisk = false;
-                
-                suspicious.forEach(ext => {
-                    if(urlObj.pathname.toLowerCase().endsWith(ext)) isRisk = true;
-                });
-
-                if (isRisk) {
-                    resBox.innerHTML = `<span style="color:var(--danger)">⚠️ <strong>High Risk:</strong> Executable file detected.</span><br>File: ${urlObj.pathname}`;
-                } else if (urlObj.protocol === 'http:') {
-                    resBox.innerHTML = `<span style="color:#f59e0b">⚠️ <strong>Unsecured:</strong> Site uses HTTP.</span>`;
-                } else {
-                    resBox.innerHTML = `<span style="color:var(--success)">✅ <strong>Standard Link:</strong> HTTPS Secured.</span>`;
-                }
-            } catch (e) { resBox.innerText = "Invalid URL."; }
-        }
-
-        // --- 5. PASSWORD GEN ---
-        function generatePass() {
-            const len = document.getElementById('lenRange').value;
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~|}{[]:;?><";
-            let pass = "";
-            const array = new Uint32Array(len);
-            window.crypto.getRandomValues(array);
-            
-            for(let i=0; i<len; i++) {
-                pass += chars[array[i] % chars.length];
-            }
-            const box = document.getElementById('passResult');
-            box.classList.add('active');
-            box.innerText = pass;
-        }
-        
-        function copyPass() {
-            const text = document.getElementById('passResult').innerText;
-            if(text && text !== "Click Generate") {
-                navigator.clipboard.writeText(text);
-                alert("Password Copied!");
+                res.classList.add('active');
+                res.innerHTML = `<span style="color:#ef4444">Failed. Wrong password?</span>`; 
             }
         }
     </script>
