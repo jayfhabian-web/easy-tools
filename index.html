@@ -20,11 +20,28 @@
         }
 
         /* HEADER */
-        header { text-align: center; margin-bottom: 20px; }
+        header { text-align: center; margin-bottom: 10px; }
         h1 { color: #2c3e50; margin: 0; }
         .subtitle { color: #7f8c8d; font-size: 0.9rem; margin-top: 5px; }
 
-        /* TAB NAVIGATION BAR */
+        /* PRIVACY BANNER */
+        .privacy-banner {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            border: 1px solid #c3e6cb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* TABS */
         .tab-bar {
             display: flex;
             background: white;
@@ -33,7 +50,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             margin-bottom: 25px;
         }
-
         .tab-btn {
             background: transparent;
             border: none;
@@ -44,19 +60,16 @@
             color: #666;
             transition: all 0.2s;
         }
-
         .tab-btn:hover { color: #007bff; }
-
-        /* The active tab looks blue */
         .tab-btn.active {
             background-color: #007bff;
             color: white;
             box-shadow: 0 2px 5px rgba(0,123,255,0.3);
         }
 
-        /* CARD STYLES */
+        /* TOOL CARDS */
         .tool-content {
-            display: none; /* Hide all tools by default */
+            display: none;
             background: white;
             padding: 2rem;
             border-radius: 15px;
@@ -64,83 +77,62 @@
             max-width: 500px;
             width: 100%;
             animation: fadeIn 0.3s ease-in-out;
+            box-sizing: border-box;
         }
-
-        /* Show the active tool */
         .tool-content.active-tool { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { color: #007bff; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-top: 0; }
         
-        /* INPUTS & BUTTONS */
         input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
+            width: 100%; padding: 12px; margin: 10px 0;
+            border: 2px solid #e0e0e0; border-radius: 8px;
+            box-sizing: border-box; font-size: 1rem;
         }
         
         button.action-btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            font-weight: 600;
-            transition: background 0.2s;
-            margin-top: 10px;
+            background-color: #007bff; color: white; border: none;
+            padding: 12px; border-radius: 8px; cursor: pointer;
+            font-size: 1rem; width: 100%; font-weight: 600;
+            transition: background 0.2s; margin-top: 10px;
         }
         button.action-btn:hover { background-color: #0056b3; }
         
-        /* PASSWORD TOOL */
-        .password-display {
-            background: #2d3436;
-            color: #00ff9d;
-            font-family: monospace;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 1.2rem;
-            margin: 15px 0;
-            word-break: break-all;
+        /* WARNING BOX */
+        .warning-box {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-top: 15px;
+            border: 1px solid #ffeeba;
         }
 
-        /* HISTORY SECTION */
-        .history-container {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 500px;
+        /* PASSWORD & HISTORY STYLES */
+        .password-display {
+            background: #2d3436; color: #00ff9d; font-family: monospace;
+            padding: 15px; border-radius: 8px; text-align: center;
+            font-size: 1.2rem; margin: 15px 0; word-break: break-all;
         }
+        .history-container { margin-top: 30px; width: 100%; max-width: 500px; }
         .history-item {
-            background: #fff;
-            border-left: 4px solid #007bff;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
+            background: #fff; border-left: 4px solid #007bff;
+            padding: 10px; margin-bottom: 8px; border-radius: 4px;
+            font-size: 0.9rem; display: flex; justify-content: space-between;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         .timestamp { color: #999; font-size: 0.75rem; }
 
-        /* FOOTER */
-        .footer {
-            margin-top: auto; /* Pushes footer to bottom of screen */
+        /* LEGAL FOOTER */
+        .legal-footer {
+            margin-top: auto;
             padding-top: 40px;
             text-align: center;
-            font-size: 0.85rem;
-            color: #bdc3c7;
+            font-size: 0.75rem;
+            color: #95a5a6;
+            max-width: 500px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -151,6 +143,12 @@
         <div class="subtitle">Private • Secure • Free</div>
     </header>
 
+    <div class="privacy-banner">
+        <span>🔒</span>
+        <strong>Your Privacy:</strong> 
+        Files are processed 100% locally in your browser. We never see, store, or upload your data.
+    </div>
+
     <div class="tab-bar">
         <button class="tab-btn active" onclick="openTab('tab-converter')">Converter</button>
         <button class="tab-btn" onclick="openTab('tab-qr')">QR Code</button>
@@ -159,25 +157,28 @@
 
     <div id="tab-converter" class="tool-content active-tool">
         <h2>🖼️ Image Converter</h2>
-        <p>Convert any image format to JPG, PNG, or WebP.</p>
+        <p>Convert images locally.</p>
         
         <label>1. Upload Image</label>
         <input type="file" id="fileInput" accept="image/*">
         
-        <label>2. Choose Output Format</label>
+        <label>2. Choose Format</label>
         <select id="formatSelect">
-            <option value="image/jpeg">JPG (Good for photos)</option>
-            <option value="image/png">PNG (Good for drawings)</option>
-            <option value="image/webp">WebP (Modern & Small)</option>
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
         </select>
 
         <canvas id="canvas" style="display:none;"></canvas>
         <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
+
+        <div class="warning-box">
+            <strong>⚠️ Legal Disclaimer:</strong> Please only convert files you own or have permission to use. Do not use this tool for copyrighted material.
+        </div>
     </div>
 
     <div id="tab-qr" class="tool-content">
         <h2>🔗 Link to QR Code</h2>
-        <p>Paste any link to generate a QR code instantly.</p>
         <input type="text" id="linkInput" placeholder="https://example.com">
         <button class="action-btn" onclick="makeQR()">Generate QR Code</button>
         <div id="qrcode" style="margin-top:20px; display:flex; justify-content:center;"></div>
@@ -185,7 +186,6 @@
 
     <div id="tab-password" class="tool-content">
         <h2>🔐 Secure Password</h2>
-        <p>Create a strong, unhackable password.</p>
         <div id="passwordResult" class="password-display">Click Generate</div>
         <button class="action-btn" onclick="generatePassword()">Generate New</button>
         <button class="action-btn" onclick="copyPassword()" style="background-color:#6c757d;">Copy to Clipboard</button>
@@ -197,66 +197,48 @@
         <button onclick="clearHistory()" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:0.8rem; margin-top:5px;">Clear History</button>
     </div>
 
-    <div class="footer">
-        <p>Built by <strong>Fhabian Feliciano</strong></p>
-        <p>Co-piloted by Google Gemini</p>
+    <div class="legal-footer">
+        <p>Built by <strong>[YOUR NAME HERE]</strong> • Co-piloted by Google Gemini</p>
+        <p>
+            <strong>Disclaimer:</strong> SafeTools is a client-side utility. No data is transmitted to servers. 
+            Users are solely responsible for the content they process. 
+            The creator assumes no liability for misuse of these tools.
+        </p>
         <p>&copy; 2024 SafeTools. All rights reserved.</p>
     </div>
 
     <script>
-        // --- 0. TAB SYSTEM LOGIC ---
         function openTab(tabId) {
-            // 1. Hide all tool contents
             const contents = document.getElementsByClassName('tool-content');
-            for (let i = 0; i < contents.length; i++) {
-                contents[i].classList.remove('active-tool');
-            }
-
-            // 2. Remove "active" color from all buttons
+            for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
             const buttons = document.getElementsByClassName('tab-btn');
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-
-            // 3. Show the specific tab clicked
+            for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
             document.getElementById(tabId).classList.add('active-tool');
-            
-            // 4. Highlight the button clicked (using event.currentTarget)
             event.currentTarget.classList.add('active');
         }
 
-        // --- 1. HISTORY SYSTEM ---
+        // HISTORY LOGIC
         function addToHistory(action, detail) {
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
             const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             history.unshift({ action, detail, time: timestamp });
-            if(history.length > 5) history.pop(); // Keep last 5
+            if(history.length > 5) history.pop(); 
             localStorage.setItem('safeToolsHistory', JSON.stringify(history));
             renderHistory();
         }
-
         function renderHistory() {
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
             const list = document.getElementById('historyList');
             list.innerHTML = "";
-            if (history.length === 0) {
-                list.innerHTML = "<p style='color:#ccc; font-style:italic;'>No history yet</p>";
-                return;
-            }
+            if (history.length === 0) { list.innerHTML = "<p style='color:#ccc;'>No history yet</p>"; return; }
             history.forEach(item => {
-                list.innerHTML += `
-                    <div class="history-item">
-                        <div><strong>${item.action}</strong> - ${item.detail}</div>
-                        <div class="timestamp">${item.time}</div>
-                    </div>`;
+                list.innerHTML += `<div class="history-item"><div><strong>${item.action}</strong> - ${item.detail}</div><div class="timestamp">${item.time}</div></div>`;
             });
         }
-        function clearHistory() {
-            if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); }
-        }
+        function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
         window.onload = renderHistory;
 
-        // --- 2. UNIVERSAL IMAGE CONVERTER LOGIC ---
+        // CONVERTER LOGIC
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -265,8 +247,6 @@
 
         fileInput.addEventListener('change', function(e) {
             if(e.target.files.length === 0) return;
-            
-            // Show button once file is selected
             convertBtn.style.display = 'block';
             convertBtn.innerText = "Convert & Download";
         });
@@ -274,41 +254,26 @@
         convertBtn.addEventListener('click', function() {
             const file = fileInput.files[0];
             if(!file) return;
-
             const img = new Image();
             img.onload = function() {
                 canvas.width = img.width;
                 canvas.height = img.height;
-                
-                // Draw white background (prevents black background on transparent PNGs)
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Draw image
                 ctx.drawImage(img, 0, 0);
-
-                // Get format from dropdown
-                const selectedFormat = formatSelect.value; // e.g., image/jpeg
-                
-                // Create download link
+                const selectedFormat = formatSelect.value;
                 const newUrl = canvas.toDataURL(selectedFormat, 0.9);
                 const link = document.createElement('a');
-                
-                // Determine file extension
-                let ext = ".jpg";
-                if(selectedFormat === "image/png") ext = ".png";
-                if(selectedFormat === "image/webp") ext = ".webp";
-
+                let ext = selectedFormat === "image/png" ? ".png" : selectedFormat === "image/webp" ? ".webp" : ".jpg";
                 link.download = 'converted-image' + ext;
                 link.href = newUrl;
                 link.click();
-
                 addToHistory("Converted Image", `To ${ext.toUpperCase()}`);
             }
             img.src = URL.createObjectURL(file);
         });
 
-        // --- 3. QR CODE LOGIC ---
+        // QR LOGIC
         function makeQR() {
             const input = document.getElementById("linkInput").value;
             const container = document.getElementById("qrcode");
@@ -318,7 +283,7 @@
             addToHistory("QR Created", "Link");
         }
 
-        // --- 4. PASSWORD LOGIC ---
+        // PASSWORD LOGIC
         function generatePassword() {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
             let password = "";
