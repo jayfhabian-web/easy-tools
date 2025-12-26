@@ -54,7 +54,6 @@
             align-items: center;
         }
 
-        /* LOGO FIX: Using Chakra Petch font for natural alignment */
         .brand {
             display: flex;
             align-items: center;
@@ -68,12 +67,12 @@
             color: var(--primary);
         }
         .brand-name {
-            font-family: 'Chakra Petch', sans-serif; /* The fix */
+            font-family: 'Chakra Petch', sans-serif;
             font-size: 1.6rem;
             font-weight: 700;
             letter-spacing: -0.02em;
             line-height: 1;
-            padding-top: 2px; /* Optical centering */
+            padding-top: 2px;
         }
         .brand-name span { color: var(--primary); }
 
@@ -127,6 +126,13 @@
             transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+        /* Full width for the search portal */
+        .card.full-width {
+            grid-column: 1 / -1;
+            border-color: var(--primary);
+            border-width: 2px;
         }
         .card:hover {
             transform: translateY(-2px);
@@ -147,7 +153,7 @@
 
         /* --- UI ELEMENTS --- */
         input, textarea, select {
-            width: 100%; box-sizing: border-box; padding: 10px 12px;
+            width: 100%; box-sizing: border-box; padding: 12px;
             border-radius: 8px; border: 1px solid var(--border);
             font-family: inherit; font-size: 0.9rem; margin-bottom: 12px;
             background: #f8fafc; transition: 0.2s;
@@ -158,7 +164,7 @@
         }
         
         button {
-            width: 100%; padding: 10px; border-radius: 8px; border: none;
+            width: 100%; padding: 12px; border-radius: 8px; border: none;
             background: var(--primary); color: white; font-weight: 600;
             cursor: pointer; transition: 0.2s; font-size: 0.95rem;
         }
@@ -173,7 +179,57 @@
         }
         .result-box.show { display: block; animation: fadeIn 0.3s; }
 
-        /* --- QR Specific --- */
+        /* --- BROWSER PORTAL STYLES --- */
+        .browser-bar {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+        .browser-bar input {
+            border-radius: 30px; /* Looks like a URL bar */
+            padding-left: 20px;
+            margin-bottom: 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .browser-bar button {
+            width: auto;
+            border-radius: 30px;
+            padding: 0 24px;
+        }
+        
+        /* Loading Overlay for Search */
+        .portal-overlay {
+            position: absolute; top:0; left:0; right:0; bottom:0;
+            background: rgba(255,255,255,0.95);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border-radius: var(--radius);
+            z-index: 10;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .portal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .spinner {
+            width: 30px; height: 30px; border: 3px solid #e2e8f0;
+            border-top: 3px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Quick Links */
+        .quick-links {
+            display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;
+        }
+        .quick-link {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 16px; background: #f1f5f9;
+            border-radius: 20px; text-decoration: none;
+            color: var(--text-main); font-size: 0.85rem;
+            font-weight: 500; transition: 0.2s;
+        }
+        .quick-link:hover { background: #e2e8f0; transform: translateY(-1px); }
+
         #qrcode-container { display:flex; justify-content:center; padding:10px; background:white; }
         #qrcode-container img { max-width: 100%; }
 
@@ -196,16 +252,44 @@
                 </svg>
                 <div class="brand-name">Vault<span>0</span></div>
             </a>
-            <div class="status-pill"><div class="dot"></div>Offline Ready</div>
+            <div class="status-pill"><div class="dot"></div>System Ready</div>
         </div>
     </header>
 
     <div class="hero">
         <h1>Essential Utilities.<br>Zero Data Tracking.</h1>
-        <p>A daily toolkit that runs entirely in your browser. Generate passwords, clean text, shrink images, and create QR codes safely.</p>
+        <p>Your daily launchpad. Search the web privately, generate passwords, and clean data without leaving traces.</p>
     </div>
 
     <div class="grid">
+
+        <div class="card full-width">
+            
+            <div id="portalOverlay" class="portal-overlay">
+                <div class="spinner"></div>
+                <div style="font-weight:600; color:var(--text-main);">Anonymizing Request...</div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">Handing off to DuckDuckGo Secure Search</div>
+            </div>
+
+            <div class="card-header">
+                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div>
+                <h3 class="card-title">Secure Web Portal</h3>
+            </div>
+            <div class="card-desc">Search the web or jump to sites. We scrub the request before sending you out.</div>
+            
+            <form onsubmit="handlePortalSearch(event)" class="browser-bar">
+                <input type="text" id="portalInput" placeholder="Search web or enter URL..." required autocomplete="off">
+                <button type="submit">Go &rarr;</button>
+            </form>
+
+            <div class="quick-links">
+                <a href="https://www.wikipedia.org" target="_blank" class="quick-link">Wikipedia</a>
+                <a href="https://www.reddit.com" target="_blank" class="quick-link">Reddit</a>
+                <a href="https://www.youtube.com" target="_blank" class="quick-link">YouTube</a>
+                <a href="https://github.com" target="_blank" class="quick-link">GitHub</a>
+                <a href="https://proton.me" target="_blank" class="quick-link">ProtonMail</a>
+            </div>
+        </div>
 
         <div class="card">
             <div class="card-header">
@@ -213,12 +297,10 @@
                 <h3 class="card-title">VaultPass Gen</h3>
             </div>
             <div class="card-desc">Generate cryptographically strong passwords instantly.</div>
-            
             <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:5px; color:var(--text-muted);">
                 <span>Length</span><span id="passLenVal" style="font-weight:700; color:var(--primary);">16</span>
             </div>
             <input type="range" id="passLen" min="8" max="32" value="16" oninput="document.getElementById('passLenVal').innerText = this.value">
-            
             <div style="display:flex; gap:10px;">
                 <button class="secondary" onclick="generatePass()">Regenerate</button>
                 <button onclick="copyPass()">Copy</button>
@@ -277,21 +359,6 @@
             <div id="exifResult" class="result-box"></div>
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
-                <h3 class="card-title">SecureMsg</h3>
-            </div>
-            <div class="card-desc">AES-GCM encryption for sensitive notes or passwords you send to others.</div>
-            <input type="password" id="msgKey" placeholder="Set a Lock Key">
-            <textarea id="msgContent" rows="2" placeholder="Message..."></textarea>
-            <div style="display:flex; gap:10px;">
-                <button onclick="processMsg('enc')">Encrypt</button>
-                <button class="secondary" onclick="processMsg('dec')">Decrypt</button>
-            </div>
-            <div id="msgResult" class="result-box"></div>
-        </div>
-
     </div>
 
     <footer>
@@ -299,7 +366,39 @@
     </footer>
 
     <script>
-        /* 1. PASSWORD GEN */
+        /* 1. PORTAL LOGIC (The Secure Handshake) */
+        function handlePortalSearch(e) {
+            e.preventDefault();
+            const query = document.getElementById('portalInput').value.trim();
+            const overlay = document.getElementById('portalOverlay');
+            
+            if (!query) return;
+
+            // Show the "Handshake" animation
+            overlay.classList.add('active');
+
+            // Wait 1.2 seconds so user sees the "Anonymizing" message
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                
+                // If it looks like a URL, go there. Otherwise, search DuckDuckGo.
+                // DuckDuckGo is preferred for privacy (doesn't track search history)
+                if (query.includes('.') && !query.includes(' ')) {
+                    let url = query;
+                    if (!url.startsWith('http')) url = 'https://' + url;
+                    window.open(url, '_blank');
+                } else {
+                    // Using DuckDuckGo search
+                    const url = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+                    window.open(url, '_blank');
+                }
+                
+                // Clear input after a delay
+                document.getElementById('portalInput').value = "";
+            }, 1200);
+        }
+
+        /* 2. PASSWORD GEN */
         function generatePass() {
             const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*";
             const len = parseInt(document.getElementById('passLen').value);
@@ -323,7 +422,7 @@
         // Init on load
         generatePass();
 
-        /* 2. QR CODE GEN */
+        /* 3. QR CODE GEN */
         function generateQR() {
             const txt = document.getElementById('qrInput').value;
             const container = document.getElementById('qrcode-container');
@@ -343,7 +442,7 @@
             res.classList.add('show');
         }
 
-        /* 3. IMG COMPRESSOR */
+        /* 4. IMG COMPRESSOR */
         function compressImage() {
             const input = document.getElementById('imgInput');
             const res = document.getElementById('imgResult');
@@ -360,7 +459,6 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Scale down if massive
                     let width = img.width;
                     let height = img.height;
                     const maxWidth = 1920; 
@@ -373,7 +471,6 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Compress to JPEG 0.7 quality
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
                     
                     res.innerHTML = `
@@ -385,7 +482,7 @@
             }
         }
 
-        /* 4. TEXT TOOLS */
+        /* 5. TEXT TOOLS */
         function transformText(mode) {
             const el = document.getElementById('textInput');
             let val = el.value;
@@ -398,13 +495,12 @@
             el.value = val;
         }
 
-        /* 5. EXIF PURGE (Simulated Scrub via Canvas) */
+        /* 6. EXIF PURGE */
         function scrubExif() {
             const input = document.getElementById('exifInput');
             const res = document.getElementById('exifResult');
             if(!input.files[0]) return;
             
-            // Loading into Canvas automatically strips metadata
             const file = input.files[0];
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -415,47 +511,13 @@
                     const c = document.createElement('canvas');
                     c.width = img.width; c.height = img.height;
                     c.getContext('2d').drawImage(img,0,0);
-                    const safeUrl = c.toDataURL('image/png'); // PNG also good for stripping
+                    const safeUrl = c.toDataURL('image/png');
                     res.innerHTML = `
                         <div style="color:green; font-weight:bold; margin-bottom:5px;">✅ Metadata Scrubbed</div>
                         <a href="${safeUrl}" download="clean_${file.name.split('.')[0]}.png" style="color:#2563eb; font-weight:600;">Download Safe Copy</a>
                     `;
                     res.classList.add('show');
                 }
-            }
-        }
-
-        /* 6. SECURE MSG */
-        async function processMsg(action) {
-            const txt = document.getElementById('msgContent').value;
-            const pass = document.getElementById('msgKey').value;
-            const res = document.getElementById('msgResult');
-            
-            if(!txt || !pass) { alert("Message and Key required"); return; }
-            res.classList.add('show');
-
-            const enc = new TextEncoder();
-            const dec = new TextDecoder();
-
-            const getKey = async (p) => {
-                const k = await crypto.subtle.importKey("raw", enc.encode(p), "PBKDF2", false, ["deriveKey"]);
-                return crypto.subtle.deriveKey({name:"PBKDF2", salt:enc.encode("somesalt"), iterations:100000, hash:"SHA-256"}, k, {name:"AES-GCM", length:256}, true, ["encrypt","decrypt"]);
-            }
-
-            try {
-                const key = await getKey(pass);
-                if (action === 'enc') {
-                    const iv = crypto.getRandomValues(new Uint8Array(12));
-                    const crypt = await crypto.subtle.encrypt({name:"AES-GCM", iv:iv}, key, enc.encode(txt));
-                    const pkg = { iv: Array.from(iv), data: Array.from(new Uint8Array(crypt)) };
-                    res.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted);">Copy this encrypted block:</div><br>${btoa(JSON.stringify(pkg))}`;
-                } else {
-                    const pkg = JSON.parse(atob(txt));
-                    const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:new Uint8Array(pkg.iv)}, key, new Uint8Array(pkg.data));
-                    res.innerHTML = `<strong style="color:green;">Decrypted:</strong><br>${dec.decode(plain)}`;
-                }
-            } catch(e) {
-                res.innerHTML = `<span style="color:red">Failed. Check Key or Format.</span>`;
             }
         }
     </script>
