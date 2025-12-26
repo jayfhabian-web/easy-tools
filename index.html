@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault0 | Cinema</title>
+    <title>Vault0 | Omni</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #000000;
-            --panel: #111111;
-            --text: #e0e0e0;
-            --accent: #e11d48; /* Netflix/YouTube Red color */
-            --border: #333;
+            --bg: #202124;
+            --panel: #303134;
+            --text: #e8eaed;
+            --accent: #8ab4f8; /* Google-ish Blue */
+            --border: #5f6368;
+            --hover: #3c4043;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -26,140 +27,219 @@
             height: 100vh; overflow: hidden;
         }
 
-        /* --- HEADER --- */
-        header {
-            background: var(--panel);
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex; gap: 15px; align-items: center; justify-content: space-between;
+        /* --- SEARCH HEADER --- */
+        .header {
+            padding: 20px; display: flex; flex-direction: column; align-items: center;
+            border-bottom: 1px solid var(--border); background: var(--bg);
+            z-index: 100;
         }
 
         .brand {
-            font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700;
-            color: white; white-space: nowrap;
+            font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700;
+            color: white; margin-bottom: 20px;
         }
         .brand span { color: var(--accent); }
 
-        /* --- CONTROLS --- */
-        .controls {
-            display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 900px;
+        /* --- THE SEARCH BAR & DROPDOWN --- */
+        .search-wrapper {
+            position: relative; width: 100%; max-width: 650px;
         }
 
-        .instance-select {
-            background: #222; color: #fff; border: 1px solid var(--border);
-            padding: 10px; border-radius: 4px; font-size: 0.85rem; cursor: pointer;
-            width: 140px;
+        .search-input {
+            width: 100%; box-sizing: border-box;
+            background: var(--panel); border: 1px solid var(--border);
+            color: white; padding: 14px 20px; border-radius: 24px;
+            font-size: 1.1rem; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .search-input:focus { background: #303134; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-color: transparent; }
+        
+        /* This is the "Smart Suggestion" Box */
+        .suggestions-box {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: var(--panel); border-radius: 0 0 24px 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: none; flex-direction: column;
+            max-height: 400px; overflow-y: auto;
+            border-top: 1px solid var(--border); margin-top: -12px; padding-top: 15px;
+            z-index: 1000;
         }
 
-        .input-group {
-            display: flex; flex-grow: 1; gap: 0;
+        .suggestion-item {
+            padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 15px;
+            color: #bdc1c6;
         }
+        .suggestion-item:hover { background: var(--hover); color: white; }
+        .suggestion-item i { font-style: normal; font-size: 0.9rem; opacity: 0.5; } /* Icon placeholder */
 
-        .url-input {
-            background: #222; border: 1px solid var(--border); color: white;
-            padding: 10px 15px; border-radius: 4px 0 0 4px; flex-grow: 1; outline: none;
-            font-size: 0.95rem; border-right: none;
-        }
-        .url-input:focus { border-color: var(--accent); }
-
-        .watch-btn {
-            background: var(--accent); color: white; border: none;
-            padding: 0 24px; border-radius: 0 4px 4px 0;
-            font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap;
-        }
-        .watch-btn:hover { background: #be123c; }
-
-        /* --- THEATER STAGE --- */
-        .stage {
+        /* --- MAIN VIEWPORT --- */
+        .viewport {
             flex-grow: 1; position: relative; background: #000;
-            display: flex; justify-content: center; align-items: center;
         }
-
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- OVERLAYS --- */
-        .welcome-screen {
-            text-align: center; color: #666; max-width: 600px; padding: 20px;
+        .placeholder {
+            position: absolute; top:0; left:0; right:0; bottom:0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #9aa0a6; text-align: center;
         }
-        .hidden { display: none !important; }
         
-        .mode-toggle {
-            font-size: 0.8rem; color: #666; cursor: pointer; margin-left: 10px;
+        /* Categories chips */
+        .chips {
+            display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap;
         }
-        .mode-toggle:hover { color: #fff; }
+        .chip {
+            background: var(--panel); border: 1px solid var(--border); color: #e8eaed;
+            padding: 8px 16px; border-radius: 18px; font-size: 0.9rem; cursor: pointer;
+            transition: 0.2s;
+        }
+        .chip:hover { background: var(--hover); border-color: #777; }
 
+        .hidden { display: none !important; }
+
+        /* Server Select (Small, top right) */
+        .server-select {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; color: #777; border: 1px solid #444;
+            padding: 5px; border-radius: 4px; font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="brand">Vault<span>0</span> Cinema</div>
+    <select id="server" class="server-select">
+        <option value="https://piped.video">Server: Main</option>
+        <option value="https://piped.kavin.rocks">Server: Backup 1</option>
+        <option value="https://yewtu.be">Server: Backup 2</option>
+    </select>
+
+    <div class="header">
+        <div class="brand">Vault<span>0</span> Omni</div>
         
-        <div class="controls">
-            <select id="server" class="instance-select">
-                <option value="https://piped.video">Server: Main</option>
-                <option value="https://piped.kavin.rocks">Server: Backup 1</option>
-                <option value="https://yewtu.be">Server: Backup 2</option>
-                <option value="https://vid.puffyan.us">Server: Secure</option>
-            </select>
-
-            <div class="input-group">
-                <input type="text" id="videoInput" class="url-input" 
-                       placeholder="Paste YouTube Link (or search topic)..." 
-                       onkeypress="if(event.key==='Enter') loadVideo()">
-                <button class="watch-btn" onclick="loadVideo()">Play</button>
-            </div>
-        </div>
-    </header>
-
-    <div class="stage">
-        <div id="welcome" class="welcome-screen">
-            <h1 style="color:#333; margin-bottom:10px;">Education Mode</h1>
-            <p>Paste the blocked YouTube link above.</p>
-            <p style="font-size:0.9rem; color:#444;">
-                This tool extracts the Video ID and plays it via a secure proxy.<br>
-                Teachers/Filters will not see you are on YouTube.
-            </p>
+        <div class="search-wrapper">
+            <input type="text" id="input" class="search-input" 
+                   placeholder="Search anything (e.g. 'Avocado seed toxic')" 
+                   autocomplete="off"
+                   oninput="handleInput()" 
+                   onfocus="handleInput()"
+                   onkeypress="if(event.key==='Enter') runSearch(this.value)">
+            
+            <div id="suggestions" class="suggestions-box">
+                </div>
         </div>
 
-        <iframe id="cinemaFrame" class="hidden" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" allowfullscreen></iframe>
+        <div class="chips">
+            <button class="chip" onclick="runSearch('How to tie a tie')">👔 How-To</button>
+            <button class="chip" onclick="runSearch('Space Documentary')">🪐 Space</button>
+            <button class="chip" onclick="runSearch('Is it safe to eat avocado seeds')">🥑 Food Facts</button>
+            <button class="chip" onclick="runSearch('Coding for beginners')">💻 Coding</button>
+            <button class="chip" onclick="runSearch('American Revolution')">📜 History</button>
+        </div>
+    </div>
+
+    <div class="viewport">
+        <div id="welcome" class="placeholder">
+            <h2>Ready to search.</h2>
+            <p>Type anything above. The "Brain" will guess what you need.</p>
+        </div>
+        <iframe id="frame" class="hidden" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" allowfullscreen></iframe>
     </div>
 
     <script>
-        function loadVideo() {
-            let input = document.getElementById('videoInput').value.trim();
-            const server = document.getElementById('server').value;
-            
-            if(!input) return;
+        // --- THE LOCAL BRAIN (Common Safe Searches) ---
+        const brain = [
+            // CURIOSITY & FOOD SAFETY
+            "Are avocado seeds toxic to eat?", "Is it safe to eat apple seeds?", "Can you eat raw potatoes?",
+            "Why do cats purr?", "Why is the sky blue?", "How do airplanes fly?",
+            "What happens if you swallow gum?", "How to survive in the wild",
+            // HOW TO / LIFE SKILLS
+            "How to tie a tie", "How to fix a zipper", "How to sew a button", "How to bake a cake",
+            "How to change a tire", "How to write a resume", "How to study for exams",
+            "How to solve a Rubiks cube", "How to do a cartwheel",
+            // ACADEMIC - HISTORY
+            "American Revolution Documentary", "Civil War History", "World War II Summary",
+            "Ancient Egypt Pyramids", "Greek Mythology Explained", "Industrial Revolution",
+            "The Cold War Simple History", "Who was Napoleon?",
+            // ACADEMIC - SCIENCE
+            "Photosynthesis Explained", "Periodic Table Song", "Human Digestive System",
+            "How the heart works", "Solar System for kids", "Black Holes explained",
+            "Newton's Laws of Physics", "Cell Structure Biology",
+            // ACADEMIC - MATH/CODING
+            "Algebra Basics", "Quadratic Formula Song", "Geometry Proofs",
+            "Python coding for beginners", "HTML and CSS tutorial", "How computers work",
+            // LITERATURE
+            "Shakespeare Macbeth Summary", "To Kill a Mockingbird Analysis", "Great Gatsby Summary",
+            "1984 George Orwell Summary", "Romeo and Juliet Explained"
+        ];
 
-            // HIDE WELCOME
-            document.getElementById('welcome').classList.add('hidden');
-            const frame = document.getElementById('cinemaFrame');
-            frame.classList.remove('hidden');
+        const suggestionsBox = document.getElementById('suggestions');
+        const inputField = document.getElementById('input');
 
-            // DETECT IF IT IS A LINK OR A SEARCH TERM
-            let finalSrc = "";
-            
-            // Regex to find YouTube Video ID (v=XXXXX or youtu.be/XXXXX)
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = input.match(regExp);
+        // 1. HANDLE TYPING (Smart Suggestions)
+        function handleInput() {
+            const val = inputField.value.toLowerCase();
+            suggestionsBox.innerHTML = ''; // Clear old suggestions
 
-            if (match && match[2].length === 11) {
-                // IT IS A DIRECT LINK -> Convert to Piped Embed
-                const videoId = match[2];
-                // We use /embed/ so it fills the screen nicely without extra site UI
-                finalSrc = server + "/embed/" + videoId + "?autoplay=1";
-            } else {
-                // IT IS A SEARCH TERM -> Search on Piped
-                finalSrc = server + "/results?search_query=" + encodeURIComponent(input);
+            if (!val) {
+                suggestionsBox.style.display = 'none';
+                return;
             }
 
-            frame.src = finalSrc;
+            // FILTER: Find topics that INCLUDE the text (Fuzzy Search)
+            const matches = brain.filter(topic => topic.toLowerCase().includes(val));
+
+            // If matches found, show them
+            if (matches.length > 0) {
+                matches.slice(0, 6).forEach(match => { // Limit to 6 items
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = `<i>🔍</i> ${match}`; // Add icon
+                    div.onclick = () => {
+                        inputField.value = match;
+                        suggestionsBox.style.display = 'none';
+                        runSearch(match);
+                    };
+                    suggestionsBox.appendChild(div);
+                });
+                suggestionsBox.style.display = 'flex';
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        }
+
+        // Hide suggestions if clicking outside
+        document.addEventListener('click', (e) => {
+            if (!document.querySelector('.search-wrapper').contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        // 2. RUN SEARCH (Same Piped Logic)
+        function runSearch(query) {
+            if(!query) return;
+            
+            // UI Updates
+            inputField.value = query; // Update bar if clicked from chip
+            suggestionsBox.style.display = 'none';
+            document.getElementById('welcome').classList.add('hidden');
+            const frame = document.getElementById('frame');
+            frame.classList.remove('hidden');
+
+            const server = document.getElementById('server').value;
+            
+            // Check if link or text
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = query.match(regExp);
+
+            if (match && match[2].length === 11) {
+                frame.src = server + "/embed/" + match[2] + "?autoplay=1";
+            } else {
+                frame.src = server + "/results?search_query=" + encodeURIComponent(query);
+            }
         }
         
-        // Auto-reload if server changes
+        // Auto-refresh server
         document.getElementById('server').addEventListener('change', () => {
-             if(document.getElementById('videoInput').value) loadVideo();
+             if(inputField.value) runSearch(inputField.value);
         });
     </script>
 </body>
