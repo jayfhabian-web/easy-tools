@@ -22,28 +22,18 @@
             min-height: 100vh;
         }
 
-        /* HEADER */
-        header { text-align: center; margin-bottom: 20px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        /* HEADER & GEAR */
+        header { text-align: center; margin-bottom: 20px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); position: relative; width: 100%; max-width: 500px; }
         h1 { margin: 0; font-size: 2.5rem; letter-spacing: -1px; }
         .subtitle { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; font-weight: 300; }
-
-        /* PRIVACY BANNER */
-        .privacy-banner {
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #2d3436;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 500px;
-            width: 100%;
-            box-sizing: border-box;
-            backdrop-filter: blur(5px);
+        
+        .gear-btn {
+            position: absolute; top: 0; right: 0;
+            background: rgba(255,255,255,0.2); border: none;
+            color: white; font-size: 1.5rem; padding: 10px;
+            border-radius: 50%; cursor: pointer; transition: background 0.3s;
         }
+        .gear-btn:hover { background: rgba(255,255,255,0.4); }
 
         /* TABS */
         .tab-bar {
@@ -102,94 +92,80 @@
         }
         button.action-btn:hover { transform: translateY(-2px); }
 
-        /* TOGGLE SWITCHES */
-        .mode-toggle { display: flex; gap: 10px; margin-bottom: 15px; }
-        .mode-btn { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer; font-size: 0.9rem; }
-        .mode-btn.active-mode { background: #e9ecef; border-color: #764ba2; color: #764ba2; font-weight: bold; }
-
-        /* SPECIFIC COMPONENTS */
-        .password-display {
-            background: #2d3436; color: #00ff9d; font-family: monospace;
-            padding: 20px; border-radius: 10px; text-align: center;
-            font-size: 1.3rem; margin: 15px 0; word-break: break-all;
-        }
-
-        /* --- COMPLIANCE WALL --- */
-        .compliance-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 9999;
-            backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .compliance-card {
-            background: white; width: 90%; max-width: 500px;
-            padding: 30px; border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            text-align: left;
-        }
-        .terms-scroll {
-            height: 150px; overflow-y: auto; background: #f8f9fa;
-            border: 1px solid #ddd; padding: 10px; margin: 15px 0;
-            font-size: 0.8rem; color: #555; border-radius: 8px;
-        }
-        .compliance-btn {
-            background: #28a745; color: white; border: none; padding: 15px;
-            border-radius: 8px; width: 100%; font-size: 1rem; font-weight: bold;
-            cursor: pointer; transition: background 0.2s;
-        }
-        .compliance-btn:hover { background: #218838; }
-
-        /* --- SAFETY MODAL --- */
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: white; padding: 25px; border-radius: 15px;
-            width: 90%; max-width: 400px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: popIn 0.3s ease;
-        }
-        @keyframes popIn { from {transform: scale(0.8); opacity:0;} to {transform: scale(1); opacity:1;} }
-        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-cancel { background: #eee; color: #333; flex: 1; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; }
-        .btn-confirm { background: #dc3545; color: white; flex: 1; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; }
-
-        /* INSPECTOR TOOL */
-        .preview-container { margin-top: 20px; text-align: center; display: none; background: #eee; border-radius: 10px; padding: 10px; }
-        .preview-img { width: 100%; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .danger-alert { background: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #ef9a9a; display: none; text-align: left; }
-
-        /* --- PRIVACY CURTAIN (UPGRADED) --- */
+        /* --- PRIVACY CURTAIN 5.0 (ARROWS & GOOFY) --- */
         #privacyCurtain {
             display: none;
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: black; z-index: 20000;
+            background: #0f172a; z-index: 20000;
             color: white; flex-direction: column;
             align-items: center; justify-content: center;
             user-select: none;
-        }
-        .shield-logo-large { font-size: 5rem; cursor: pointer; transition: transform 0.2s; }
-        .shield-logo-large:active { transform: scale(0.9); }
-        
-        .decoys-container {
-            display: flex; gap: 40px; margin-top: 50px;
-        }
-        .decoy-btn {
-            background: transparent; border: 2px solid #555; color: #777;
-            padding: 15px 30px; border-radius: 50px; cursor: pointer;
-            font-size: 1rem; transition: all 0.3s;
-        }
-        .decoy-btn:hover { border-color: white; color: white; }
-        
-        .lock-status {
-            color: #ff4757; font-weight: bold; font-family: monospace;
-            margin-top: 20px; height: 20px; opacity: 0; transition: opacity 0.2s;
+            overflow: hidden;
+            transition: top 0.5s ease-in-out;
         }
 
-        /* Lock Selection Cards */
+        /* The Bouncing Goofy Text */
+        .goofy-bouncer {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            animation: bounceX 3s infinite alternate ease-in-out, bounceY 4s infinite alternate ease-in-out;
+            z-index: 0;
+            white-space: nowrap;
+        }
+        @keyframes bounceX { from { left: 0; transform: rotate(-10deg); } to { left: calc(100% - 300px); transform: rotate(10deg); } }
+        @keyframes bounceY { from { top: 0; } to { top: calc(100% - 100px); } }
+
+        /* Lock Icon Animation */
+        .main-lock-icon { font-size: 4rem; margin-bottom: 20px; z-index: 2; transition: transform 0.3s; cursor: pointer; }
+        .main-lock-icon.shaking { animation: shake 0.5s; color: #ff4757; }
+        .main-lock-icon.unlocking { transform: scale(1.2); color: #2ed573; }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+
+        /* The 3 Inputs Container */
+        .lock-inputs-container {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+            z-index: 2; background: rgba(0,0,0,0.5); padding: 25px;
+            border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+
+        /* 1. PIN PAD UI */
+        .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 180px; }
+        .pin-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 10px; border-radius: 8px; font-size: 1rem; cursor: pointer;
+        }
+        .pin-btn:active { background: white; color: black; }
+        .pin-display { font-family: monospace; letter-spacing: 5px; font-size: 1.5rem; height: 30px; color: #00ff9d; margin-bottom: 10px; }
+
+        /* 2. TEXT PASS UI */
+        .pass-input-lock {
+            background: rgba(0,0,0,0.3); border: 1px solid #555; color: white;
+            padding: 10px; border-radius: 5px; text-align: center; width: 180px;
+        }
+
+        /* 3. ARROW PAD UI */
+        .d-pad { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 150px; }
+        .d-btn { 
+            background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); 
+            color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 1.2rem;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .d-btn:active { background: #00ff9d; color: black; }
+        /* Grid Positioning for Cross Shape */
+        .d-up { grid-column: 2; grid-row: 1; }
+        .d-left { grid-column: 1; grid-row: 2; }
+        .d-center { grid-column: 2; grid-row: 2; border:none; background:transparent; font-size:0.8rem; color:#888;}
+        .d-right { grid-column: 3; grid-row: 2; }
+        .d-down { grid-column: 2; grid-row: 3; }
+        
+        .arrow-display { font-family: monospace; font-size: 1.2rem; height: 25px; color: #fab1a0; margin-bottom: 5px; letter-spacing: 2px; }
+
+        /* Settings Selection Cards */
         .lock-selection { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
         .lock-option {
             background: #f8f9fa; border: 2px solid #eee; padding: 15px;
@@ -198,9 +174,35 @@
         }
         .lock-option:hover { border-color: #a18cd1; }
         .lock-option.selected { border-color: #764ba2; background: #f3e5f5; }
-        .lock-icon { font-size: 1.5rem; }
 
-        /* ADS & FOOTER */
+        /* --- SETTINGS/HISTORY MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 10000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 15px;
+            width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: popIn 0.3s ease; position: relative;
+        }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999; }
+        
+        .history-item { border-bottom: 1px solid #eee; padding: 12px 0; font-size: 0.9rem; display: flex; justify-content: space-between; }
+        .timestamp { background: #eee; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; color: #666; }
+
+        /* --- COMPLIANCE --- */
+        .compliance-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 9999;
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .compliance-card { background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 15px; text-align: left; }
+        .terms-scroll { height: 100px; overflow-y: auto; background: #f8f9fa; border: 1px solid #ddd; padding: 10px; margin: 15px 0; font-size: 0.8rem; }
+        
+        /* ADS */
         .ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; margin-top: 30px; }
         .ad-card {
             background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
@@ -215,13 +217,9 @@
         .ad-title { font-weight: 800; font-size: 1.2rem; display: block; margin-bottom: 5px; }
         .ad-desc { font-size: 0.8rem; opacity: 0.9; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .legal-footer { margin-top: auto; padding-top: 40px; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.8); max-width: 500px; line-height: 1.6; }
-        .history-container { margin-top: 30px; width: 100%; max-width: 500px; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 15px; box-sizing: border-box; }
-        .history-item { border-bottom: 1px solid #eee; padding: 12px 0; font-size: 0.9rem; display: flex; justify-content: space-between; }
-        .timestamp { background: #eee; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; color: #666; }
         
-        .clean-result { background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; margin-top: 15px; word-break: break-all; display: none; border: 1px solid #c8e6c9; }
+        .legal-footer { margin-top: auto; padding-top: 40px; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.8); max-width: 500px; line-height: 1.6; }
+
     </style>
 </head>
 <body>
@@ -229,40 +227,90 @@
     <div id="complianceWall" class="compliance-overlay" style="display:flex;">
         <div class="compliance-card">
             <h2 style="border:none; margin-bottom: 5px;">🍪 Updated Policy</h2>
-            <p style="margin-top:0; color:#666;">We have updated our terms to ensure better security and clarity.</p>
+            <p style="margin-top:0; color:#666;">Select your security preference.</p>
             <div class="terms-scroll">
-                <strong>1. General Acceptance</strong><br>By accessing SafeTools, you agree to these terms. If you disagree, you must exit immediately.<br><br>
-                <strong>2. Security & Liability</strong><br>SafeTools is a client-side utility provided "as is". While we aim for 100% security, the creator is not liable for data breaches, visual hacking, or misuse of the tools.<br><br>
-                <strong>3. The "False Positive" Clause</strong><br>Security scanners (like VirusTotal) may occasionally flag this site due to its code structure. A 1/98 score is considered clean and is a common occurrence for new web tools.<br><br>
-                <strong>4. Privacy Shield Usage</strong><br>The Privacy Shield is a deterrent, not a bank vault. Do not rely on it for critical government secrets.<br><br>
-                <strong>5. User Conduct</strong><br>You agree not to use the Link Inspector or QR tools for phishing or malicious activities.
+                1. General Acceptance: By using SafeTools, you agree to these terms.<br>
+                2. Security: You may now choose between PIN, Password, or Arrow Sequence.<br>
+                3. False Positives: VirusTotal scores of 1/98 are normal for new sites.<br>
+                4. Liability: Use these tools responsibly.
             </div>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
                 <input type="checkbox" id="termsCheck" style="width:20px; height:20px; margin:0;">
                 <label for="termsCheck" style="margin:0; font-weight:400; font-size:0.9rem;">I agree to the Updated Terms.</label>
             </div>
-            <button class="compliance-btn" onclick="acceptTerms()">Accept & Continue</button>
+            <button class="compliance-btn" onclick="acceptTerms()" style="background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer;">Accept & Continue</button>
         </div>
     </div>
 
     <div id="privacyCurtain">
-        <div id="lockLogo" class="shield-logo-large" onclick="attemptUnlock('logo')">🛡️</div>
-        
-        <div style="margin-top:20px; font-size:1.5rem; font-weight:bold;">SafeTools Protected</div>
-        <div class="curtain-hint" style="color:#666; margin-top:5px;">Select an unlock method below</div>
+        <div class="goofy-bouncer">Safe Tools</div>
 
-        <div class="decoys-container">
-            <button class="decoy-btn" onclick="attemptUnlock('button')">Unlock</button>
-            <button class="decoy-btn" onclick="attemptUnlock('pin')">Pin Pad</button>
-            <button class="decoy-btn" onclick="attemptUnlock('scan')">Scan ID</button>
+        <div id="mainLockIcon" class="main-lock-icon">🔒</div>
+        <div id="lockMsg" style="color: #ff4757; font-weight: bold; font-family: monospace; height: 20px; opacity:0; transition:opacity 0.2s;">ACCESS DENIED</div>
+
+        <div class="lock-inputs-container">
+            
+            <div style="text-align:center;">
+                <div class="section-label">PIN Pad</div>
+                <div class="pin-display" id="pinDisplay">****</div>
+                <div class="pin-pad">
+                    <button class="pin-btn" onclick="enterLockInput('pin', '1')">1</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '2')">2</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '3')">3</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '4')">4</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '5')">5</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '6')">6</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '7')">7</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '8')">8</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '9')">9</button>
+                    <button class="pin-btn" onclick="clearPin()" style="color:#ff6b6b">C</button>
+                    <button class="pin-btn" onclick="enterLockInput('pin', '0')">0</button>
+                    <button class="pin-btn" onclick="submitLock('pin')" style="color:#51cf66">></button>
+                </div>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid rgba(255,255,255,0.2);">
+
+            <div style="text-align:center; width:100%;">
+                <div class="section-label">Password</div>
+                <div style="display:flex; gap:5px;">
+                    <input type="password" id="lockPassInput" class="pass-input-lock" placeholder="Enter Password...">
+                    <button class="pin-btn" onclick="submitLock('pass')">></button>
+                </div>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid rgba(255,255,255,0.2);">
+
+            <div style="text-align:center;">
+                <div class="section-label">Direction Lock</div>
+                <div class="arrow-display" id="arrowDisplay"></div>
+                <div class="d-pad">
+                    <button class="d-btn d-up" onclick="enterLockInput('arrow', 'U')">▲</button>
+                    <button class="d-btn d-left" onclick="enterLockInput('arrow', 'L')">◀</button>
+                    <div class="d-btn d-center" onclick="submitLock('arrows')">OK</div>
+                    <button class="d-btn d-right" onclick="enterLockInput('arrow', 'R')">▶</button>
+                    <button class="d-btn d-down" onclick="enterLockInput('arrow', 'D')">▼</button>
+                </div>
+            </div>
+
         </div>
+    </div>
 
-        <div id="lockStatus" class="lock-status">🚫 ACCESS DENIED</div>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleSettings()">×</span>
+            <h2 style="border:none;">⚙️ Settings</h2>
+            
+            <h3 style="margin-bottom:10px; color:#333;">History</h3>
+            <div id="historyList"></div>
+            <button onclick="clearHistory()" style="background:none; border:none; color:#e74c3c; cursor:pointer; margin-top:10px; font-weight:bold;">Clear History</button>
+        </div>
     </div>
 
     <header>
         <h1>SafeTools</h1>
         <div class="subtitle">Private • Secure • Free</div>
+        <button class="gear-btn" onclick="toggleSettings()">⚙️</button>
     </header>
 
     <div class="tab-bar">
@@ -275,36 +323,46 @@
     </div>
 
     <div id="tab-shield" class="tool-content active-tool">
-        <h2>🛡️ Privacy Shield 2.0</h2>
-        <p style="color:#666;">Choose your unlock key. Only the correct method will work; the others are decoys to confuse intruders.</p>
+        <h2>🛡️ Privacy Shield 5.0</h2>
+        <p style="color:#666;">Choose your Lock Type. The other two will appear on the lock screen as decoys.</p>
         
         <div class="lock-selection">
-            <div class="lock-option selected" onclick="selectLock('logo', this)">
-                <span class="lock-icon">🖼️</span>
-                <div>
-                    <strong>Method A: The Logo Click</strong><br>
-                    <span style="font-size:0.8rem; color:#666;">Unlock by clicking the big Shield Logo.</span>
+            <div class="lock-option selected" id="opt-pin" onclick="selectLockType('pin')">
+                <span style="font-size:1.5rem;">🔢</span>
+                <div style="flex:1;">
+                    <strong>Type A: 4-Digit PIN</strong>
+                    <input type="password" id="setPinInput" placeholder="Set PIN (e.g. 1234)" style="width:100%; margin-top:5px; padding:8px;" onclick="event.stopPropagation()">
                 </div>
             </div>
 
-            <div class="lock-option" onclick="selectLock('key', this)">
-                <span class="lock-icon">⌨️</span>
-                <div>
-                    <strong>Method B: The Secret Key</strong><br>
-                    <span style="font-size:0.8rem; color:#666;">Unlock by pressing the <strong>'Spacebar'</strong>.</span>
+            <div class="lock-option" id="opt-pass" onclick="selectLockType('pass')">
+                <span style="font-size:1.5rem;">✍️</span>
+                <div style="flex:1;">
+                    <strong>Type B: Secret Password</strong>
+                    <input type="password" id="setPassInput" placeholder="Set Word (e.g. apple)" style="width:100%; margin-top:5px; padding:8px;" onclick="event.stopPropagation()">
                 </div>
             </div>
 
-            <div class="lock-option" onclick="selectLock('double', this)">
-                <span class="lock-icon">🖱️</span>
-                <div>
-                    <strong>Method C: The Double Tap</strong><br>
-                    <span style="font-size:0.8rem; color:#666;">Unlock by double-clicking anywhere.</span>
+            <div class="lock-option" id="opt-arrows" onclick="selectLockType('arrows')">
+                <span style="font-size:1.5rem;">🕹️</span>
+                <div style="flex:1;">
+                    <strong>Type C: Arrow Sequence</strong>
+                    <p style="font-size:0.8rem; color:#666; margin:5px 0;">Use the D-Pad to enter a code (e.g. Up, Up, Down).</p>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <input type="text" id="setArrowInput" placeholder="Click arrows below..." readonly style="width:100%; padding:8px; cursor:not-allowed;">
+                        <button onclick="clearSetArrows(event)" style="padding:5px 10px; cursor:pointer;">Clear</button>
+                    </div>
+                    <div style="display:flex; gap:5px; margin-top:5px; justify-content:center;">
+                        <button onclick="addSetArrow(event, 'U')">▲</button>
+                        <button onclick="addSetArrow(event, 'D')">▼</button>
+                        <button onclick="addSetArrow(event, 'L')">◀</button>
+                        <button onclick="addSetArrow(event, 'R')">▶</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <button class="action-btn" onclick="activateShield()" style="background: black; color: white;">⬛ Activate Lock Screen</button>
+        <button class="action-btn" onclick="activateShield()" style="background: black; color: white;">⬛ Lock Screen</button>
     </div>
 
     <div id="tab-inspector" class="tool-content">
@@ -370,14 +428,6 @@
         <button class="action-btn" onclick="generatePassword()">Generate Password</button>
     </div>
 
-    <div class="history-container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="margin:0; color:#333;">History</h3>
-            <button onclick="clearHistory()" style="background:none; border:none; color:#e74c3c; cursor:pointer;">Clear All</button>
-        </div>
-        <div id="historyList"></div>
-    </div>
-
     <div class="ad-grid">
         <a href="https://gemini.google.com" target="_blank" class="ad-card">
             <span class="ad-badge">Co-Pilot</span>
@@ -396,13 +446,13 @@
         <p>&copy; 2024 SafeTools.</p>
     </div>
 
-    <div id="safetyModal" class="modal">
+    <div id="safetyModal" class="modal" style="z-index:10001;">
         <div class="modal-content">
             <h3 style="margin:0 0 10px 0; color:#dc3545;">Safety Check</h3>
             <p>Do not use this tool to facilitate malicious networks.</p>
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="cancelWifiGen()">Cancel</button>
-                <button class="btn-confirm" onclick="confirmWifiGen()">Continue</button>
+                <button style="background:#eee; flex:1; padding:10px; border:none; border-radius:5px; cursor:pointer;" onclick="cancelWifiGen()">Cancel</button>
+                <button style="background:#dc3545; color:white; flex:1; padding:10px; border:none; border-radius:5px; cursor:pointer;" onclick="confirmWifiGen()">Continue</button>
             </div>
         </div>
     </div>
@@ -411,11 +461,21 @@
         // GLOBALS
         let currentQRMode = 'link';
         let currentPassMode = 'random';
-        let chosenLockMethod = 'logo'; // Default
+        
+        // LOCK GLOBALS
+        let chosenLockType = 'pin'; // pin, pass, arrows
+        let savedKey = "1234"; // pin, password, or arrow string (e.g., "UUDL")
+        let tempPin = ""; // Current pin typing
+        let tempArrows = ""; // Current arrow typing
 
-        // --- COMPLIANCE ---
+        // --- COMPLIANCE & INIT ---
         function checkCompliance() {
-            // Force compliance show for this update request
+            if (localStorage.getItem('isLocked') === 'true') {
+                chosenLockType = localStorage.getItem('lockType') || 'pin';
+                savedKey = localStorage.getItem('lockKey') || '1234';
+                showLockScreen();
+                return;
+            }
             const accepted = localStorage.getItem('fhabian_terms_v2_accepted');
             if (accepted === 'true') {
                 document.getElementById('complianceWall').style.display = 'none';
@@ -430,89 +490,140 @@
         }
         window.onload = function() { checkCompliance(); renderHistory(); };
 
-        // --- NEW LOCK LOGIC ---
-        function selectLock(method, el) {
-            chosenLockMethod = method;
-            const options = document.getElementsByClassName('lock-option');
-            for(let opt of options) opt.classList.remove('selected');
-            el.classList.add('selected');
+        // --- LOCK CONFIGURATION ---
+        function selectLockType(type) {
+            chosenLockType = type;
+            document.querySelectorAll('.lock-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById('opt-'+type).classList.add('selected');
+        }
+
+        // Setting Arrows in Config
+        function addSetArrow(e, dir) {
+            e.stopPropagation();
+            const input = document.getElementById('setArrowInput');
+            if(input.value.length < 10) {
+                input.value += dir;
+            }
+        }
+        function clearSetArrows(e) {
+            e.stopPropagation();
+            document.getElementById('setArrowInput').value = "";
         }
 
         function activateShield() {
+            let keyToSave = "";
+            
+            if(chosenLockType === 'pin') {
+                keyToSave = document.getElementById('setPinInput').value;
+                if(keyToSave.length !== 4 || isNaN(keyToSave)) { alert("Enter a 4-digit PIN."); return; }
+            } else if (chosenLockType === 'pass') {
+                keyToSave = document.getElementById('setPassInput').value.trim();
+                if(keyToSave.length < 1) { alert("Enter a password."); return; }
+            } else if (chosenLockType === 'arrows') {
+                keyToSave = document.getElementById('setArrowInput').value;
+                if(keyToSave.length < 2) { alert("Enter at least 2 directions."); return; }
+            }
+
+            // Save & Lock
+            savedKey = keyToSave;
+            localStorage.setItem('lockType', chosenLockType);
+            localStorage.setItem('lockKey', savedKey);
+            localStorage.setItem('isLocked', 'true');
+            
+            showLockScreen();
+            
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+        }
+
+        function showLockScreen() {
             const curtain = document.getElementById('privacyCurtain');
             curtain.style.display = 'flex';
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            curtain.style.top = '0'; 
+            document.getElementById('mainLockIcon').innerText = "🔒";
+            document.getElementById('mainLockIcon').classList.remove('unlocking');
             
-            // Listen for Key Press (Method B)
-            document.addEventListener('keydown', handleKeyUnlock);
-            // Listen for Double Click (Method C)
-            document.addEventListener('dblclick', handleDoubleUnlock);
+            // Reset Inputs
+            tempPin = ""; updatePinDisplay();
+            tempArrows = ""; document.getElementById('arrowDisplay').innerText = "";
+            document.getElementById('lockPassInput').value = "";
         }
 
-        function attemptUnlock(triggerSource) {
-            const status = document.getElementById('lockStatus');
-            
-            // If the user clicked the Logo (Method A)
-            if (triggerSource === 'logo' && chosenLockMethod === 'logo') {
-                unlockSuccess();
-                return;
+        // --- LOCK INTERACTION ---
+        function enterLockInput(source, val) {
+            if (source === 'pin') {
+                if(tempPin.length < 4) { tempPin += val; updatePinDisplay(); }
+            } else if (source === 'arrow') {
+                if(tempArrows.length < 12) { 
+                    tempArrows += val; 
+                    // Visual feedback for arrow
+                    const arrowSymbols = {'U':'▲', 'D':'▼', 'L':'◀', 'R':'▶'};
+                    document.getElementById('arrowDisplay').innerText += arrowSymbols[val];
+                }
+            }
+        }
+        
+        function clearPin() { tempPin = ""; updatePinDisplay(); }
+        
+        function updatePinDisplay() {
+            let str = "";
+            for(let i=0; i<4; i++) {
+                if(i < tempPin.length) str += "*";
+                else str += "_";
+            }
+            document.getElementById('pinDisplay').innerText = str;
+        }
+
+        function submitLock(methodUsed) {
+            let success = false;
+
+            // CHECK: Did they use the RIGHT method?
+            if (methodUsed === chosenLockType) {
+                // VERIFY: Is the key correct?
+                if (chosenLockType === 'pin' && tempPin === savedKey) success = true;
+                else if (chosenLockType === 'pass' && document.getElementById('lockPassInput').value === savedKey) success = true;
+                else if (chosenLockType === 'arrows' && tempArrows === savedKey) success = true;
             }
 
-            // If user clicked any decoy buttons
-            triggerDecoy(status);
-        }
-
-        function handleKeyUnlock(e) {
-            if (chosenLockMethod === 'key' && e.code === 'Space') {
-                unlockSuccess();
+            if (success) {
+                performUnlock();
             } else {
-                // Pressing keys when not in key mode triggers warning
-                triggerDecoy(document.getElementById('lockStatus'));
+                triggerFail();
             }
         }
 
-        function handleDoubleUnlock(e) {
-            if (chosenLockMethod === 'double') {
-                unlockSuccess();
-            }
-        }
-
-        function triggerDecoy(statusEl) {
-            statusEl.style.opacity = '1';
-            // Shake effect
-            const curtain = document.getElementById('privacyCurtain');
-            curtain.style.transform = "translateX(5px)";
-            setTimeout(() => { curtain.style.transform = "translateX(-5px)"; }, 50);
-            setTimeout(() => { curtain.style.transform = "translateX(0)"; }, 100);
+        function performUnlock() {
+            const icon = document.getElementById('mainLockIcon');
+            icon.innerText = "🔓";
+            icon.classList.add('unlocking');
             
-            setTimeout(() => { statusEl.style.opacity = '0'; }, 1000);
+            setTimeout(() => {
+                const curtain = document.getElementById('privacyCurtain');
+                curtain.style.top = '-100vh'; // Slide Up Animation
+                localStorage.setItem('isLocked', 'false');
+                if (document.exitFullscreen) document.exitFullscreen();
+                setTimeout(() => { curtain.style.display = 'none'; }, 500);
+            }, 500);
         }
 
-        function unlockSuccess() {
-            const curtain = document.getElementById('privacyCurtain');
-            curtain.style.display = 'none';
-            if (document.exitFullscreen) document.exitFullscreen();
-            document.removeEventListener('keydown', handleKeyUnlock);
-            document.removeEventListener('dblclick', handleDoubleUnlock);
+        function triggerFail() {
+            const icon = document.getElementById('mainLockIcon');
+            const msg = document.getElementById('lockMsg');
+            icon.classList.add('shaking');
+            msg.style.opacity = '1';
+            
+            setTimeout(() => { icon.classList.remove('shaking'); }, 500);
+            setTimeout(() => { msg.style.opacity = '0'; }, 1000);
+            
+            // Reset inputs
+            tempPin = ""; updatePinDisplay();
+            tempArrows = ""; document.getElementById('arrowDisplay').innerText = "";
+            document.getElementById('lockPassInput').value = "";
         }
 
-        // --- TABS & HISTORY ---
-        function openTab(tabId) {
-            const contents = document.getElementsByClassName('tool-content');
-            for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
-            const buttons = document.getElementsByClassName('tab-btn');
-            for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
-            document.getElementById(tabId).classList.add('active-tool');
-            event.currentTarget.classList.add('active');
-        }
-
-        function addToHistory(action, detail) {
-            const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
-            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            history.unshift({ action, detail, time: timestamp });
-            if(history.length > 5) history.pop(); 
-            localStorage.setItem('safeToolsHistory', JSON.stringify(history));
-            renderHistory();
+        // --- SETTINGS / HISTORY ---
+        function toggleSettings() {
+            const modal = document.getElementById('settingsModal');
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
         function renderHistory() {
             const list = document.getElementById('historyList');
@@ -523,20 +634,37 @@
                 list.innerHTML += `<div class="history-item"><div><strong>${item.action}</strong> <span style="color:#666"> - ${item.detail}</span></div><div class="timestamp">${item.time}</div></div>`;
             });
         }
-        function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
+        function addToHistory(action, detail) {
+            const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ action, detail, time: timestamp });
+            if(history.length > 5) history.pop(); 
+            localStorage.setItem('safeToolsHistory', JSON.stringify(history));
+            renderHistory();
+        }
+        function clearHistory() { 
+            if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } 
+        }
 
-        // --- LINK INSPECTOR ---
+        // --- TABS & TOOLS ---
+        function openTab(tabId) {
+            const contents = document.getElementsByClassName('tool-content');
+            for (let i = 0; i < contents.length; i++) contents[i].classList.remove('active-tool');
+            const buttons = document.getElementsByClassName('tab-btn');
+            for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove('active');
+            document.getElementById(tabId).classList.add('active-tool');
+            event.currentTarget.classList.add('active');
+        }
+
         function inspectLink() {
             let url = document.getElementById('inspectUrl').value.trim();
             if (!url) return;
             if (!url.startsWith('http')) url = 'https://' + url;
-
             const dangerousExtensions = ['.exe', '.zip', '.rar', '.7z', '.msi', '.bat', '.cmd', '.sh', '.apk', '.dmg', '.iso'];
             let isDanger = false;
             dangerousExtensions.forEach(ext => {
                 if (url.toLowerCase().endsWith(ext) || url.toLowerCase().includes(ext + "?")) isDanger = true;
             });
-
             document.getElementById('dangerAlert').style.display = isDanger ? 'block' : 'none';
             document.getElementById('previewBox').style.display = 'block';
             document.getElementById('siteScreenshot').src = "https://image.thum.io/get/width/400/crop/800/" + url;
@@ -544,7 +672,6 @@
             addToHistory("Inspected Link", isDanger ? "⚠️ DANGER DETECTED" : "Safe Preview");
         }
 
-        // --- CLEANER ---
         function cleanLink() {
             let input = document.getElementById('dirtyUrl').value.trim();
             if (!input) return;
@@ -560,7 +687,7 @@
             } catch (e) { alert("Invalid URL."); }
         }
         
-        // --- CONVERTER ---
+        // CONVERTER
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -587,7 +714,7 @@
             img.src = URL.createObjectURL(file);
         });
 
-        // --- QR ---
+        // QR
         function setQRMode(mode, btn) {
             currentQRMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
@@ -615,7 +742,7 @@
             addToHistory("QR Created", currentQRMode);
         }
 
-        // --- PASSWORD ---
+        // PASSWORD
         function setPassMode(mode, btn) {
             currentPassMode = mode;
             const btns = btn.parentElement.getElementsByClassName('mode-btn');
