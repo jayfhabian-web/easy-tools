@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeTools - Free & Secure</title>
+    <title>SafeTools - Free & Private</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* This CSS makes the site look clean and modern */
+        /* --- MODERN STYLING --- */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f4f7f6;
             color: #333;
             display: flex;
             flex-direction: column;
@@ -17,111 +17,236 @@
             margin: 0;
             padding: 20px;
         }
+
+        /* HEADER */
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: #2c3e50; margin: 0; }
+        .subtitle { color: #7f8c8d; font-size: 0.9rem; margin-top: 5px; }
+
+        /* CARDS */
         .container {
             background: white;
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             max-width: 500px;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            transition: transform 0.2s;
         }
-        h1 { color: #2c3e50; text-align: center; }
-        h2 { color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input[type="text"] {
-            width: 90%;
-            padding: 10px;
+        .container:hover { transform: translateY(-2px); }
+
+        h2 { 
+            color: #007bff; 
+            border-bottom: 2px solid #f0f0f0; 
+            padding-bottom: 15px; 
+            margin-top: 0;
+            font-size: 1.4rem;
+        }
+        
+        /* INPUTS & BUTTONS */
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
             margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            box-sizing: border-box; /* Fixes padding issues */
+            font-size: 1rem;
         }
+        
         button {
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1rem;
             width: 100%;
+            font-weight: 600;
+            transition: background 0.2s;
         }
         button:hover { background-color: #0056b3; }
-        #qrcode {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
         
-        /* FOOTER STYLES */
-        .footer {
-            margin-top: 50px;
+        /* SPECIFIC ELEMENTS */
+        #qrcode { margin-top: 20px; display: flex; justify-content: center; }
+        
+        /* PASSWORD TOOL */
+        .password-display {
+            background: #2d3436;
+            color: #00ff9d;
+            font-family: monospace;
+            padding: 15px;
+            border-radius: 8px;
             text-align: center;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+
+        /* HISTORY SECTION */
+        .history-item {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 10px;
+            margin-bottom: 8px;
             font-size: 0.9rem;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+        }
+        .timestamp { color: #999; font-size: 0.75rem; }
+        .clear-btn {
+            background-color: #dc3545;
+            margin-top: 10px;
+        }
+        .clear-btn:hover { background-color: #a71d2a; }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #bdc3c7;
+            border-top: 1px solid #e0e0e0;
             padding-top: 20px;
-            padding-bottom: 20px;
             width: 100%;
             max-width: 500px;
-        }
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
-    <h1>SafeTools</h1>
+    <header>
+        <h1>SafeTools</h1>
+        <div class="subtitle">Private • Secure • Free</div>
+    </header>
 
     <div class="container">
         <h2>🔗 Link to QR Code</h2>
-        <p>Paste a link (from Google Drive, Dropbox, YouTube, etc.) to get a QR code.</p>
-        <input type="text" id="linkInput" placeholder="Paste your link here...">
+        <p>Paste any link to generate a QR code instantly.</p>
+        <input type="text" id="linkInput" placeholder="https://example.com">
         <button onclick="makeQR()">Generate QR Code</button>
         <div id="qrcode"></div>
     </div>
 
     <div class="container">
+        <h2>🔐 Secure Password Generator</h2>
+        <p>Create a strong, unhackable password.</p>
+        <div id="passwordResult" class="password-display">Click Generate</div>
+        <button onclick="generatePassword()">Generate Secure Password</button>
+        <button onclick="copyPassword()" style="margin-top:10px; background-color:#6c757d;">Copy to Clipboard</button>
+    </div>
+
+    <div class="container">
         <h2>🖼️ PNG to JPG Converter</h2>
-        <p>Select a PNG image to convert it to JPG immediately. Runs 100% on your device.</p>
+        <p>Convert images locally. Your files never leave your device.</p>
         <input type="file" id="fileInput" accept="image/png">
-        <br><br>
         <canvas id="canvas" style="display:none;"></canvas>
-        <button id="downloadBtn" style="display:none; background-color: #28a745;">Download JPG Now</button>
+        <br><br>
+        <button id="downloadBtn" style="display:none; background-color: #28a745;">Download JPG Result</button>
+    </div>
+
+    <div class="container">
+        <h2>📜 Your History</h2>
+        <p>Saved automatically on this device.</p>
+        <div id="historyList"></div>
+        <button class="clear-btn" onclick="clearHistory()">Clear History</button>
     </div>
 
     <div class="footer">
-        <p>
-            Built by <strong>[YOUR NAME HERE]</strong>
-            <br>
-            <span style="font-size: 0.8rem;">Co-piloted by Google Gemini</span>
-        </p>
-        <p style="font-size: 0.75rem;">
-            &copy; 2024 SafeTools. All rights reserved.
-        </p>
+        <p>Built by <strong>[YOUR NAME HERE]</strong></p>
+        <p>Co-piloted by Google Gemini</p>
+        <p>&copy; 2024 SafeTools. All rights reserved.</p>
     </div>
 
     <script>
-        // --- LOGIC FOR QR CODE ---
+        // --- 1. HISTORY SYSTEM ---
+        function addToHistory(action, detail) {
+            const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString();
+            const newItem = { action, detail, time: timestamp };
+            
+            // Add to beginning of list
+            history.unshift(newItem);
+            
+            // Keep only last 10 items
+            if(history.length > 10) history.pop();
+            
+            localStorage.setItem('safeToolsHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
+            const list = document.getElementById('historyList');
+            list.innerHTML = ""; // Clear current list
+
+            if (history.length === 0) {
+                list.innerHTML = "<p style='color:#999; text-align:center;'>No history yet.</p>";
+                return;
+            }
+
+            history.forEach(item => {
+                list.innerHTML += `
+                    <div class="history-item">
+                        <div><strong>${item.action}</strong><br>${item.detail}</div>
+                        <div class="timestamp">${item.time}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function clearHistory() {
+            if(confirm("Are you sure you want to delete your history?")) {
+                localStorage.removeItem('safeToolsHistory');
+                renderHistory();
+            }
+        }
+
+        // Load history when page opens
+        window.onload = renderHistory;
+
+
+        // --- 2. QR CODE LOGIC ---
         function makeQR() {
             const input = document.getElementById("linkInput").value;
             const container = document.getElementById("qrcode");
             
-            if(input === "") {
-                alert("Please paste a link first!");
-                return;
-            }
+            if(input === "") { alert("Please paste a link first!"); return; }
 
-            container.innerHTML = ""; // Clear previous QR
-            new QRCode(container, {
-                text: input,
-                width: 128,
-                height: 128
-            });
+            container.innerHTML = ""; 
+            new QRCode(container, { text: input, width: 128, height: 128 });
+            
+            // Save to history
+            addToHistory("QR Code Created", input.substring(0, 25) + "...");
         }
 
-        // --- LOGIC FOR IMAGE CONVERTER ---
+
+        // --- 3. PASSWORD GENERATOR LOGIC ---
+        function generatePassword() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            let password = "";
+            for (let i = 0; i < 16; i++) {
+                const randomValues = new Uint32Array(1);
+                window.crypto.getRandomValues(randomValues);
+                password += chars[randomValues[0] % chars.length];
+            }
+            document.getElementById("passwordResult").innerText = password;
+            
+            // Save to history (but not the actual password for security!)
+            addToHistory("Password Generated", "A secure password was created");
+        }
+
+        function copyPassword() {
+            const text = document.getElementById("passwordResult").innerText;
+            if (text === "Click Generate") return;
+            navigator.clipboard.writeText(text);
+            alert("Password copied!");
+        }
+
+
+        // --- 4. IMAGE CONVERTER LOGIC ---
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -129,21 +254,18 @@
 
         fileInput.addEventListener('change', function(e) {
             if(e.target.files.length === 0) return;
-
             const img = new Image();
             img.onload = function() {
-                // Set canvas to image size
                 canvas.width = img.width;
                 canvas.height = img.height;
-                // Draw white background (for transparency in PNGs)
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                // Draw the image
                 ctx.drawImage(img, 0, 0);
-                
-                // Show the download button
                 downloadBtn.style.display = 'block';
-                downloadBtn.innerText = "Download JPG (Ready)";
+                downloadBtn.innerText = "Download JPG";
+                
+                // Save to history
+                addToHistory("Image Converted", "PNG -> JPG conversion");
             }
             img.src = URL.createObjectURL(e.target.files[0]);
         });
@@ -156,6 +278,5 @@
             link.click();
         });
     </script>
-
 </body>
 </html>
