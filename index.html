@@ -3,93 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Unblocked Search</title>
+    <title>Unblocked Video Player</title>
     <style>
-        body { font-family: sans-serif; background: #222; color: #fff; text-align: center; padding: 20px; }
-        input { padding: 10px; width: 70%; max-width: 400px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; cursor: pointer; background: #e62117; color: white; border: none; border-radius: 5px; font-weight: bold; }
-        button:hover { background: #cc1f16; }
-        #results { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; gap: 20px; }
-        .video-card { background: #333; padding: 10px; border-radius: 8px; width: 300px; text-align: left; }
-        .video-card img { width: 100%; border-radius: 5px; }
-        .video-card h3 { font-size: 16px; margin: 10px 0 5px; }
-        /* The player overlay */
-        #player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
-        iframe { width: 80%; height: 80%; max-width: 900px; border: none; }
-        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 30px; cursor: pointer; }
+        body { 
+            font-family: sans-serif; 
+            background: #1a1a1a; 
+            color: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 50px;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .controls {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        input { 
+            padding: 12px; 
+            width: 60%; 
+            border-radius: 5px; 
+            border: 1px solid #444; 
+            background: #333; 
+            color: white; 
+            margin-bottom: 10px;
+        }
+
+        select {
+            padding: 12px;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            border: 1px solid #444;
+            cursor: pointer;
+        }
+
+        button { 
+            padding: 12px 25px; 
+            cursor: pointer; 
+            background: #e62117; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            font-size: 16px;
+        }
+        
+        button:hover { background: #ff3333; }
+
+        .player-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none; /* Hidden until video loads */
+            border: 2px solid #333;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Video Search</h1>
-    <input type="text" id="searchInput" placeholder="Search for a video...">
-    <button onclick="searchVideos()">Search</button>
+    <div class="container">
+        <h1>Video Link Converter</h1>
+        <p>Paste a YouTube link below to watch it through a proxy.</p>
 
-    <div id="results"></div>
+        <div class="controls">
+            <input type="text" id="ytLink" placeholder="Paste YouTube link here (e.g. https://www.youtube.com/watch?v=...)">
+            
+            <select id="serverSelect">
+                <option value="https://piped.video">Server 1 (Piped Main)</option>
+                <option value="https://yewtu.be">Server 2 (YewTube - Reliable)</option>
+                <option value="https://inv.tux.pizza">Server 3 (Tux Pizza)</option>
+                <option value="https://vid.puffyan.us">Server 4 (Puffyan)</option>
+            </select>
 
-    <div id="player-modal">
-        <span class="close-btn" onclick="closePlayer()">&times;</span>
-        <iframe id="videoFrame" src="" allowfullscreen></iframe>
+            <button onclick="loadVideo()">Watch Video</button>
+        </div>
+
+        <div class="player-wrapper" id="playerWrapper">
+            <iframe id="videoFrame" src="" allowfullscreen></iframe>
+        </div>
     </div>
 
     <script>
-        // We use a public Piped API instance to search without an API key
-        // If this one is slow, you can swap "pipedapi.kavin.rocks" with "api.piped.io"
-        const API_URL = "https://pipedapi.kavin.rocks"; 
-
-        async function searchVideos() {
-            const query = document.getElementById('searchInput').value;
-            const resultsDiv = document.getElementById('results');
+        function loadVideo() {
+            const linkInput = document.getElementById('ytLink').value;
+            const serverUrl = document.getElementById('serverSelect').value;
+            const playerWrapper = document.getElementById('playerWrapper');
+            const iframe = document.getElementById('videoFrame');
             
-            if (!query) return;
+            let videoId = "";
 
-            resultsDiv.innerHTML = "<p>Searching...</p>";
+            // 1. Extract the Video ID using Regex
+            // Supports: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = linkInput.match(regex);
 
-            try {
-                // Fetch results from the Piped API
-                const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}&filter=all`);
-                const data = await response.json();
-
-                resultsDiv.innerHTML = ""; // Clear "Searching..." text
-
-                // Loop through results and create cards
-                data.items.forEach(item => {
-                    // Only show videos (skip channels/playlists for simplicity)
-                    if (item.type === "stream") { 
-                        const card = document.createElement('div');
-                        card.className = "video-card";
-                        
-                        // Create the HTML for each video result
-                        card.innerHTML = `
-                            <img src="${item.thumbnail}" onclick="playVideo('${item.url}')" style="cursor:pointer">
-                            <h3>${item.title}</h3>
-                            <p>${item.uploaderName}</p>
-                            <button onclick="playVideo('${item.url}')">Watch</button>
-                        `;
-                        resultsDiv.appendChild(card);
-                    }
-                });
-
-            } catch (error) {
-                console.error(error);
-                resultsDiv.innerHTML = "<p>Error fetching videos. Try again or check console.</p>";
+            if (match && match[1]) {
+                videoId = match[1];
+            } else {
+                alert("Could not find a valid Video ID in that link. Please check the URL.");
+                return;
             }
-        }
 
-        function playVideo(url) {
-            // Extract the ID from the URL (e.g., /watch?v=12345 -> 12345)
-            const videoId = url.split("v=")[1];
-            
-            // Set the iframe to use Piped's player (Proxied) instead of YouTube's
-            const embedUrl = `https://piped.video/embed/${videoId}`;
-            
-            document.getElementById('videoFrame').src = embedUrl;
-            document.getElementById('player-modal').style.display = "flex";
-        }
+            // 2. Construct the Proxy Embed URL
+            // Format: [Server_URL]/embed/[Video_ID]
+            const embedUrl = `${serverUrl}/embed/${videoId}`;
 
-        function closePlayer() {
-            document.getElementById('player-modal').style.display = "none";
-            document.getElementById('videoFrame').src = ""; // Stop audio
+            // 3. Load it
+            iframe.src = embedUrl;
+            playerWrapper.style.display = "block";
         }
     </script>
 
