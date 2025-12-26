@@ -20,6 +20,17 @@
             margin: 0;
             padding: 20px;
             min-height: 100vh;
+            transition: background 0.2s;
+        }
+
+        /* INTRUDER MODE (Flashing Red) */
+        body.intruder-alert {
+            animation: redFlash 0.5s infinite;
+        }
+        @keyframes redFlash {
+            0% { background: #ff0000; }
+            50% { background: #000000; }
+            100% { background: #ff0000; }
         }
 
         /* HEADER & GEAR */
@@ -92,7 +103,7 @@
         }
         button.action-btn:hover { transform: translateY(-2px); }
 
-        /* --- PRIVACY CURTAIN 5.0 (ARROWS & GOOFY) --- */
+        /* --- PRIVACY CURTAIN 6.0 (TRIPWIRE & GOOFY) --- */
         #privacyCurtain {
             display: none;
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -231,7 +242,7 @@
             <div class="terms-scroll">
                 1. General Acceptance: By using SafeTools, you agree to these terms.<br>
                 2. Security: You may now choose between PIN, Password, or Arrow Sequence.<br>
-                3. False Positives: VirusTotal scores of 1/98 are normal for new sites.<br>
+                3. Intruder Alert: Switching tabs or exiting fullscreen while locked will trigger an alarm.<br>
                 4. Liability: Use these tools responsibly.
             </div>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
@@ -243,7 +254,12 @@
     </div>
 
     <div id="privacyCurtain">
-        <div class="goofy-bouncer">Safe Tools</div>
+        <div id="bouncingText" class="goofy-bouncer">Safe Tools</div>
+        
+        <div id="intruderMessage" style="display:none; color: red; font-size: 2rem; font-weight: 900; animation: shake 0.5s infinite; text-align:center;">
+            ⚠️ INTRUDER DETECTED ⚠️<br>
+            <span style="font-size:1rem; color:white;">RETURN TO FULLSCREEN</span>
+        </div>
 
         <div id="mainLockIcon" class="main-lock-icon">🔒</div>
         <div id="lockMsg" style="color: #ff4757; font-weight: bold; font-family: monospace; height: 20px; opacity:0; transition:opacity 0.2s;">ACCESS DENIED</div>
@@ -323,8 +339,8 @@
     </div>
 
     <div id="tab-shield" class="tool-content active-tool">
-        <h2>🛡️ Privacy Shield 5.0</h2>
-        <p style="color:#666;">Choose your Lock Type. The other two will appear on the lock screen as decoys.</p>
+        <h2>🛡️ Privacy Shield 6.0</h2>
+        <p style="color:#666;">Select Lock Type. <strong>Intruder Alert</strong> will sound if someone exits fullscreen.</p>
         
         <div class="lock-selection">
             <div class="lock-option selected" id="opt-pin" onclick="selectLockType('pin')">
@@ -463,10 +479,16 @@
         let currentPassMode = 'random';
         
         // LOCK GLOBALS
-        let chosenLockType = 'pin'; // pin, pass, arrows
-        let savedKey = "1234"; // pin, password, or arrow string (e.g., "UUDL")
-        let tempPin = ""; // Current pin typing
-        let tempArrows = ""; // Current arrow typing
+        let chosenLockType = 'pin';
+        let savedKey = "1234";
+        let tempPin = "";
+        let tempArrows = "";
+        let isLockedState = false;
+        
+        // AUDIO CONTEXT FOR SIREN
+        let audioCtx;
+        let oscillator;
+        let gainNode;
 
         // --- COMPLIANCE & INIT ---
         function checkCompliance() {
@@ -501,9 +523,7 @@
         function addSetArrow(e, dir) {
             e.stopPropagation();
             const input = document.getElementById('setArrowInput');
-            if(input.value.length < 10) {
-                input.value += dir;
-            }
+            if(input.value.length < 10) input.value += dir;
         }
         function clearSetArrows(e) {
             e.stopPropagation();
@@ -512,7 +532,6 @@
 
         function activateShield() {
             let keyToSave = "";
-            
             if(chosenLockType === 'pin') {
                 keyToSave = document.getElementById('setPinInput').value;
                 if(keyToSave.length !== 4 || isNaN(keyToSave)) { alert("Enter a 4-digit PIN."); return; }
@@ -524,11 +543,15 @@
                 if(keyToSave.length < 2) { alert("Enter at least 2 directions."); return; }
             }
 
-            // Save & Lock
+            // INIT AUDIO CONTEXT (Needs user gesture)
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+
             savedKey = keyToSave;
             localStorage.setItem('lockType', chosenLockType);
             localStorage.setItem('lockKey', savedKey);
             localStorage.setItem('isLocked', 'true');
+            isLockedState = true;
             
             showLockScreen();
             
@@ -538,7 +561,12 @@
         function showLockScreen() {
             const curtain = document.getElementById('privacyCurtain');
             curtain.style.display = 'flex';
-            curtain.style.top = '0'; 
+            curtain.style.top = '0';
+            
+            // RESET VISUALS
+            document.body.classList.remove('intruder-alert');
+            document.getElementById('intruderMessage').style.display = 'none';
+            document.getElementById('bouncingText').innerText = "Safe Tools";
             document.getElementById('mainLockIcon').innerText = "🔒";
             document.getElementById('mainLockIcon').classList.remove('unlocking');
             
@@ -548,6 +576,47 @@
             document.getElementById('lockPassInput').value = "";
         }
 
+        // --- TRIPWIRE SYSTEM ---
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && isLockedState) {
+                triggerAlarm();
+            }
+        });
+
+        window.addEventListener('blur', () => {
+            if (isLockedState) triggerAlarm();
+        });
+
+        function triggerAlarm() {
+            // Visuals
+            document.body.classList.add('intruder-alert');
+            document.getElementById('bouncingText').innerText = "";
+            document.getElementById('intruderMessage').style.display = 'block';
+            
+            // Audio Siren
+            if(audioCtx) {
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+                oscillator.frequency.linearRampToValueAtTime(880, audioCtx.currentTime + 0.5);
+                
+                // Siren LFO logic requires more code, simpler oscillation here:
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                
+                // Create a rhythmic loop manually
+                let flag = true;
+                const sirenInterval = setInterval(() => {
+                    if(!isLockedState) { clearInterval(sirenInterval); oscillator.stop(); return; }
+                    oscillator.frequency.setValueAtTime(flag ? 880 : 440, audioCtx.currentTime);
+                    flag = !flag;
+                }, 300);
+            }
+        }
+
         // --- LOCK INTERACTION ---
         function enterLockInput(source, val) {
             if (source === 'pin') {
@@ -555,7 +624,6 @@
             } else if (source === 'arrow') {
                 if(tempArrows.length < 12) { 
                     tempArrows += val; 
-                    // Visual feedback for arrow
                     const arrowSymbols = {'U':'▲', 'D':'▼', 'L':'◀', 'R':'▶'};
                     document.getElementById('arrowDisplay').innerText += arrowSymbols[val];
                 }
@@ -575,10 +643,7 @@
 
         function submitLock(methodUsed) {
             let success = false;
-
-            // CHECK: Did they use the RIGHT method?
             if (methodUsed === chosenLockType) {
-                // VERIFY: Is the key correct?
                 if (chosenLockType === 'pin' && tempPin === savedKey) success = true;
                 else if (chosenLockType === 'pass' && document.getElementById('lockPassInput').value === savedKey) success = true;
                 else if (chosenLockType === 'arrows' && tempArrows === savedKey) success = true;
@@ -596,10 +661,15 @@
             icon.innerText = "🔓";
             icon.classList.add('unlocking');
             
+            // Stop Alarm
+            if(oscillator) { try { oscillator.stop(); } catch(e){} }
+            document.body.classList.remove('intruder-alert');
+            
             setTimeout(() => {
                 const curtain = document.getElementById('privacyCurtain');
-                curtain.style.top = '-100vh'; // Slide Up Animation
+                curtain.style.top = '-100vh';
                 localStorage.setItem('isLocked', 'false');
+                isLockedState = false;
                 if (document.exitFullscreen) document.exitFullscreen();
                 setTimeout(() => { curtain.style.display = 'none'; }, 500);
             }, 500);
@@ -610,11 +680,8 @@
             const msg = document.getElementById('lockMsg');
             icon.classList.add('shaking');
             msg.style.opacity = '1';
-            
             setTimeout(() => { icon.classList.remove('shaking'); }, 500);
             setTimeout(() => { msg.style.opacity = '0'; }, 1000);
-            
-            // Reset inputs
             tempPin = ""; updatePinDisplay();
             tempArrows = ""; document.getElementById('arrowDisplay').innerText = "";
             document.getElementById('lockPassInput').value = "";
