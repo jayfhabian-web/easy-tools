@@ -3,140 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unblocked Video Player</title>
+    <title>Instant Video Embedder</title>
     <style>
-        body { 
-            font-family: sans-serif; 
-            background: #1a1a1a; 
-            color: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh;
-            margin: 0;
-            padding-top: 50px;
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 800px;
-            text-align: center;
-        }
-
-        .controls {
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        input { 
-            padding: 12px; 
-            width: 60%; 
-            border-radius: 5px; 
-            border: 1px solid #444; 
-            background: #333; 
-            color: white; 
-            margin-bottom: 10px;
-        }
-
-        select {
-            padding: 12px;
-            border-radius: 5px;
-            background: #333;
+        body {
+            background-color: #121212;
             color: white;
-            border: 1px solid #444;
-            cursor: pointer;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        button { 
-            padding: 12px 25px; 
-            cursor: pointer; 
-            background: #e62117; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            font-weight: bold; 
+        h1 { margin-bottom: 20px; }
+
+        input {
+            width: 80%;
+            max-width: 600px;
+            padding: 15px;
             font-size: 16px;
+            border-radius: 30px;
+            border: 2px solid #e62117;
+            background: #222;
+            color: white;
+            outline: none;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s;
         }
-        
-        button:hover { background: #ff3333; }
 
-        .player-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
+        input:focus {
+            box-shadow: 0 0 15px rgba(230, 33, 23, 0.5);
+            background: #333;
+        }
+
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9;
             background: #000;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            display: none; /* Hidden until video loads */
-            border: 2px solid #333;
+            display: none; /* Hidden until valid link is pasted */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            border: 0;
+            border: none;
+        }
+
+        .status {
+            color: #888;
+            font-size: 14px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Video Link Converter</h1>
-        <p>Paste a YouTube link below to watch it through a proxy.</p>
+    <h1>Paste YouTube Link Below</h1>
+    
+    <input type="text" id="linkInput" placeholder="Paste link here (Ctrl+V)..." autofocus>
 
-        <div class="controls">
-            <input type="text" id="ytLink" placeholder="Paste YouTube link here (e.g. https://www.youtube.com/watch?v=...)">
-            
-            <select id="serverSelect">
-                <option value="https://piped.video">Server 1 (Piped Main)</option>
-                <option value="https://yewtu.be">Server 2 (YewTube - Reliable)</option>
-                <option value="https://inv.tux.pizza">Server 3 (Tux Pizza)</option>
-                <option value="https://vid.puffyan.us">Server 4 (Puffyan)</option>
-            </select>
-
-            <button onclick="loadVideo()">Watch Video</button>
-        </div>
-
-        <div class="player-wrapper" id="playerWrapper">
-            <iframe id="videoFrame" src="" allowfullscreen></iframe>
-        </div>
+    <div class="video-container" id="playerBox">
+        <iframe id="videoFrame" src="" allowfullscreen></iframe>
     </div>
 
+    <p class="status" id="statusText">Waiting for link...</p>
+
     <script>
-        function loadVideo() {
-            const linkInput = document.getElementById('ytLink').value;
-            const serverUrl = document.getElementById('serverSelect').value;
-            const playerWrapper = document.getElementById('playerWrapper');
-            const iframe = document.getElementById('videoFrame');
+        const input = document.getElementById('linkInput');
+        const playerBox = document.getElementById('playerBox');
+        const videoFrame = document.getElementById('videoFrame');
+        const statusText = document.getElementById('statusText');
+
+        // We listen for the "input" event (fires instantly when you paste or type)
+        input.addEventListener('input', function() {
+            const url = input.value.trim();
             
-            let videoId = "";
+            // Regex to find the 11-character YouTube ID
+            // Works on: youtube.com, youtu.be, m.youtube.com
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
 
-            // 1. Extract the Video ID using Regex
-            // Supports: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
-            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-            const match = linkInput.match(regex);
-
-            if (match && match[1]) {
-                videoId = match[1];
+            if (match && match[2].length === 11) {
+                const videoId = match[2];
+                
+                // CONVERSION HAPPENS HERE:
+                // We inject the ID into a Piped URL (Privacy Proxy)
+                // If 'piped.video' is blocked, change this to 'yewtu.be'
+                const embedUrl = `https://piped.video/embed/${videoId}`;
+                
+                videoFrame.src = embedUrl;
+                playerBox.style.display = 'block';
+                statusText.innerText = "Playing via Proxy (Unblocked)";
+                
+                // Optional: Clear input for a cleaner look
+                // input.value = ""; 
             } else {
-                alert("Could not find a valid Video ID in that link. Please check the URL.");
-                return;
+                // Hide player if link is invalid
+                playerBox.style.display = 'none';
+                videoFrame.src = "";
+                statusText.innerText = "Invalid YouTube link...";
             }
-
-            // 2. Construct the Proxy Embed URL
-            // Format: [Server_URL]/embed/[Video_ID]
-            const embedUrl = `${serverUrl}/embed/${videoId}`;
-
-            // 3. Load it
-            iframe.src = embedUrl;
-            playerWrapper.style.display = "block";
-        }
+        });
     </script>
 
 </body>
