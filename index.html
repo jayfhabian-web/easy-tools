@@ -1,141 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeTools - Free & Secure</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        /* This CSS makes the site look clean and modern */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
+<style>
+        .footer {
+            margin-top: 50px; /* Pushes the footer down away from the tools */
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6; /* A subtle line on top */
+            padding-top: 20px;
+            padding-bottom: 20px;
             width: 100%;
-            margin-bottom: 20px;
+            max-width: 500px; /* Keeps it aligned with your tools */
         }
-        h1 { color: #2c3e50; text-align: center; }
-        h2 { color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input[type="text"] {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
         }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-        button:hover { background-color: #0056b3; }
-        #qrcode {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .note {
-            font-size: 0.8rem;
-            color: #666;
-            background: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
+        .footer a:hover {
+            text-decoration: underline;
         }
     </style>
-</head>
-<body>
 
-    <h1>SafeTools</h1>
-
-    <div class="container">
-        <h2>🔗 Link to QR Code</h2>
-        <p>Paste a link (from Google Drive, Dropbox, YouTube, etc.) to get a QR code.</p>
-        <input type="text" id="linkInput" placeholder="Paste your link here...">
-        <button onclick="makeQR()">Generate QR Code</button>
-        <div id="qrcode"></div>
+    <div class="footer">
+        <p>
+            Built by <strong>[Fhabian Feliciano]</strong>
+            <br>
+            <span style="font-size: 0.8rem;">Co-piloted by Google Gemini</span>
+        </p>
+        <p style="font-size: 0.75rem;">
+            &copy; 2024 SafeTools. All rights reserved.
+        </p>
     </div>
+    ```
 
-    <div class="container">
-        <h2>🖼️ PNG to JPG Converter</h2>
-        <p>Select a PNG image to convert it to JPG immediately. Runs 100% on your device.</p>
-        <input type="file" id="fileInput" accept="image/png">
-        <br><br>
-        <canvas id="canvas" style="display:none;"></canvas>
-        <button id="downloadBtn" style="display:none; background-color: #28a745;">Download JPG Now</button>
-    </div>
+### Step 2: Paste it in the right spot
+This is the most important part. You need to paste this code **at the very bottom of your file**, but **inside** the body.
 
-    <script>
-        // --- LOGIC FOR QR CODE ---
-        function makeQR() {
-            const input = document.getElementById("linkInput").value;
-            const container = document.getElementById("qrcode");
-            
-            if(input === "") {
-                alert("Please paste a link first!");
-                return;
-            }
+1.  Go back to your GitHub repository and open `index.html`.
+2.  Click the **Pencil Icon** ✏️ to edit the file.
+3.  Scroll all the way to the bottom.
+4.  Find the tag that looks like this: `</body>` and `</html>`.
+5.  Paste the code **RIGHT ABOVE** the `</body>` tag.
 
-            container.innerHTML = ""; // Clear previous QR
-            new QRCode(container, {
-                text: input,
-                width: 128,
-                height: 128
-            });
-        }
+It should look like this when you are done:
 
-        // --- LOGIC FOR IMAGE CONVERTER ---
-        const fileInput = document.getElementById('fileInput');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const downloadBtn = document.getElementById('downloadBtn');
-
-        fileInput.addEventListener('change', function(e) {
-            if(e.target.files.length === 0) return;
-
-            const img = new Image();
-            img.onload = function() {
-                // Set canvas to image size
-                canvas.width = img.width;
-                canvas.height = img.height;
-                // Draw white background (for transparency in PNGs)
-                ctx.fillStyle = "#FFFFFF";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                // Draw the image
-                ctx.drawImage(img, 0, 0);
-                
-                // Show the download button
-                downloadBtn.style.display = 'block';
-                downloadBtn.innerText = "Download JPG (Ready)";
-            }
-            img.src = URL.createObjectURL(e.target.files[0]);
-        });
-
-        downloadBtn.addEventListener('click', function() {
-            const jpgUrl = canvas.toDataURL('image/jpeg', 0.9);
-            const link = document.createElement('a');
-            link.download = 'converted-image.jpg';
-            link.href = jpgUrl;
-            link.click();
-        });
+```html
+    ... (all your script code is up here) ...
     </script>
 
-</body>
+    </body>
 </html>
