@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault0 | Media</title>
+    <title>Vault0 | Cinema</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #121212; /* Deep dark for media viewing */
-            --panel: #1e1e1e;
+            --bg: #000000;
+            --panel: #111111;
             --text: #e0e0e0;
-            --accent: #bb86fc; /* Soft Purple for "Audio" feel */
-            --accent-hover: #9955ee;
+            --accent: #e11d48; /* Netflix/YouTube Red color */
             --border: #333;
         }
 
@@ -36,35 +35,39 @@
         }
 
         .brand {
-            font-family: 'Chakra Petch', sans-serif; font-size: 1.4rem; font-weight: 700;
-            color: white; display: flex; align-items: center; gap: 10px;
+            font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700;
+            color: white; white-space: nowrap;
         }
         .brand span { color: var(--accent); }
 
         /* --- CONTROLS --- */
         .controls {
-            display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 800px;
+            display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 900px;
         }
 
         .instance-select {
-            background: #2c2c2c; color: #fff; border: 1px solid var(--border);
-            padding: 10px; border-radius: 6px; font-size: 0.9rem; cursor: pointer;
-            width: 160px;
+            background: #222; color: #fff; border: 1px solid var(--border);
+            padding: 10px; border-radius: 4px; font-size: 0.85rem; cursor: pointer;
+            width: 140px;
         }
 
-        .search-input {
-            background: #2c2c2c; border: 1px solid var(--border); color: white;
-            padding: 10px 15px; border-radius: 6px; flex-grow: 1; outline: none;
-            font-size: 0.95rem;
+        .input-group {
+            display: flex; flex-grow: 1; gap: 0;
         }
-        .search-input:focus { border-color: var(--accent); }
 
-        .play-btn {
-            background: var(--accent); color: #000; border: none;
-            padding: 0 24px; height: 40px; border-radius: 6px;
-            font-weight: 700; cursor: pointer; transition: 0.2s;
+        .url-input {
+            background: #222; border: 1px solid var(--border); color: white;
+            padding: 10px 15px; border-radius: 4px 0 0 4px; flex-grow: 1; outline: none;
+            font-size: 0.95rem; border-right: none;
         }
-        .play-btn:hover { background: var(--accent-hover); }
+        .url-input:focus { border-color: var(--accent); }
+
+        .watch-btn {
+            background: var(--accent); color: white; border: none;
+            padding: 0 24px; border-radius: 0 4px 4px 0;
+            font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .watch-btn:hover { background: #be123c; }
 
         /* --- THEATER STAGE --- */
         .stage {
@@ -72,89 +75,91 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        iframe {
-            width: 100%; height: 100%; border: none;
-        }
+        iframe { width: 100%; height: 100%; border: none; }
 
+        /* --- OVERLAYS --- */
         .welcome-screen {
-            text-align: center; color: #666; max-width: 500px; padding: 20px;
+            text-align: center; color: #666; max-width: 600px; padding: 20px;
         }
-        .welcome-icon { font-size: 4rem; margin-bottom: 20px; color: #333; }
         .hidden { display: none !important; }
-
-        .tips {
-            font-size: 0.8rem; margin-top: 15px; color: #555;
-            background: #1a1a1a; padding: 10px; border-radius: 8px;
+        
+        .mode-toggle {
+            font-size: 0.8rem; color: #666; cursor: pointer; margin-left: 10px;
         }
+        .mode-toggle:hover { color: #fff; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-            Vault<span>0</span> Audio
-        </div>
+        <div class="brand">Vault<span>0</span> Cinema</div>
         
         <div class="controls">
-            <select id="instance" class="instance-select" title="Change this if video is blocked">
-                <option value="https://piped.video">Piped (Main)</option>
-                <option value="https://piped.kavin.rocks">Piped (Backup 1)</option>
-                <option value="https://yewtu.be">Invidious (NL)</option>
-                <option value="https://invidious.drgns.space">Invidious (US)</option>
-                <option value="https://vid.puffyan.us">Puffyan (Secure)</option>
+            <select id="server" class="instance-select">
+                <option value="https://piped.video">Server: Main</option>
+                <option value="https://piped.kavin.rocks">Server: Backup 1</option>
+                <option value="https://yewtu.be">Server: Backup 2</option>
+                <option value="https://vid.puffyan.us">Server: Secure</option>
             </select>
 
-            <input type="text" id="searchInput" class="search-input" 
-                   placeholder="Search Artist, Song, or Podcast..." 
-                   autocomplete="off"
-                   onkeypress="if(event.key==='Enter') searchMedia()">
-            
-            <button class="play-btn" onclick="searchMedia()">Search</button>
+            <div class="input-group">
+                <input type="text" id="videoInput" class="url-input" 
+                       placeholder="Paste YouTube Link (or search topic)..." 
+                       onkeypress="if(event.key==='Enter') loadVideo()">
+                <button class="watch-btn" onclick="loadVideo()">Play</button>
+            </div>
         </div>
     </header>
 
     <div class="stage">
         <div id="welcome" class="welcome-screen">
-            <div class="welcome-icon">🎧</div>
-            <h2>Private Audio Streamer</h2>
-            <p>Search for any YouTube content safely. <br>No ads. No Google tracking accounts.</p>
-            
-            <div class="tips">
-                <strong>Tip:</strong> If the screen stays white or shows an error, change the "Piped (Main)" dropdown to a different server.
-            </div>
+            <h1 style="color:#333; margin-bottom:10px;">Education Mode</h1>
+            <p>Paste the blocked YouTube link above.</p>
+            <p style="font-size:0.9rem; color:#444;">
+                This tool extracts the Video ID and plays it via a secure proxy.<br>
+                Teachers/Filters will not see you are on YouTube.
+            </p>
         </div>
 
-        <iframe id="mediaFrame" class="hidden" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+        <iframe id="cinemaFrame" class="hidden" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" allowfullscreen></iframe>
     </div>
 
     <script>
-        function searchMedia() {
-            const query = document.getElementById('searchInput').value.trim();
-            const instance = document.getElementById('instance').value;
+        function loadVideo() {
+            let input = document.getElementById('videoInput').value.trim();
+            const server = document.getElementById('server').value;
             
-            if(!query) return;
+            if(!input) return;
 
-            // Hide welcome screen
+            // HIDE WELCOME
             document.getElementById('welcome').classList.add('hidden');
-            
-            const frame = document.getElementById('mediaFrame');
+            const frame = document.getElementById('cinemaFrame');
             frame.classList.remove('hidden');
 
-            // Logic: Construct the search URL for the chosen privacy instance
-            // Most instances use /results?search_query=QUERY
-            const safeUrl = instance + '/results?search_query=' + encodeURIComponent(query);
+            // DETECT IF IT IS A LINK OR A SEARCH TERM
+            let finalSrc = "";
             
-            frame.src = safeUrl;
-        }
+            // Regex to find YouTube Video ID (v=XXXXX or youtu.be/XXXXX)
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = input.match(regExp);
 
-        // Add a listener to the dropdown so if they change instance, it reloads automatically
-        document.getElementById('instance').addEventListener('change', function() {
-            const query = document.getElementById('searchInput').value.trim();
-            if(query) {
-                searchMedia();
+            if (match && match[2].length === 11) {
+                // IT IS A DIRECT LINK -> Convert to Piped Embed
+                const videoId = match[2];
+                // We use /embed/ so it fills the screen nicely without extra site UI
+                finalSrc = server + "/embed/" + videoId + "?autoplay=1";
+            } else {
+                // IT IS A SEARCH TERM -> Search on Piped
+                finalSrc = server + "/results?search_query=" + encodeURIComponent(input);
             }
+
+            frame.src = finalSrc;
+        }
+        
+        // Auto-reload if server changes
+        document.getElementById('server').addEventListener('change', () => {
+             if(document.getElementById('videoInput').value) loadVideo();
         });
     </script>
 </body>
