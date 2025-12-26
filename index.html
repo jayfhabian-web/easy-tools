@@ -3,264 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault0 | Omni</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>Vault0 Essential</title>
     <style>
-        :root {
-            --bg: #202124;
-            --panel: #303134;
-            --text: #e8eaed;
-            --accent: #8ab4f8; 
-            --border: #5f6368;
-            --hover: #3c4043;
-        }
-
         body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
+            font-family: sans-serif;
+            margin: 0; padding: 0;
+            background-color: #222; color: white;
             display: flex; flex-direction: column;
-            height: 100vh; overflow: hidden;
+            height: 100vh;
         }
 
-        /* --- HEADER --- */
-        .header {
-            padding: 20px; display: flex; flex-direction: column; align-items: center;
-            border-bottom: 1px solid var(--border); background: var(--bg);
-            position: relative;
-            z-index: 100; /* Header layer */
+        /* --- THE CONTROLS (Simple & Visible) --- */
+        .control-bar {
+            background: #333;
+            padding: 15px;
+            border-bottom: 2px solid #555;
+            display: flex; gap: 10px; align-items: center;
         }
 
-        .brand {
-            font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700;
-            color: white; margin-bottom: 20px;
-        }
-        .brand span { color: var(--accent); }
-
-        /* --- SERVER SELECTOR (FIXED) --- */
-        .server-container {
-            position: absolute; 
-            top: 20px; 
-            right: 20px;
-            display: flex; flex-direction: column; align-items: flex-end;
-            z-index: 2000; /* This ensures it sits ON TOP of everything */
+        select, input, button {
+            padding: 10px; font-size: 16px; border-radius: 4px; border: none;
         }
 
-        .server-select {
-            background: #111; color: #fff; border: 1px solid #555;
-            padding: 8px; border-radius: 6px; font-size: 0.8rem;
-            max-width: 180px; cursor: pointer;
-            outline: none;
-        }
-        .server-select:hover { border-color: var(--accent); }
-        
-        .status-msg {
-            font-size: 0.7rem; color: #f28b82; margin-top: 5px; 
-            display: none; text-align: right;
+        /* Server Picker */
+        #serverSelect {
+            background: #000; color: #0f0; /* Bright green text so you see it */
+            border: 1px solid #555;
+            max-width: 200px;
         }
 
-        /* --- SEARCH BAR --- */
-        .search-wrapper {
-            position: relative; width: 100%; max-width: 650px;
-            z-index: 150;
+        /* Input Box */
+        #inputBox {
+            flex-grow: 1;
+            background: #fff; color: #000;
         }
 
-        .search-input {
-            width: 100%; box-sizing: border-box;
-            background: var(--panel); border: 1px solid var(--border);
-            color: white; padding: 14px 20px; border-radius: 24px;
-            font-size: 1.1rem; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        /* The Button */
+        #goBtn {
+            background: #007bff; color: white;
+            font-weight: bold; cursor: pointer;
         }
-        .search-input:focus { background: #303134; box-shadow: 0 4px 8px rgba(0,0,0,0.3); border-color: transparent; }
-        
-        /* Suggestions Dropdown */
-        .suggestions-box {
-            position: absolute; top: 100%; left: 0; right: 0;
-            background: var(--panel); border-radius: 0 0 24px 24px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            display: none; flex-direction: column;
-            max-height: 400px; overflow-y: auto;
-            border-top: 1px solid var(--border); margin-top: -12px; padding-top: 15px;
-            z-index: 1000;
+        #goBtn:hover { background: #0056b3; }
+
+        /* --- THE VIEWER --- */
+        .viewer {
+            flex-grow: 1; background: #000;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .suggestion-item {
-            padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 15px;
-            color: #bdc1c6;
-        }
-        .suggestion-item:hover { background: var(--hover); color: white; }
-        .suggestion-item i { font-style: normal; font-size: 0.9rem; opacity: 0.5; }
-
-        /* --- VIEWPORT --- */
-        .viewport {
-            flex-grow: 1; position: relative; background: #000;
-        }
         iframe { width: 100%; height: 100%; border: none; }
 
-        .placeholder {
-            position: absolute; top:0; left:0; right:0; bottom:0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #9aa0a6; text-align: center;
+        .help-text {
+            color: #aaa; text-align: center;
         }
-        
-        .chips {
-            display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap;
-        }
-        .chip {
-            background: var(--panel); border: 1px solid var(--border); color: #e8eaed;
-            padding: 8px 16px; border-radius: 18px; font-size: 0.9rem; cursor: pointer;
-            transition: 0.2s;
-        }
-        .chip:hover { background: var(--hover); border-color: #777; }
-
-        .hidden { display: none !important; }
-
     </style>
 </head>
 <body>
 
-    <div class="server-container">
-        <select id="server" class="server-select" onchange="updateStatus()">
-            <option value="https://yewtu.be" selected>Server 1 (Netherlands)</option>
-            <option value="https://vid.puffyan.us">Server 2 (US - Secure)</option>
-            <option value="https://piped.video">Server 3 (Main Piped)</option>
-            <option value="https://piped.kavin.rocks">Server 4 (US - East)</option>
-            <option value="https://inv.tux.pizza">Server 5 (US - Tux)</option>
-            <option value="https://invidious.drgns.space">Server 6 (US - Dragons)</option>
-            <option value="https://piped.mha.fi">Server 7 (Europe)</option>
+    <div class="control-bar">
+        <select id="serverSelect">
+            <option value="https://yewtu.be">Server 1 (Invidious - NL)</option>
+            <option value="https://vid.puffyan.us">Server 2 (Invidious - US)</option>
+            <option value="https://inv.tux.pizza">Server 3 (Invidious - US)</option>
+            <option value="https://piped.video">Server 4 (Piped - Main)</option>
+            <option value="https://piped.kavin.rocks">Server 5 (Piped - US)</option>
         </select>
-        <div id="loadingWarn" class="status-msg">If spinning > 5s, try Server 2 ↗</div>
-    </div>
 
-    <div class="header">
-        <div class="brand">Vault<span>0</span> Omni</div>
+        <input type="text" id="inputBox" placeholder="Paste Link OR Type Search (e.g. 'Math History')" onkeypress="if(event.key==='Enter') loadVideo()">
         
-        <div class="search-wrapper">
-            <input type="text" id="input" class="search-input" 
-                   placeholder="Search anything (e.g. 'Avocado seed toxic')" 
-                   autocomplete="off"
-                   oninput="handleInput()" 
-                   onfocus="handleInput()"
-                   onkeypress="if(event.key==='Enter') runSearch(this.value)">
-            
-            <div id="suggestions" class="suggestions-box"></div>
-        </div>
-
-        <div class="chips">
-            <button class="chip" onclick="runSearch('How to tie a tie')">👔 How-To</button>
-            <button class="chip" onclick="runSearch('Space Documentary')">🪐 Space</button>
-            <button class="chip" onclick="runSearch('Is it safe to eat avocado seeds')">🥑 Food Facts</button>
-            <button class="chip" onclick="runSearch('Coding for beginners')">💻 Coding</button>
-            <button class="chip" onclick="runSearch('American Revolution')">📜 History</button>
-        </div>
+        <button id="goBtn" onclick="loadVideo()">GO</button>
     </div>
 
-    <div class="viewport">
-        <div id="welcome" class="placeholder">
-            <h2>Ready to search.</h2>
-            <p>Type anything above. The "Brain" will guess what you need.</p>
-        </div>
-        <iframe id="frame" class="hidden" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" allowfullscreen></iframe>
+    <div class="viewer">
+        <iframe id="videoFrame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" allowfullscreen></iframe>
     </div>
 
     <script>
-        // --- 300+ TOPIC BRAIN ---
-        const brain = [
-            "Are avocado seeds toxic to eat?", "Is it safe to eat apple seeds?", "Can you eat raw potatoes?",
-            "Why do cats purr?", "Why is the sky blue?", "How do airplanes fly?",
-            "What happens if you swallow gum?", "How to survive in the wild",
-            "How to tie a tie", "How to fix a zipper", "How to sew a button", "How to bake a cake",
-            "How to change a tire", "How to write a resume", "How to study for exams",
-            "How to solve a Rubiks cube", "How to do a cartwheel",
-            "American Revolution Documentary", "Civil War History", "World War II Summary",
-            "Ancient Egypt Pyramids", "Greek Mythology Explained", "Industrial Revolution",
-            "The Cold War Simple History", "Who was Napoleon?",
-            "Photosynthesis Explained", "Periodic Table Song", "Human Digestive System",
-            "How the heart works", "Solar System for kids", "Black Holes explained",
-            "Newton's Laws of Physics", "Cell Structure Biology",
-            "Algebra Basics", "Quadratic Formula Song", "Geometry Proofs",
-            "Python coding for beginners", "HTML and CSS tutorial", "How computers work",
-            "Shakespeare Macbeth Summary", "To Kill a Mockingbird Analysis", "Great Gatsby Summary",
-            "1984 George Orwell Summary", "Romeo and Juliet Explained",
-            "How to fall asleep fast", "Meditation for anxiety", "Lo-fi beats for studying"
-        ];
+        function loadVideo() {
+            const server = document.getElementById('serverSelect').value;
+            const input = document.getElementById('inputBox').value.trim();
+            const frame = document.getElementById('videoFrame');
 
-        const suggestionsBox = document.getElementById('suggestions');
-        const inputField = document.getElementById('input');
-        const warnMsg = document.getElementById('loadingWarn');
-
-        function handleInput() {
-            const val = inputField.value.toLowerCase();
-            suggestionsBox.innerHTML = ''; 
-
-            if (!val) {
-                suggestionsBox.style.display = 'none';
+            if (!input) {
+                alert("Please type something first!");
                 return;
             }
 
-            const matches = brain.filter(topic => topic.toLowerCase().includes(val));
-
-            if (matches.length > 0) {
-                matches.slice(0, 6).forEach(match => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.innerHTML = `<i>🔍</i> ${match}`;
-                    div.onclick = () => {
-                        inputField.value = match;
-                        suggestionsBox.style.display = 'none';
-                        runSearch(match);
-                    };
-                    suggestionsBox.appendChild(div);
-                });
-                suggestionsBox.style.display = 'flex';
-            } else {
-                suggestionsBox.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!document.querySelector('.search-wrapper').contains(e.target)) {
-                suggestionsBox.style.display = 'none';
-            }
-        });
-
-        function updateStatus() {
-            const serverName = document.getElementById('server').options[document.getElementById('server').selectedIndex].text;
-            // Briefly flash a checkmark or log? Not needed, simple is better.
-            if(inputField.value) runSearch(inputField.value);
-        }
-
-        function runSearch(query) {
-            if(!query) return;
-            
-            inputField.value = query; 
-            suggestionsBox.style.display = 'none';
-            document.getElementById('welcome').classList.add('hidden');
-            warnMsg.style.display = 'block'; // Show help tip
-            
-            const frame = document.getElementById('frame');
-            frame.classList.remove('hidden');
-
-            const server = document.getElementById('server').value;
-            
+            // --- DETECT IF LINK OR SEARCH ---
+            // Regex checks if it looks like a YouTube ID
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = query.match(regExp);
+            const match = input.match(regExp);
 
             if (match && match[2].length === 11) {
-                // If it's a link, play it
+                // IT IS A LINK: Use /embed/ (Works on both Piped and Invidious)
                 frame.src = server + "/embed/" + match[2] + "?autoplay=1";
             } else {
-                // If it's a search
-                if(server.includes('piped')) {
-                    // Piped search format
-                    frame.src = server + "/results?search_query=" + encodeURIComponent(query);
+                // IT IS A SEARCH: We must format it based on the server type
+                // Piped uses "search_query=", Invidious uses "q="
+                
+                if (server.includes('piped')) {
+                    frame.src = server + "/results?search_query=" + encodeURIComponent(input);
                 } else {
-                    // Invidious search format (slightly different)
-                    frame.src = server + "/search?q=" + encodeURIComponent(query);
+                    frame.src = server + "/search?q=" + encodeURIComponent(input);
                 }
             }
         }
