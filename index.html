@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault0 | Dual-View</title>
+    <title>Vault0 | Media</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --text: #f8fafc;
-            --accent: #38bdf8;
-            --border: #334155;
-            --danger: #ef4444;
+            --bg: #121212; /* Deep dark for media viewing */
+            --panel: #1e1e1e;
+            --text: #e0e0e0;
+            --accent: #bb86fc; /* Soft Purple for "Audio" feel */
+            --accent-hover: #9955ee;
+            --border: #333;
         }
 
         body {
@@ -23,67 +23,68 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            display: flex; flex-direction: column; 
+            display: flex; flex-direction: column;
             height: 100vh; overflow: hidden;
         }
 
-        /* --- TOP BAR --- */
+        /* --- HEADER --- */
         header {
             background: var(--panel);
-            padding: 12px 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid var(--border);
-            display: flex; gap: 15px; align-items: center;
-            height: 60px; box-sizing: border-box;
+            display: flex; gap: 15px; align-items: center; justify-content: space-between;
         }
 
-        .logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.2rem; white-space: nowrap; }
-        .logo span { color: var(--accent); }
+        .brand {
+            font-family: 'Chakra Petch', sans-serif; font-size: 1.4rem; font-weight: 700;
+            color: white; display: flex; align-items: center; gap: 10px;
+        }
+        .brand span { color: var(--accent); }
 
-        .url-bar-container {
-            flex-grow: 1; display: flex; gap: 10px;
+        /* --- CONTROLS --- */
+        .controls {
+            display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 800px;
         }
 
-        .url-input {
-            width: 100%; background: #0f172a; border: 1px solid var(--border);
-            color: white; padding: 8px 15px; border-radius: 6px; outline: none;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+        .instance-select {
+            background: #2c2c2c; color: #fff; border: 1px solid var(--border);
+            padding: 10px; border-radius: 6px; font-size: 0.9rem; cursor: pointer;
+            width: 160px;
         }
-        .url-input:focus { border-color: var(--accent); }
 
-        .btn {
-            background: var(--accent); color: #0f172a; border: none;
-            padding: 0 20px; font-weight: 600; border-radius: 6px; cursor: pointer;
-            white-space: nowrap;
+        .search-input {
+            background: #2c2c2c; border: 1px solid var(--border); color: white;
+            padding: 10px 15px; border-radius: 6px; flex-grow: 1; outline: none;
+            font-size: 0.95rem;
         }
-        .btn:hover { background: #7dd3fc; }
+        .search-input:focus { border-color: var(--accent); }
 
-        .btn-breakout {
-            background: transparent; border: 1px solid var(--accent); color: var(--accent);
-            display: flex; align-items: center; gap: 8px;
+        .play-btn {
+            background: var(--accent); color: #000; border: none;
+            padding: 0 24px; height: 40px; border-radius: 6px;
+            font-weight: 700; cursor: pointer; transition: 0.2s;
         }
-        .btn-breakout:hover { background: rgba(56, 189, 248, 0.1); }
+        .play-btn:hover { background: var(--accent-hover); }
 
-        /* --- MAIN VIEWPORT --- */
-        .viewport-container {
+        /* --- THEATER STAGE --- */
+        .stage {
             flex-grow: 1; position: relative; background: #000;
+            display: flex; justify-content: center; align-items: center;
         }
 
         iframe {
-            width: 100%; height: 100%; border: none; background: white;
+            width: 100%; height: 100%; border: none;
         }
 
-        /* Overlay when iframe is empty */
-        .placeholder {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: var(--bg); color: #64748b; pointer-events: none;
+        .welcome-screen {
+            text-align: center; color: #666; max-width: 500px; padding: 20px;
         }
-        .placeholder.hidden { display: none; }
+        .welcome-icon { font-size: 4rem; margin-bottom: 20px; color: #333; }
+        .hidden { display: none !important; }
 
-        /* --- INFO BAR --- */
-        .info-bar {
-            background: #1e293b; color: #94a3b8; font-size: 0.75rem;
-            padding: 5px 20px; text-align: center; border-top: 1px solid var(--border);
+        .tips {
+            font-size: 0.8rem; margin-top: 15px; color: #555;
+            background: #1a1a1a; padding: 10px; border-radius: 8px;
         }
 
     </style>
@@ -91,79 +92,70 @@
 <body>
 
     <header>
-        <div class="logo">Vault<span>0</span></div>
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            Vault<span>0</span> Audio
+        </div>
         
-        <div class="url-bar-container">
-            <input type="text" id="addressBar" class="url-input" 
-                   placeholder="Enter URL (e.g. example.com)..." 
-                   onkeypress="if(event.key==='Enter') loadSite()">
-            <button class="btn" onclick="loadSite()">Load View</button>
-            <button class="btn btn-breakout" onclick="breakout()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                Launch External
-            </button>
+        <div class="controls">
+            <select id="instance" class="instance-select" title="Change this if video is blocked">
+                <option value="https://piped.video">Piped (Main)</option>
+                <option value="https://piped.kavin.rocks">Piped (Backup 1)</option>
+                <option value="https://yewtu.be">Invidious (NL)</option>
+                <option value="https://invidious.drgns.space">Invidious (US)</option>
+                <option value="https://vid.puffyan.us">Puffyan (Secure)</option>
+            </select>
+
+            <input type="text" id="searchInput" class="search-input" 
+                   placeholder="Search Artist, Song, or Podcast..." 
+                   autocomplete="off"
+                   onkeypress="if(event.key==='Enter') searchMedia()">
+            
+            <button class="play-btn" onclick="searchMedia()">Search</button>
         </div>
     </header>
 
-    <div class="viewport-container">
-        <div id="placeholder" class="placeholder">
-            <div style="font-size:3rem; margin-bottom:10px;">🛡️</div>
-            <h2>Secure Viewport</h2>
-            <p>Enter a URL to attempt loading it internally.</p>
-            <p style="font-size:0.8rem; margin-top:20px; opacity:0.7;">
-                Note: If the screen stays white or shows an error,<br>
-                the site is blocking this view. Use "Launch External".
-            </p>
+    <div class="stage">
+        <div id="welcome" class="welcome-screen">
+            <div class="welcome-icon">🎧</div>
+            <h2>Private Audio Streamer</h2>
+            <p>Search for any YouTube content safely. <br>No ads. No Google tracking accounts.</p>
+            
+            <div class="tips">
+                <strong>Tip:</strong> If the screen stays white or shows an error, change the "Piped (Main)" dropdown to a different server.
+            </div>
         </div>
-        <iframe id="webFrame" sandbox="allow-forms allow-scripts allow-same-origin allow-popups" src=""></iframe>
-    </div>
 
-    <div class="info-bar">
-        System Local • Network filters still apply to internal views • Use Breakout if site fails to load
+        <iframe id="mediaFrame" class="hidden" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
     </div>
 
     <script>
-        function formatUrl(input) {
-            let url = input.trim();
-            if (!url) return null;
-            if (!url.startsWith('http')) {
-                // Determine if it looks like a domain or a search
-                if (url.includes('.') && !url.includes(' ')) {
-                    url = 'https://' + url;
-                } else {
-                    // Default to DuckDuckGo if it's not a URL
-                    url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
-                }
-            }
-            return url;
-        }
-
-        function loadSite() {
-            const input = document.getElementById('addressBar').value;
-            const url = formatUrl(input);
-            if (!url) return;
-
-            // Update UI
-            document.getElementById('placeholder').classList.add('hidden');
-            const frame = document.getElementById('webFrame');
+        function searchMedia() {
+            const query = document.getElementById('searchInput').value.trim();
+            const instance = document.getElementById('instance').value;
             
-            // Attempt to load
-            frame.src = url;
-        }
+            if(!query) return;
 
-        function breakout() {
-            const input = document.getElementById('addressBar').value;
-            const url = formatUrl(input);
+            // Hide welcome screen
+            document.getElementById('welcome').classList.add('hidden');
             
-            if (!url) {
-                alert("Please enter a URL first.");
-                return;
-            }
+            const frame = document.getElementById('mediaFrame');
+            frame.classList.remove('hidden');
 
-            // Launch using the Airlock method (New Tab)
-            // This is more likely to work if the iframe was blocked by X-Frame-Options
-            window.open(url, '_blank', 'noopener,noreferrer');
+            // Logic: Construct the search URL for the chosen privacy instance
+            // Most instances use /results?search_query=QUERY
+            const safeUrl = instance + '/results?search_query=' + encodeURIComponent(query);
+            
+            frame.src = safeUrl;
         }
+
+        // Add a listener to the dropdown so if they change instance, it reloads automatically
+        document.getElementById('instance').addEventListener('change', function() {
+            const query = document.getElementById('searchInput').value.trim();
+            if(query) {
+                searchMedia();
+            }
+        });
     </script>
 </body>
 </html>
