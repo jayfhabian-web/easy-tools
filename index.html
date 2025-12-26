@@ -6,14 +6,12 @@
     <title>SafeTools | Private & Secure</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        /* --- MODERN "GLASS" THEME --- */
+        /* --- GLOBAL STYLES --- */
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            /* Beautiful gradient background */
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             display: flex;
@@ -58,95 +56,60 @@
             border: 1px solid rgba(255,255,255,0.3);
         }
         .tab-btn {
-            background: transparent;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
+            background: transparent; border: none; padding: 10px 25px;
+            border-radius: 40px; cursor: pointer; font-weight: 600;
+            color: white; transition: all 0.3s ease; font-size: 0.95rem;
         }
         .tab-btn:hover { background: rgba(255,255,255,0.1); }
         .tab-btn.active {
-            background-color: white;
-            color: #764ba2;
+            background-color: white; color: #764ba2;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* TOOL CARDS (Glassmorphism) */
+        /* TOOL CARDS */
         .tool-content {
             display: none;
             background: rgba(255, 255, 255, 0.95);
-            padding: 2.5rem;
-            border-radius: 20px;
+            padding: 2.5rem; border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            max-width: 500px;
-            width: 100%;
+            max-width: 500px; width: 100%;
             animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             box-sizing: border-box;
         }
         .tool-content.active-tool { display: block; }
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { 
-            color: #4a4a4a; 
-            border-bottom: 2px solid #f0f0f0; 
-            padding-bottom: 15px; 
-            margin-top: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        h2 { color: #4a4a4a; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-top: 0; }
         
-        /* CONTROLS */
+        /* INPUTS & BUTTONS */
         label { font-weight: 600; font-size: 0.9rem; color: #666; display: block; margin-top: 15px; }
-        
         input, select {
             width: 100%; padding: 14px; margin: 8px 0;
             border: 2px solid #eee; border-radius: 10px;
             box-sizing: border-box; font-size: 1rem;
-            transition: border 0.2s;
-            background: #f9f9f9;
+            transition: border 0.2s; background: #f9f9f9;
         }
         input:focus, select:focus { border-color: #764ba2; outline: none; background: white; }
         
         button.action-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; border: none;
-            padding: 15px; border-radius: 10px; cursor: pointer;
-            font-size: 1rem; width: 100%; font-weight: 700;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 20px;
-            letter-spacing: 0.5px;
+            color: white; border: none; padding: 15px;
+            border-radius: 10px; cursor: pointer; font-size: 1rem;
+            width: 100%; font-weight: 700; margin-top: 20px;
+            transition: transform 0.2s;
         }
-        button.action-btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); 
-        }
+        button.action-btn:hover { transform: translateY(-2px); }
         
-        /* WARNING BOX */
+        /* SPECIFIC COMPONENTS */
         .warning-box {
-            background-color: #fff8e1;
-            color: #b7791f;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-top: 20px;
-            border-left: 4px solid #f6e05e;
-            line-height: 1.4;
+            background-color: #fff8e1; color: #b7791f; padding: 12px;
+            border-radius: 8px; font-size: 0.85rem; margin-top: 20px;
+            border-left: 4px solid #f6e05e; line-height: 1.4;
         }
-
-        /* PASSWORD DISPLAY */
         .password-display {
-            background: #2d3436; color: #00ff9d; font-family: 'Courier New', monospace;
+            background: #2d3436; color: #00ff9d; font-family: monospace;
             padding: 20px; border-radius: 10px; text-align: center;
             font-size: 1.3rem; margin: 15px 0; word-break: break-all;
-            letter-spacing: 2px;
         }
 
         /* HISTORY */
@@ -156,28 +119,69 @@
             border-radius: 15px; box-sizing: border-box;
         }
         .history-item {
-            border-bottom: 1px solid #eee;
-            padding: 12px 0;
+            border-bottom: 1px solid #eee; padding: 12px 0;
             font-size: 0.9rem; display: flex; justify-content: space-between;
-            align-items: center;
         }
-        .history-item:last-child { border-bottom: none; }
-        .timestamp { 
-            background: #eee; padding: 2px 8px; 
-            border-radius: 12px; font-size: 0.75rem; color: #666; 
+        .timestamp { background: #eee; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; color: #666; }
+
+        /* --- FLASHY ADS SECTION --- */
+        .ad-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 30px;
         }
 
-        /* LEGAL FOOTER */
-        .legal-footer {
-            margin-top: auto;
-            padding-top: 40px;
+        .ad-card {
+            /* Moving Gradient Background */
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+            background-size: 400% 400%;
+            animation: gradientBG 5s ease infinite;
+            
+            border-radius: 15px;
+            padding: 20px;
+            text-decoration: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: center;
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.8);
-            max-width: 500px;
-            line-height: 1.6;
         }
-        .legal-footer strong { color: white; }
+        
+        .ad-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Make the second ad look slightly different (Blue/Purple) */
+        .ad-card.secondary {
+            background: linear-gradient(45deg, #84fab0, #8fd3f4, #a18cd1);
+            background-size: 400% 400%;
+        }
+
+        .ad-title { font-weight: 800; font-size: 1.2rem; display: block; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .ad-desc { font-size: 0.8rem; opacity: 0.9; }
+        .ad-badge {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.2); padding: 2px 6px;
+            border-radius: 4px; font-size: 0.6rem; text-transform: uppercase;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* FOOTER */
+        .legal-footer {
+            margin-top: auto; padding-top: 40px; text-align: center;
+            font-size: 0.8rem; color: rgba(255,255,255,0.8);
+            max-width: 500px; line-height: 1.6;
+        }
     </style>
 </head>
 <body>
@@ -191,7 +195,7 @@
         <span style="font-size: 1.5rem;">🔒</span>
         <div>
             <strong>Your Privacy Guaranteed</strong><br>
-            Files are processed 100% locally on your device. We never see your data.
+            Files are processed 100% locally on your device.
         </div>
     </div>
 
@@ -203,56 +207,64 @@
 
     <div id="tab-converter" class="tool-content active-tool">
         <h2>🖼️ Image Converter</h2>
-        <p style="color:#666; margin-bottom:20px;">Transform your images instantly without uploading them.</p>
-        
+        <p style="color:#666;">Transform images without uploading them.</p>
         <label>1. Select Image</label>
         <input type="file" id="fileInput" accept="image/*">
-        
         <label>2. Output Format</label>
         <select id="formatSelect">
-            <option value="image/jpeg">JPG (Best for Photos)</option>
-            <option value="image/png">PNG (Best for Quality)</option>
-            <option value="image/webp">WebP (Smallest Size)</option>
+            <option value="image/jpeg">JPG (Photos)</option>
+            <option value="image/png">PNG (Quality)</option>
+            <option value="image/webp">WebP (Web)</option>
         </select>
-
         <canvas id="canvas" style="display:none;"></canvas>
         <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
-
         <div class="warning-box">
             <strong>⚠️ Legal Disclaimer:</strong><br>
-            Please only convert files you own. Users are responsible for ensuring they have the right to process these files.
+            Please only convert files you own. Users are responsible for content rights.
         </div>
     </div>
 
     <div id="tab-qr" class="tool-content">
         <h2>🔗 Link to QR Code</h2>
-        <p style="color:#666;">Create permanent QR codes for any website.</p>
-        <input type="text" id="linkInput" placeholder="Paste link here (e.g. https://google.com)">
+        <input type="text" id="linkInput" placeholder="Paste link here...">
         <button class="action-btn" onclick="makeQR()">Generate QR Code</button>
-        <div id="qrcode" style="margin-top:25px; display:flex; justify-content:center; padding: 20px; background:white; border-radius:10px; border:1px solid #eee;"></div>
+        <div id="qrcode" style="margin-top:25px; display:flex; justify-content:center; padding: 20px; background:white; border-radius:10px;"></div>
     </div>
 
     <div id="tab-password" class="tool-content">
         <h2>🔐 Secure Password</h2>
-        <p style="color:#666;">Generate military-grade encryption keys.</p>
         <div id="passwordResult" class="password-display">Click Generate</div>
-        <button class="action-btn" onclick="generatePassword()">Generate New Password</button>
+        <button class="action-btn" onclick="generatePassword()">Generate New</button>
         <button class="action-btn" onclick="copyPassword()" style="background: #aab7b8; margin-top:10px; color:#2d3436;">Copy to Clipboard</button>
     </div>
 
     <div class="history-container">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="margin:0; color:#333;">Your History</h3>
-            <button onclick="clearHistory()" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.85rem; font-weight:600;">Clear All</button>
+            <h3 style="margin:0; color:#333;">History</h3>
+            <button onclick="clearHistory()" style="background:none; border:none; color:#e74c3c; cursor:pointer;">Clear All</button>
         </div>
         <div id="historyList"></div>
+    </div>
+
+    <div class="ad-grid">
+        <a href="https://gemini.google.com" target="_blank" class="ad-card">
+            <span class="ad-badge">Promoted</span>
+            <span class="ad-title">Ask Gemini ✨</span>
+            <span class="ad-desc">The AI that helped build this site. Try it now.</span>
+        </a>
+
+        <a href="https://github.com" target="_blank" class="ad-card secondary">
+            <span class="ad-badge">Ad</span>
+            <span class="ad-title">GitHub 🐙</span>
+            <span class="ad-desc">Host your own websites for free.</span>
+        </a>
     </div>
 
     <div class="legal-footer">
         <p>Built by <strong>Fhabian Feliciano</strong> • Co-piloted by Google Gemini</p>
         <p style="opacity: 0.7;">
             <strong>Disclaimer:</strong> SafeTools is a client-side utility. No data is transmitted to servers. 
-            The creator assumes no liability for misuse of these tools.
+            The creator assumes no liability for misuse.
         </p>
         <p>&copy; 2024 SafeTools. All rights reserved.</p>
     </div>
@@ -267,7 +279,6 @@
             event.currentTarget.classList.add('active');
         }
 
-        // HISTORY LOGIC
         function addToHistory(action, detail) {
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
             const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -285,45 +296,39 @@
                 list.innerHTML += `<div class="history-item"><div><strong>${item.action}</strong> <span style="color:#666"> - ${item.detail}</span></div><div class="timestamp">${item.time}</div></div>`;
             });
         }
-        function clearHistory() { if(confirm("Are you sure you want to clear your history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
+        function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
         window.onload = renderHistory;
 
-        // CONVERTER LOGIC
+        // Converter
         const fileInput = document.getElementById('fileInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const convertBtn = document.getElementById('convertBtn');
         const formatSelect = document.getElementById('formatSelect');
-
         fileInput.addEventListener('change', function(e) {
             if(e.target.files.length === 0) return;
-            convertBtn.style.display = 'block';
-            convertBtn.innerText = "Convert & Download";
+            convertBtn.style.display = 'block'; convertBtn.innerText = "Convert & Download";
         });
-
         convertBtn.addEventListener('click', function() {
             const file = fileInput.files[0];
             if(!file) return;
             const img = new Image();
             img.onload = function() {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.fillStyle = "#FFFFFF";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                canvas.width = img.width; canvas.height = img.height;
+                ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0);
                 const selectedFormat = formatSelect.value;
                 const newUrl = canvas.toDataURL(selectedFormat, 0.9);
                 const link = document.createElement('a');
                 let ext = selectedFormat === "image/png" ? ".png" : selectedFormat === "image/webp" ? ".webp" : ".jpg";
                 link.download = 'converted-image' + ext;
-                link.href = newUrl;
-                link.click();
+                link.href = newUrl; link.click();
                 addToHistory("Converted Image", `To ${ext.toUpperCase()}`);
             }
             img.src = URL.createObjectURL(file);
         });
 
-        // QR LOGIC
+        // QR
         function makeQR() {
             const input = document.getElementById("linkInput").value;
             const container = document.getElementById("qrcode");
@@ -333,7 +338,7 @@
             addToHistory("QR Created", "Link");
         }
 
-        // PASSWORD LOGIC
+        // Password
         function generatePassword() {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
             let password = "";
@@ -349,7 +354,7 @@
             const text = document.getElementById("passwordResult").innerText;
             if (text === "Click Generate") return;
             navigator.clipboard.writeText(text);
-            alert("Copied to clipboard!");
+            alert("Copied!");
         }
     </script>
 </body>
