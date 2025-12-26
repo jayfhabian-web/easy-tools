@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeTools - Free & Private</title>
+    <title>SafeTools | Private & Secure</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <style>
-        /* --- CSS STYLES --- */
+        /* --- MODERN "GLASS" THEME --- */
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: #f4f7f6;
+            /* Beautiful gradient background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             display: flex;
             flex-direction: column;
@@ -20,120 +25,159 @@
         }
 
         /* HEADER */
-        header { text-align: center; margin-bottom: 10px; }
-        h1 { color: #2c3e50; margin: 0; }
-        .subtitle { color: #7f8c8d; font-size: 0.9rem; margin-top: 5px; }
+        header { text-align: center; margin-bottom: 20px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        h1 { margin: 0; font-size: 2.5rem; letter-spacing: -1px; }
+        .subtitle { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; font-weight: 300; }
 
         /* PRIVACY BANNER */
         .privacy-banner {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px 20px;
-            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #2d3436;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-size: 0.9rem;
-            margin-bottom: 25px;
-            border: 1px solid #c3e6cb;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             gap: 10px;
             max-width: 500px;
             width: 100%;
             box-sizing: border-box;
+            backdrop-filter: blur(5px);
         }
 
         /* TABS */
         .tab-bar {
             display: flex;
-            background: white;
+            background: rgba(255, 255, 255, 0.2);
             padding: 5px;
             border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
         .tab-btn {
             background: transparent;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 25px;
             border-radius: 40px;
             cursor: pointer;
             font-weight: 600;
-            color: #666;
-            transition: all 0.2s;
-        }
-        .tab-btn:hover { color: #007bff; }
-        .tab-btn.active {
-            background-color: #007bff;
             color: white;
-            box-shadow: 0 2px 5px rgba(0,123,255,0.3);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.1); }
+        .tab-btn.active {
+            background-color: white;
+            color: #764ba2;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* TOOL CARDS */
+        /* TOOL CARDS (Glassmorphism) */
         .tool-content {
             display: none;
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             max-width: 500px;
             width: 100%;
-            animation: fadeIn 0.3s ease-in-out;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             box-sizing: border-box;
         }
         .tool-content.active-tool { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
-        h2 { color: #007bff; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-top: 0; }
+        h2 { 
+            color: #4a4a4a; 
+            border-bottom: 2px solid #f0f0f0; 
+            padding-bottom: 15px; 
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* CONTROLS */
+        label { font-weight: 600; font-size: 0.9rem; color: #666; display: block; margin-top: 15px; }
         
         input, select {
-            width: 100%; padding: 12px; margin: 10px 0;
-            border: 2px solid #e0e0e0; border-radius: 8px;
+            width: 100%; padding: 14px; margin: 8px 0;
+            border: 2px solid #eee; border-radius: 10px;
             box-sizing: border-box; font-size: 1rem;
+            transition: border 0.2s;
+            background: #f9f9f9;
         }
+        input:focus, select:focus { border-color: #764ba2; outline: none; background: white; }
         
         button.action-btn {
-            background-color: #007bff; color: white; border: none;
-            padding: 12px; border-radius: 8px; cursor: pointer;
-            font-size: 1rem; width: 100%; font-weight: 600;
-            transition: background 0.2s; margin-top: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none;
+            padding: 15px; border-radius: 10px; cursor: pointer;
+            font-size: 1rem; width: 100%; font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
         }
-        button.action-btn:hover { background-color: #0056b3; }
+        button.action-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); 
+        }
         
         /* WARNING BOX */
         .warning-box {
-            background-color: #fff3cd;
-            color: #856404;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            margin-top: 15px;
-            border: 1px solid #ffeeba;
+            background-color: #fff8e1;
+            color: #b7791f;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            border-left: 4px solid #f6e05e;
+            line-height: 1.4;
         }
 
-        /* PASSWORD & HISTORY STYLES */
+        /* PASSWORD DISPLAY */
         .password-display {
-            background: #2d3436; color: #00ff9d; font-family: monospace;
-            padding: 15px; border-radius: 8px; text-align: center;
-            font-size: 1.2rem; margin: 15px 0; word-break: break-all;
+            background: #2d3436; color: #00ff9d; font-family: 'Courier New', monospace;
+            padding: 20px; border-radius: 10px; text-align: center;
+            font-size: 1.3rem; margin: 15px 0; word-break: break-all;
+            letter-spacing: 2px;
         }
-        .history-container { margin-top: 30px; width: 100%; max-width: 500px; }
+
+        /* HISTORY */
+        .history-container { 
+            margin-top: 30px; width: 100%; max-width: 500px; 
+            background: rgba(255,255,255,0.9); padding: 20px; 
+            border-radius: 15px; box-sizing: border-box;
+        }
         .history-item {
-            background: #fff; border-left: 4px solid #007bff;
-            padding: 10px; margin-bottom: 8px; border-radius: 4px;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
             font-size: 0.9rem; display: flex; justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            align-items: center;
         }
-        .timestamp { color: #999; font-size: 0.75rem; }
+        .history-item:last-child { border-bottom: none; }
+        .timestamp { 
+            background: #eee; padding: 2px 8px; 
+            border-radius: 12px; font-size: 0.75rem; color: #666; 
+        }
 
         /* LEGAL FOOTER */
         .legal-footer {
             margin-top: auto;
             padding-top: 40px;
             text-align: center;
-            font-size: 0.75rem;
-            color: #95a5a6;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
             max-width: 500px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
+        .legal-footer strong { color: white; }
     </style>
 </head>
 <body>
@@ -144,9 +188,11 @@
     </header>
 
     <div class="privacy-banner">
-        <span>🔒</span>
-        <strong>Your Privacy:</strong> 
-        Files are processed 100% locally in your browser. We never see, store, or upload your data.
+        <span style="font-size: 1.5rem;">🔒</span>
+        <div>
+            <strong>Your Privacy Guaranteed</strong><br>
+            Files are processed 100% locally on your device. We never see your data.
+        </div>
     </div>
 
     <div class="tab-bar">
@@ -157,51 +203,55 @@
 
     <div id="tab-converter" class="tool-content active-tool">
         <h2>🖼️ Image Converter</h2>
-        <p>Convert images locally.</p>
+        <p style="color:#666; margin-bottom:20px;">Transform your images instantly without uploading them.</p>
         
-        <label>1. Upload Image</label>
+        <label>1. Select Image</label>
         <input type="file" id="fileInput" accept="image/*">
         
-        <label>2. Choose Format</label>
+        <label>2. Output Format</label>
         <select id="formatSelect">
-            <option value="image/jpeg">JPG</option>
-            <option value="image/png">PNG</option>
-            <option value="image/webp">WebP</option>
+            <option value="image/jpeg">JPG (Best for Photos)</option>
+            <option value="image/png">PNG (Best for Quality)</option>
+            <option value="image/webp">WebP (Smallest Size)</option>
         </select>
 
         <canvas id="canvas" style="display:none;"></canvas>
         <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
 
         <div class="warning-box">
-            <strong>⚠️ Legal Disclaimer:</strong> Please only convert files you own or have permission to use. Do not use this tool for copyrighted material.
+            <strong>⚠️ Legal Disclaimer:</strong><br>
+            Please only convert files you own. Users are responsible for ensuring they have the right to process these files.
         </div>
     </div>
 
     <div id="tab-qr" class="tool-content">
         <h2>🔗 Link to QR Code</h2>
-        <input type="text" id="linkInput" placeholder="https://example.com">
+        <p style="color:#666;">Create permanent QR codes for any website.</p>
+        <input type="text" id="linkInput" placeholder="Paste link here (e.g. https://google.com)">
         <button class="action-btn" onclick="makeQR()">Generate QR Code</button>
-        <div id="qrcode" style="margin-top:20px; display:flex; justify-content:center;"></div>
+        <div id="qrcode" style="margin-top:25px; display:flex; justify-content:center; padding: 20px; background:white; border-radius:10px; border:1px solid #eee;"></div>
     </div>
 
     <div id="tab-password" class="tool-content">
         <h2>🔐 Secure Password</h2>
+        <p style="color:#666;">Generate military-grade encryption keys.</p>
         <div id="passwordResult" class="password-display">Click Generate</div>
-        <button class="action-btn" onclick="generatePassword()">Generate New</button>
-        <button class="action-btn" onclick="copyPassword()" style="background-color:#6c757d;">Copy to Clipboard</button>
+        <button class="action-btn" onclick="generatePassword()">Generate New Password</button>
+        <button class="action-btn" onclick="copyPassword()" style="background: #aab7b8; margin-top:10px; color:#2d3436;">Copy to Clipboard</button>
     </div>
 
     <div class="history-container">
-        <h3 style="color:#666; border-bottom:1px solid #ddd; padding-bottom:5px;">Recent History</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0; color:#333;">Your History</h3>
+            <button onclick="clearHistory()" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.85rem; font-weight:600;">Clear All</button>
+        </div>
         <div id="historyList"></div>
-        <button onclick="clearHistory()" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:0.8rem; margin-top:5px;">Clear History</button>
     </div>
 
     <div class="legal-footer">
-        <p>Built by <strong>[YOUR NAME HERE]</strong> • Co-piloted by Google Gemini</p>
-        <p>
+        <p>Built by <strong>Fhabian Feliciano</strong> • Co-piloted by Google Gemini</p>
+        <p style="opacity: 0.7;">
             <strong>Disclaimer:</strong> SafeTools is a client-side utility. No data is transmitted to servers. 
-            Users are solely responsible for the content they process. 
             The creator assumes no liability for misuse of these tools.
         </p>
         <p>&copy; 2024 SafeTools. All rights reserved.</p>
@@ -230,12 +280,12 @@
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
             const list = document.getElementById('historyList');
             list.innerHTML = "";
-            if (history.length === 0) { list.innerHTML = "<p style='color:#ccc;'>No history yet</p>"; return; }
+            if (history.length === 0) { list.innerHTML = "<p style='color:#999; text-align:center;'>No recent activity</p>"; return; }
             history.forEach(item => {
-                list.innerHTML += `<div class="history-item"><div><strong>${item.action}</strong> - ${item.detail}</div><div class="timestamp">${item.time}</div></div>`;
+                list.innerHTML += `<div class="history-item"><div><strong>${item.action}</strong> <span style="color:#666"> - ${item.detail}</span></div><div class="timestamp">${item.time}</div></div>`;
             });
         }
-        function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
+        function clearHistory() { if(confirm("Are you sure you want to clear your history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); } }
         window.onload = renderHistory;
 
         // CONVERTER LOGIC
@@ -299,7 +349,7 @@
             const text = document.getElementById("passwordResult").innerText;
             if (text === "Click Generate") return;
             navigator.clipboard.writeText(text);
-            alert("Copied!");
+            alert("Copied to clipboard!");
         }
     </script>
 </body>
