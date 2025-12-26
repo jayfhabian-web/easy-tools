@@ -6,7 +6,7 @@
     <title>SafeTools - Free & Private</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* --- MODERN STYLING --- */
+        /* --- CSS STYLES --- */
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: #f4f7f6;
@@ -16,46 +16,78 @@
             align-items: center;
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
 
         /* HEADER */
-        header { text-align: center; margin-bottom: 30px; }
+        header { text-align: center; margin-bottom: 20px; }
         h1 { color: #2c3e50; margin: 0; }
         .subtitle { color: #7f8c8d; font-size: 0.9rem; margin-top: 5px; }
 
-        /* CARDS */
-        .container {
+        /* TAB NAVIGATION BAR */
+        .tab-bar {
+            display: flex;
+            background: white;
+            padding: 5px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover { color: #007bff; }
+
+        /* The active tab looks blue */
+        .tab-btn.active {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,123,255,0.3);
+        }
+
+        /* CARD STYLES */
+        .tool-content {
+            display: none; /* Hide all tools by default */
             background: white;
             padding: 2rem;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             max-width: 500px;
             width: 100%;
-            margin-bottom: 25px;
-            transition: transform 0.2s;
+            animation: fadeIn 0.3s ease-in-out;
         }
-        .container:hover { transform: translateY(-2px); }
 
-        h2 { 
-            color: #007bff; 
-            border-bottom: 2px solid #f0f0f0; 
-            padding-bottom: 15px; 
-            margin-top: 0;
-            font-size: 1.4rem;
+        /* Show the active tool */
+        .tool-content.active-tool { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        h2 { color: #007bff; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-top: 0; }
         
         /* INPUTS & BUTTONS */
-        input[type="text"], input[type="number"] {
+        input, select {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            box-sizing: border-box; /* Fixes padding issues */
+            box-sizing: border-box;
             font-size: 1rem;
         }
         
-        button {
+        button.action-btn {
             background-color: #007bff;
             color: white;
             border: none;
@@ -66,11 +98,9 @@
             width: 100%;
             font-weight: 600;
             transition: background 0.2s;
+            margin-top: 10px;
         }
-        button:hover { background-color: #0056b3; }
-        
-        /* SPECIFIC ELEMENTS */
-        #qrcode { margin-top: 20px; display: flex; justify-content: center; }
+        button.action-btn:hover { background-color: #0056b3; }
         
         /* PASSWORD TOOL */
         .password-display {
@@ -86,32 +116,31 @@
         }
 
         /* HISTORY SECTION */
+        .history-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
         .history-item {
-            background: #f8f9fa;
+            background: #fff;
             border-left: 4px solid #007bff;
             padding: 10px;
             margin-bottom: 8px;
+            border-radius: 4px;
             font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         .timestamp { color: #999; font-size: 0.75rem; }
-        .clear-btn {
-            background-color: #dc3545;
-            margin-top: 10px;
-        }
-        .clear-btn:hover { background-color: #a71d2a; }
 
         /* FOOTER */
         .footer {
-            margin-top: 40px;
+            margin-top: auto; /* Pushes footer to bottom of screen */
+            padding-top: 40px;
             text-align: center;
             font-size: 0.85rem;
             color: #bdc3c7;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 20px;
-            width: 100%;
-            max-width: 500px;
         }
     </style>
 </head>
@@ -122,57 +151,86 @@
         <div class="subtitle">Private • Secure • Free</div>
     </header>
 
-    <div class="container">
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="openTab('tab-converter')">Converter</button>
+        <button class="tab-btn" onclick="openTab('tab-qr')">QR Code</button>
+        <button class="tab-btn" onclick="openTab('tab-password')">Password</button>
+    </div>
+
+    <div id="tab-converter" class="tool-content active-tool">
+        <h2>🖼️ Image Converter</h2>
+        <p>Convert any image format to JPG, PNG, or WebP.</p>
+        
+        <label>1. Upload Image</label>
+        <input type="file" id="fileInput" accept="image/*">
+        
+        <label>2. Choose Output Format</label>
+        <select id="formatSelect">
+            <option value="image/jpeg">JPG (Good for photos)</option>
+            <option value="image/png">PNG (Good for drawings)</option>
+            <option value="image/webp">WebP (Modern & Small)</option>
+        </select>
+
+        <canvas id="canvas" style="display:none;"></canvas>
+        <button id="convertBtn" class="action-btn" style="display:none;">Convert & Download</button>
+    </div>
+
+    <div id="tab-qr" class="tool-content">
         <h2>🔗 Link to QR Code</h2>
         <p>Paste any link to generate a QR code instantly.</p>
         <input type="text" id="linkInput" placeholder="https://example.com">
-        <button onclick="makeQR()">Generate QR Code</button>
-        <div id="qrcode"></div>
+        <button class="action-btn" onclick="makeQR()">Generate QR Code</button>
+        <div id="qrcode" style="margin-top:20px; display:flex; justify-content:center;"></div>
     </div>
 
-    <div class="container">
-        <h2>🔐 Secure Password Generator</h2>
+    <div id="tab-password" class="tool-content">
+        <h2>🔐 Secure Password</h2>
         <p>Create a strong, unhackable password.</p>
         <div id="passwordResult" class="password-display">Click Generate</div>
-        <button onclick="generatePassword()">Generate Secure Password</button>
-        <button onclick="copyPassword()" style="margin-top:10px; background-color:#6c757d;">Copy to Clipboard</button>
+        <button class="action-btn" onclick="generatePassword()">Generate New</button>
+        <button class="action-btn" onclick="copyPassword()" style="background-color:#6c757d;">Copy to Clipboard</button>
     </div>
 
-    <div class="container">
-        <h2>🖼️ PNG to JPG Converter</h2>
-        <p>Convert images locally. Your files never leave your device.</p>
-        <input type="file" id="fileInput" accept="image/png">
-        <canvas id="canvas" style="display:none;"></canvas>
-        <br><br>
-        <button id="downloadBtn" style="display:none; background-color: #28a745;">Download JPG Result</button>
-    </div>
-
-    <div class="container">
-        <h2>📜 Your History</h2>
-        <p>Saved automatically on this device.</p>
+    <div class="history-container">
+        <h3 style="color:#666; border-bottom:1px solid #ddd; padding-bottom:5px;">Recent History</h3>
         <div id="historyList"></div>
-        <button class="clear-btn" onclick="clearHistory()">Clear History</button>
+        <button onclick="clearHistory()" style="background:none; border:none; color:#dc3545; cursor:pointer; font-size:0.8rem; margin-top:5px;">Clear History</button>
     </div>
 
     <div class="footer">
-        <p>Built by <strong>[YOUR NAME HERE]</strong></p>
+        <p>Built by <strong>Fhabian Feliciano</strong></p>
         <p>Co-piloted by Google Gemini</p>
         <p>&copy; 2024 SafeTools. All rights reserved.</p>
     </div>
 
     <script>
+        // --- 0. TAB SYSTEM LOGIC ---
+        function openTab(tabId) {
+            // 1. Hide all tool contents
+            const contents = document.getElementsByClassName('tool-content');
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active-tool');
+            }
+
+            // 2. Remove "active" color from all buttons
+            const buttons = document.getElementsByClassName('tab-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            // 3. Show the specific tab clicked
+            document.getElementById(tabId).classList.add('active-tool');
+            
+            // 4. Highlight the button clicked (using event.currentTarget)
+            event.currentTarget.classList.add('active');
+        }
+
         // --- 1. HISTORY SYSTEM ---
         function addToHistory(action, detail) {
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
-            const timestamp = new Date().toLocaleTimeString();
-            const newItem = { action, detail, time: timestamp };
-            
-            // Add to beginning of list
-            history.unshift(newItem);
-            
-            // Keep only last 10 items
-            if(history.length > 10) history.pop();
-            
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ action, detail, time: timestamp });
+            if(history.length > 5) history.pop(); // Keep last 5
             localStorage.setItem('safeToolsHistory', JSON.stringify(history));
             renderHistory();
         }
@@ -180,52 +238,89 @@
         function renderHistory() {
             const history = JSON.parse(localStorage.getItem('safeToolsHistory')) || [];
             const list = document.getElementById('historyList');
-            list.innerHTML = ""; // Clear current list
-
+            list.innerHTML = "";
             if (history.length === 0) {
-                list.innerHTML = "<p style='color:#999; text-align:center;'>No history yet.</p>";
+                list.innerHTML = "<p style='color:#ccc; font-style:italic;'>No history yet</p>";
                 return;
             }
-
             history.forEach(item => {
                 list.innerHTML += `
                     <div class="history-item">
-                        <div><strong>${item.action}</strong><br>${item.detail}</div>
+                        <div><strong>${item.action}</strong> - ${item.detail}</div>
                         <div class="timestamp">${item.time}</div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
-
         function clearHistory() {
-            if(confirm("Are you sure you want to delete your history?")) {
-                localStorage.removeItem('safeToolsHistory');
-                renderHistory();
-            }
+            if(confirm("Clear history?")) { localStorage.removeItem('safeToolsHistory'); renderHistory(); }
         }
-
-        // Load history when page opens
         window.onload = renderHistory;
 
+        // --- 2. UNIVERSAL IMAGE CONVERTER LOGIC ---
+        const fileInput = document.getElementById('fileInput');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const convertBtn = document.getElementById('convertBtn');
+        const formatSelect = document.getElementById('formatSelect');
 
-        // --- 2. QR CODE LOGIC ---
+        fileInput.addEventListener('change', function(e) {
+            if(e.target.files.length === 0) return;
+            
+            // Show button once file is selected
+            convertBtn.style.display = 'block';
+            convertBtn.innerText = "Convert & Download";
+        });
+
+        convertBtn.addEventListener('click', function() {
+            const file = fileInput.files[0];
+            if(!file) return;
+
+            const img = new Image();
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Draw white background (prevents black background on transparent PNGs)
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw image
+                ctx.drawImage(img, 0, 0);
+
+                // Get format from dropdown
+                const selectedFormat = formatSelect.value; // e.g., image/jpeg
+                
+                // Create download link
+                const newUrl = canvas.toDataURL(selectedFormat, 0.9);
+                const link = document.createElement('a');
+                
+                // Determine file extension
+                let ext = ".jpg";
+                if(selectedFormat === "image/png") ext = ".png";
+                if(selectedFormat === "image/webp") ext = ".webp";
+
+                link.download = 'converted-image' + ext;
+                link.href = newUrl;
+                link.click();
+
+                addToHistory("Converted Image", `To ${ext.toUpperCase()}`);
+            }
+            img.src = URL.createObjectURL(file);
+        });
+
+        // --- 3. QR CODE LOGIC ---
         function makeQR() {
             const input = document.getElementById("linkInput").value;
             const container = document.getElementById("qrcode");
-            
-            if(input === "") { alert("Please paste a link first!"); return; }
-
+            if(input === "") return;
             container.innerHTML = ""; 
             new QRCode(container, { text: input, width: 128, height: 128 });
-            
-            // Save to history
-            addToHistory("QR Code Created", input.substring(0, 25) + "...");
+            addToHistory("QR Created", "Link");
         }
 
-
-        // --- 3. PASSWORD GENERATOR LOGIC ---
+        // --- 4. PASSWORD LOGIC ---
         function generatePassword() {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
             let password = "";
             for (let i = 0; i < 16; i++) {
                 const randomValues = new Uint32Array(1);
@@ -233,50 +328,14 @@
                 password += chars[randomValues[0] % chars.length];
             }
             document.getElementById("passwordResult").innerText = password;
-            
-            // Save to history (but not the actual password for security!)
-            addToHistory("Password Generated", "A secure password was created");
+            addToHistory("Password", "Generated");
         }
-
         function copyPassword() {
             const text = document.getElementById("passwordResult").innerText;
             if (text === "Click Generate") return;
             navigator.clipboard.writeText(text);
-            alert("Password copied!");
+            alert("Copied!");
         }
-
-
-        // --- 4. IMAGE CONVERTER LOGIC ---
-        const fileInput = document.getElementById('fileInput');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const downloadBtn = document.getElementById('downloadBtn');
-
-        fileInput.addEventListener('change', function(e) {
-            if(e.target.files.length === 0) return;
-            const img = new Image();
-            img.onload = function() {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.fillStyle = "#FFFFFF";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-                downloadBtn.style.display = 'block';
-                downloadBtn.innerText = "Download JPG";
-                
-                // Save to history
-                addToHistory("Image Converted", "PNG -> JPG conversion");
-            }
-            img.src = URL.createObjectURL(e.target.files[0]);
-        });
-
-        downloadBtn.addEventListener('click', function() {
-            const jpgUrl = canvas.toDataURL('image/jpeg', 0.9);
-            const link = document.createElement('a');
-            link.download = 'converted-image.jpg';
-            link.href = jpgUrl;
-            link.click();
-        });
     </script>
 </body>
 </html>
