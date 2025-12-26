@@ -3,111 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault0 Essential</title>
+    <title>My Unblocked Search</title>
     <style>
-        body {
-            font-family: sans-serif;
-            margin: 0; padding: 0;
-            background-color: #222; color: white;
-            display: flex; flex-direction: column;
-            height: 100vh;
-        }
-
-        /* --- THE CONTROLS (Simple & Visible) --- */
-        .control-bar {
-            background: #333;
-            padding: 15px;
-            border-bottom: 2px solid #555;
-            display: flex; gap: 10px; align-items: center;
-        }
-
-        select, input, button {
-            padding: 10px; font-size: 16px; border-radius: 4px; border: none;
-        }
-
-        /* Server Picker */
-        #serverSelect {
-            background: #000; color: #0f0; /* Bright green text so you see it */
-            border: 1px solid #555;
-            max-width: 200px;
-        }
-
-        /* Input Box */
-        #inputBox {
-            flex-grow: 1;
-            background: #fff; color: #000;
-        }
-
-        /* The Button */
-        #goBtn {
-            background: #007bff; color: white;
-            font-weight: bold; cursor: pointer;
-        }
-        #goBtn:hover { background: #0056b3; }
-
-        /* --- THE VIEWER --- */
-        .viewer {
-            flex-grow: 1; background: #000;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        iframe { width: 100%; height: 100%; border: none; }
-
-        .help-text {
-            color: #aaa; text-align: center;
-        }
+        body { font-family: sans-serif; background: #222; color: #fff; text-align: center; padding: 20px; }
+        input { padding: 10px; width: 70%; max-width: 400px; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; cursor: pointer; background: #e62117; color: white; border: none; border-radius: 5px; font-weight: bold; }
+        button:hover { background: #cc1f16; }
+        #results { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; gap: 20px; }
+        .video-card { background: #333; padding: 10px; border-radius: 8px; width: 300px; text-align: left; }
+        .video-card img { width: 100%; border-radius: 5px; }
+        .video-card h3 { font-size: 16px; margin: 10px 0 5px; }
+        /* The player overlay */
+        #player-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
+        iframe { width: 80%; height: 80%; max-width: 900px; border: none; }
+        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 30px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="control-bar">
-        <select id="serverSelect">
-            <option value="https://yewtu.be">Server 1 (Invidious - NL)</option>
-            <option value="https://vid.puffyan.us">Server 2 (Invidious - US)</option>
-            <option value="https://inv.tux.pizza">Server 3 (Invidious - US)</option>
-            <option value="https://piped.video">Server 4 (Piped - Main)</option>
-            <option value="https://piped.kavin.rocks">Server 5 (Piped - US)</option>
-        </select>
+    <h1>Video Search</h1>
+    <input type="text" id="searchInput" placeholder="Search for a video...">
+    <button onclick="searchVideos()">Search</button>
 
-        <input type="text" id="inputBox" placeholder="Paste Link OR Type Search (e.g. 'Math History')" onkeypress="if(event.key==='Enter') loadVideo()">
-        
-        <button id="goBtn" onclick="loadVideo()">GO</button>
-    </div>
+    <div id="results"></div>
 
-    <div class="viewer">
-        <iframe id="videoFrame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation" allowfullscreen></iframe>
+    <div id="player-modal">
+        <span class="close-btn" onclick="closePlayer()">&times;</span>
+        <iframe id="videoFrame" src="" allowfullscreen></iframe>
     </div>
 
     <script>
-        function loadVideo() {
-            const server = document.getElementById('serverSelect').value;
-            const input = document.getElementById('inputBox').value.trim();
-            const frame = document.getElementById('videoFrame');
+        // We use a public Piped API instance to search without an API key
+        // If this one is slow, you can swap "pipedapi.kavin.rocks" with "api.piped.io"
+        const API_URL = "https://pipedapi.kavin.rocks"; 
 
-            if (!input) {
-                alert("Please type something first!");
-                return;
-            }
+        async function searchVideos() {
+            const query = document.getElementById('searchInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!query) return;
 
-            // --- DETECT IF LINK OR SEARCH ---
-            // Regex checks if it looks like a YouTube ID
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = input.match(regExp);
+            resultsDiv.innerHTML = "<p>Searching...</p>";
 
-            if (match && match[2].length === 11) {
-                // IT IS A LINK: Use /embed/ (Works on both Piped and Invidious)
-                frame.src = server + "/embed/" + match[2] + "?autoplay=1";
-            } else {
-                // IT IS A SEARCH: We must format it based on the server type
-                // Piped uses "search_query=", Invidious uses "q="
-                
-                if (server.includes('piped')) {
-                    frame.src = server + "/results?search_query=" + encodeURIComponent(input);
-                } else {
-                    frame.src = server + "/search?q=" + encodeURIComponent(input);
-                }
+            try {
+                // Fetch results from the Piped API
+                const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}&filter=all`);
+                const data = await response.json();
+
+                resultsDiv.innerHTML = ""; // Clear "Searching..." text
+
+                // Loop through results and create cards
+                data.items.forEach(item => {
+                    // Only show videos (skip channels/playlists for simplicity)
+                    if (item.type === "stream") { 
+                        const card = document.createElement('div');
+                        card.className = "video-card";
+                        
+                        // Create the HTML for each video result
+                        card.innerHTML = `
+                            <img src="${item.thumbnail}" onclick="playVideo('${item.url}')" style="cursor:pointer">
+                            <h3>${item.title}</h3>
+                            <p>${item.uploaderName}</p>
+                            <button onclick="playVideo('${item.url}')">Watch</button>
+                        `;
+                        resultsDiv.appendChild(card);
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+                resultsDiv.innerHTML = "<p>Error fetching videos. Try again or check console.</p>";
             }
         }
+
+        function playVideo(url) {
+            // Extract the ID from the URL (e.g., /watch?v=12345 -> 12345)
+            const videoId = url.split("v=")[1];
+            
+            // Set the iframe to use Piped's player (Proxied) instead of YouTube's
+            const embedUrl = `https://piped.video/embed/${videoId}`;
+            
+            document.getElementById('videoFrame').src = embedUrl;
+            document.getElementById('player-modal').style.display = "flex";
+        }
+
+        function closePlayer() {
+            document.getElementById('player-modal').style.display = "none";
+            document.getElementById('videoFrame').src = ""; // Stop audio
+        }
     </script>
+
 </body>
 </html>
