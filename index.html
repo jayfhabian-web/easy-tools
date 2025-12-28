@@ -26,55 +26,40 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- 2. LOGIN SCREEN (Clean & Centered) --- */
+        /* --- 2. LOGIN SCREEN --- */
         #login-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 12, 41, 0.95); /* Dark overlay */
+            background: rgba(15, 12, 41, 0.95);
             z-index: 999;
             display: flex; justify-content: center; align-items: center;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
         
         .login-card { 
-            background: rgba(0, 0, 0, 0.6); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(88, 101, 242, 0.3); 
-            padding: 60px; 
-            width: 350px; 
-            border-radius: 20px; 
-            text-align: center; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            transform: scale(1);
-            transition: transform 0.3s;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(88, 101, 242, 0.3); 
+            padding: 60px; width: 350px; border-radius: 20px; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            transform: scale(1); transition: transform 0.3s;
         }
 
-        /* When system unlocks, this class is added to hide the login */
-        .system-unlocked #login-screen {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(1.1); /* Slight zoom out as it fades */
-        }
+        .system-unlocked #login-screen { opacity: 0; pointer-events: none; transform: scale(1.1); }
 
         h2 { margin: 0 0 20px 0; font-size: 36px; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 15px #5865F2; }
         
         input { 
             background: rgba(0, 0, 0, 0.4); border: 2px solid #333; color: #fff; 
-            padding: 15px; width: 85%; border-radius: 8px; 
-            font-family: 'Rajdhani', sans-serif; font-size: 24px; 
-            text-align: center; letter-spacing: 5px; outline: none; 
-            transition: 0.3s; margin-bottom: 25px; 
+            padding: 15px; width: 85%; border-radius: 8px; font-family: 'Rajdhani', sans-serif; 
+            font-size: 24px; text-align: center; letter-spacing: 5px; outline: none; transition: 0.3s; margin-bottom: 25px; 
         }
         input:focus { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
         
         .btn { 
-            background: linear-gradient(90deg, #5865F2, #4752c4); color: white; 
-            padding: 15px 30px; border: none; border-radius: 8px; 
-            font-size: 20px; font-weight: bold; text-transform: uppercase; 
+            background: linear-gradient(90deg, #5865F2, #4752c4); color: white; padding: 15px 30px; 
+            border: none; border-radius: 8px; font-size: 20px; font-weight: bold; text-transform: uppercase; 
             letter-spacing: 3px; cursor: pointer; transition: 0.2s; width: 100%; 
         }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(88, 101, 242, 0.5); }
 
-        /* --- 3. MAIN INTERFACE (Starts Hidden) --- */
+        /* --- 3. MAIN INTERFACE --- */
         #main-interface {
             width: 95vw; height: 90vh;
             background: rgba(20, 20, 35, 0.8);
@@ -84,24 +69,18 @@
             display: flex; flex-direction: column; overflow: hidden;
             
             /* BOOT ANIMATION START STATE */
-            opacity: 0;
-            transform: scale(0.9);
-            filter: blur(10px);
+            opacity: 0; transform: scale(0.9); filter: blur(10px);
             transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.8s ease;
         }
 
-        /* BOOT ANIMATION END STATE */
-        .system-unlocked #main-interface {
-            opacity: 1;
-            transform: scale(1);
-            filter: blur(0px);
-        }
+        .system-unlocked #main-interface { opacity: 1; transform: scale(1); filter: blur(0px); }
 
-        /* --- BASS REACTION (Shared by both engines) --- */
+        /* --- BASS REACTION --- */
         .bass-active {
             border-color: #ff0055 !important;
-            box-shadow: 0 0 60px rgba(255, 0, 85, 0.7), inset 0 0 40px rgba(255,0,85, 0.2) !important;
-            transform: scale(1.005) !important; 
+            box-shadow: 0 0 60px rgba(255, 0, 85, 0.9), inset 0 0 40px rgba(255,0,85, 0.4) !important;
+            transform: scale(1.01) !important; 
+            transition: transform 0.05s, box-shadow 0.05s; /* Snappy response */
         }
 
         /* --- TABS & CONTENT --- */
@@ -123,18 +102,14 @@
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        /* HIDDEN AUDIO ELEMENTS */
         #local-audio { display: none; }
         #file-upload { display: none; }
 
-        /* CONTROLS */
         .media-controls { margin-top: 30px; display: flex; gap: 20px; background: rgba(0,0,0,0.4); padding: 20px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
         .control-btn { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .control-btn:hover { border-color: #ff0055; color: #ff0055; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); transform: scale(1.1); }
-        
         .upload-btn { border-color: #5865F2; }
         .upload-btn:hover { border-color: #fff; color: #fff; box-shadow: 0 0 20px #5865F2; }
-
         .track-info { margin-top: 20px; font-size: 24px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
     </style>
@@ -174,7 +149,6 @@
                     <div class="media-controls">
                         <input type="file" id="file-upload" accept="audio/*">
                         <button class="control-btn upload-btn" title="Upload Local File" onclick="document.getElementById('file-upload').click()">&#8679;</button>
-                        
                         <button class="control-btn" onclick="prevTrack()">&#9664;</button>
                         <button class="control-btn" onclick="togglePlay()">&#9654;&#10074;&#10074;</button>
                         <button class="control-btn" onclick="nextTrack()">&#9654;&#9654;</button>
@@ -189,28 +163,22 @@
         var isLocalFile = false;
         var audioCtx, analyser, source;
         var audioEl = document.getElementById("local-audio");
-        var bassInterval; // For YouTube simulation
+        var bassInterval; 
 
-        // --- 1. BOOT SEQUENCE (Replaced Airlock) ---
+        // --- 1. BOOT SEQUENCE ---
         function bootSystem() {
             var pass = document.getElementById("passInput").value;
-            
             if(pass === "12345") {
-                // A. VISUALS: Add class to trigger CSS transition
                 document.body.classList.add("system-unlocked");
-
-                // B. AUDIO: Immediate Ignition
+                
+                // Audio Ignition
                 if(player && player.playVideo) {
-                    player.unMute();
-                    player.setVolume(100);
-                    player.playVideo();
+                    player.unMute(); player.setVolume(100); player.playVideo();
                 }
-                
-                // C. SETUP: Prepare AudioContext for later
+                // Prepare Audio Context
                 initAudioContext();
-                
             } else {
-                // Error Shake
+                // Denied Animation
                 var card = document.querySelector(".login-card");
                 card.style.transform = "translateX(10px)";
                 setTimeout(() => card.style.transform = "translateX(-10px)", 100);
@@ -220,34 +188,27 @@
                 var btn = document.querySelector(".btn");
                 btn.innerText = "ACCESS DENIED";
                 btn.style.background = "#ed4245";
-                setTimeout(() => { 
-                    btn.innerText = "BOOT SYSTEM"; 
-                    btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)"; 
-                }, 1000);
+                setTimeout(() => { btn.innerText = "BOOT SYSTEM"; btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)"; }, 1000);
             }
         }
         document.getElementById("passInput").addEventListener("keypress", function(e) { if (e.key === "Enter") bootSystem(); });
 
-        // --- 2. LOCAL FILE UPLOAD & REAL BASS ENGINE ---
+        // --- 2. LOCAL FILE & HIGH PRECISION BASS ---
         document.getElementById("file-upload").addEventListener("change", function(e) {
             var file = e.target.files[0];
             if (!file) return;
 
-            // Stop YouTube
             if(player) player.pauseVideo();
             stopBassSimulation(); 
             
-            // Play Local
             isLocalFile = true;
             var fileURL = URL.createObjectURL(file);
             audioEl.src = fileURL;
             audioEl.play();
             
-            // Visual Update
             document.getElementById("track-title").innerText = "LOCAL FILE: " + file.name;
             document.getElementById("track-title").style.color = "#5865F2";
             
-            // Start Analyzer
             analyzeAudio();
         });
 
@@ -256,7 +217,11 @@
                 var AudioContext = window.AudioContext || window.webkitAudioContext;
                 audioCtx = new AudioContext();
                 analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256; 
+                
+                // *** UPGRADE 1: HIGHER RESOLUTION ***
+                // 2048 allows us to slice the audio frequencies into much smaller chunks
+                analyser.fftSize = 2048; 
+                
                 source = audioCtx.createMediaElementSource(audioEl);
                 source.connect(analyser);
                 analyser.connect(audioCtx.destination);
@@ -277,17 +242,27 @@
                 
                 analyser.getByteFrequencyData(dataArray);
 
-                // Calculate Deep Bass (Lowest frequencies)
+                // *** UPGRADE 2: STRICT FREQUENCY TARGETING ***
+                // Each "bin" is roughly 21Hz wide (44100 / 2048).
+                // Bin 0 is DC offset/rumble.
+                // Bin 1-6 = roughly 20Hz to 130Hz (Pure Bass/Kick)
+                // We ignore everything above Bin 6 (Vocals, guitars, snares)
+                
                 var bassSum = 0;
-                var bassBins = 8; 
-                for(var i = 0; i < bassBins; i++) {
+                var startBin = 1; // Skip ultra-low rumble
+                var endBin = 6;   // Stop before Low-Mids
+                
+                for(var i = startBin; i < endBin; i++) {
                     bassSum += dataArray[i];
                 }
-                var bassAverage = bassSum / bassBins;
+                
+                var bassAverage = bassSum / (endBin - startBin);
 
-                // Threshold for "Flash" (Sensitivity)
+                // *** UPGRADE 3: DYNAMIC THRESHOLD ***
                 var interface = document.getElementById("main-interface");
-                if(bassAverage > 215) { // High threshold for strong beats
+                
+                // Threshold must be high (230 out of 255) to only catch the PEAKS
+                if(bassAverage > 230) { 
                     interface.classList.add("bass-active");
                 } else {
                     interface.classList.remove("bass-active");
@@ -296,10 +271,9 @@
             renderFrame();
         }
 
-        // --- 3. YOUTUBE SIMULATION ENGINE ---
+        // --- 3. YOUTUBE SIMULATION ---
         function startBassSimulation() {
             if(bassInterval) clearInterval(bassInterval);
-            // Simulate 120 BPM Thump
             bassInterval = setInterval(function() {
                 var interface = document.getElementById("main-interface");
                 interface.classList.add("bass-active");
@@ -318,13 +292,9 @@
                 height: '100%', width: '100%',
                 playerVars: { 
                     listType: 'playlist', 
-                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', // The PL ID
-                    index: 0, // Starts at song 1
-                    autoplay: 1, 
-                    mute: 1, 
-                    loop: 1, 
-                    modestbranding: 1, 
-                    rel: 0, 
+                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', 
+                    index: 0, 
+                    autoplay: 1, mute: 1, loop: 1, modestbranding: 1, rel: 0, 
                     origin: window.location.origin 
                 },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
@@ -336,8 +306,7 @@
         }
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                isLocalFile = false; 
-                audioEl.pause(); 
+                isLocalFile = false; audioEl.pause(); 
                 var data = player.getVideoData();
                 document.getElementById("track-title").innerText = data.title;
                 document.getElementById("track-title").style.color = "#fff";
@@ -360,23 +329,14 @@
 
         function togglePlay() { 
             if(isLocalFile) {
-                if(audioEl.paused) { 
-                    audioEl.play(); 
-                    analyzeAudio(); 
-                    document.getElementById("track-title").innerText = "Resuming Local File...";
-                } else { 
-                    audioEl.pause(); 
-                    document.getElementById("track-title").innerText = "Paused";
-                }
+                if(audioEl.paused) { audioEl.play(); analyzeAudio(); document.getElementById("track-title").innerText = "Resuming Local File..."; } 
+                else { audioEl.pause(); document.getElementById("track-title").innerText = "Paused"; }
             } else {
                 if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } 
             }
         }
         function nextTrack() { if(!isLocalFile && player) player.nextVideo(); }
-        function prevTrack() { 
-            if(isLocalFile) audioEl.currentTime = 0; 
-            else if(player) player.previousVideo(); 
-        }
+        function prevTrack() { if(isLocalFile) audioEl.currentTime = 0; else if(player) player.previousVideo(); }
 
     </script>
 </body>
