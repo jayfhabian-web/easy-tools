@@ -20,7 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all 0.1s; /* Fast transition for the shake effect */
+            transition: all 0.1s;
         }
 
         @keyframes gradientBG {
@@ -58,25 +58,21 @@
         #main-interface {
             width: 95vw; height: 90vh;
             background: rgba(20, 20, 35, 0.9);
-            
-            /* LED BORDER BASE STATE */
             border: 2px solid rgba(88, 101, 242, 0.5);
             box-shadow: 0 0 20px rgba(88, 101, 242, 0.2);
-            
             border-radius: 15px;
             display: flex; flex-direction: column; overflow: hidden;
             opacity: 0; transform: scale(0.8);
-            transition: opacity 1.5s, transform 1.5s, border-color 0.1s, box-shadow 0.1s; /* Fast transition for bass hit */
+            transition: opacity 1.5s, transform 1.5s, border-color 0.1s, box-shadow 0.1s; 
         }
 
-        /* --- THE BASS HIT CLASS (Added via JS) --- */
+        /* BASS HIT CLASS */
         .bass-active {
             border-color: #ff0055 !important;
             box-shadow: 0 0 50px rgba(255, 0, 85, 0.6), inset 0 0 20px rgba(255,0,85, 0.2) !important;
-            transform: scale(1.005) !important; /* Slight Zoom thump */
+            transform: scale(1.005) !important; 
         }
 
-        /* TABS */
         .tabs-header { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); height: 60px; flex-shrink: 0; }
         .tab-btn { flex: 1; background: transparent; border: none; color: #666; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; position: relative; }
         .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
@@ -85,16 +81,13 @@
         #tab-btn-media.active { text-shadow: 0 0 15px #ff0055; }
         #tab-btn-media.active::after { background: #ff0055; box-shadow: 0 -2px 10px #ff0055; }
         
-        /* CONTENT */
         .content-area { flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%; }
         .view-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: 0.5s ease; transform: translateY(20px); }
         .view-section.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-        /* CHAT VIEW */
         #view-comms { display: flex; width: 100%; height: 100%; }
         #view-comms iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* MEDIA VIEW */
         .media-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; background: radial-gradient(circle at center, rgba(255,0,85,0.1), transparent 70%); }
         .monitor-frame { width: 70%; max-width: 800px; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 15px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); background: black; position: relative; }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
@@ -188,25 +181,14 @@
 
         // --- BASS SIMULATION ENGINE ---
         var bassInterval;
-        
         function startBassSimulation() {
             if(bassInterval) clearInterval(bassInterval);
-            
-            // "Thump" every 500ms (120 BPM)
             bassInterval = setInterval(function() {
                 var interface = document.getElementById("main-interface");
-                
-                // Add the thump class
                 interface.classList.add("bass-active");
-                
-                // Remove it very quickly (100ms) to create a sharp "kick"
-                setTimeout(function() {
-                    interface.classList.remove("bass-active");
-                }, 100);
-                
+                setTimeout(function() { interface.classList.remove("bass-active"); }, 100);
             }, 500); 
         }
-
         function stopBassSimulation() {
             if(bassInterval) clearInterval(bassInterval);
             document.getElementById("main-interface").classList.remove("bass-active");
@@ -221,21 +203,24 @@
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
             });
         }
-        function onPlayerReady(event) { document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online."; document.getElementById("track-title").style.color = "#00ff00"; }
+        
+        function onPlayerReady(event) {
+            // FIX: Force volume to max and Unmute
+            event.target.setVolume(100);
+            event.target.unMute();
+            
+            document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
+            document.getElementById("track-title").style.color = "#00ff00";
+        }
         
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
                 var data = player.getVideoData();
                 document.getElementById("track-title").innerText = "Playing: " + data.title;
                 document.getElementById("track-title").style.color = "#fff";
-                
-                // START THE LED KICK
                 startBassSimulation();
-                
             } else if (event.data === YT.PlayerState.PAUSED) {
                 document.getElementById("track-title").innerText = "Paused";
-                
-                // STOP THE LED KICK
                 stopBassSimulation();
             }
         }
@@ -245,10 +230,13 @@
             if(event.data === 150 || event.data === 101) errorMsg = "Song Blocked (Copyright)";
             else if (event.data === 2) errorMsg = "Invalid Playlist ID";
             else if (event.data === 100) errorMsg = "Video Private/Deleted";
+            
+            console.log("Error Code:", event.data); // Print to console
             document.getElementById("track-title").innerText = errorMsg;
             document.getElementById("track-title").style.color = "#ed4245";
             stopBassSimulation();
         }
+        
         function togglePlay() { if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } }
         function nextTrack() { if(player) player.nextVideo(); }
         function prevTrack() { if(player) player.previousVideo(); }
