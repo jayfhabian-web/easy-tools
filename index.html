@@ -1,17 +1,276 @@
-<script>
-        // --- SYSTEM UNLOCK ---
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nexus Hub OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+        /* --- 1. GLOBAL AESTHETICS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
+
+        body {
+            /* The background is now the "Interior" (Galaxy/Dark Room) */
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- 2. THE AIRLOCK DOORS --- */
+        .airlock-door {
+            position: fixed;
+            top: 0;
+            height: 100%;
+            width: 51%; /* Slight overlap to prevent gaps */
+            background: #111; /* Dark Metal */
+            z-index: 800; /* Behind login card (999), in front of interface (1) */
+            transition: transform 2.5s cubic-bezier(0.6, 0.05, 0.2, 0.9); /* Heavy door movement */
+            
+            /* Sci-Fi Texture */
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px),
+                linear-gradient(to bottom, #1a1a2e, #000);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #door-left {
+            left: 0;
+            border-right: 4px solid #333;
+        }
+
+        #door-right {
+            right: 0;
+            border-left: 4px solid #333;
+        }
+
+        /* Door Decorations */
+        .door-handle {
+            width: 20px;
+            height: 150px;
+            background: #444;
+            border: 1px solid #666;
+            box-shadow: 0 0 10px #000;
+        }
+
+        /* Animation State: Doors Open */
+        .doors-open #door-left { transform: translateX(-100%); }
+        .doors-open #door-right { transform: translateX(100%); }
+
+        /* --- 3. THE BLINDING LIGHT --- */
+        #flash-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 500; /* Behind doors, in front of interface */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-out;
+        }
+        
+        /* --- 4. LOGIN OVERLAY --- */
+        #login-screen {
+            position: absolute;
+            z-index: 999; /* Top layer */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%; height: 100%;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-card {
+            background: rgba(0, 0, 0, 0.8); /* Darker to sit on doors */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            padding: 50px;
+            width: 320px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px #5865F2; }
+        
+        input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #333;
+            color: #fff;
+            padding: 15px;
+            width: 80%;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 20px;
+            text-align: center;
+            letter-spacing: 3px;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+        input:focus { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
+
+        .btn {
+            background: linear-gradient(90deg, #5865F2, #4752c4);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4); }
+
+        /* --- 5. MAIN INTERFACE --- */
+        #main-interface {
+            width: 90%;
+            height: 90%;
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            
+            /* Initial Hidden State */
+            opacity: 0; 
+            transform: scale(0.8); /* Starts small (far away) */
+            transition: all 1.5s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        /* TABS & MEDIA STYLES (Kept from before) */
+        .tabs-header { display: flex; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); height: 60px; }
+        .tab-btn { flex: 1; background: transparent; border: none; color: #666; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; position: relative; }
+        .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .tab-btn.active { color: #fff; text-shadow: 0 0 15px currentColor; }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #5865F2; box-shadow: 0 -2px 10px #5865F2; }
+        #tab-btn-media.active { text-shadow: 0 0 15px #ff0055; }
+        #tab-btn-media.active::after { background: #ff0055; box-shadow: 0 -2px 10px #ff0055; }
+        
+        .content-area { flex: 1; position: relative; overflow: hidden; }
+        .view-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: 0.5s ease; transform: translateY(20px); }
+        .view-section.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+        .media-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; background: radial-gradient(circle at center, rgba(255,0,85,0.1), transparent 70%); }
+        .monitor-frame { width: 70%; max-width: 800px; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 15px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); background: black; position: relative; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        .media-controls { margin-top: 30px; display: flex; gap: 20px; background: rgba(0,0,0,0.4); padding: 20px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
+        .control-btn { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .control-btn:hover { border-color: #ff0055; color: #ff0055; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); transform: scale(1.1); }
+        .track-info { margin-top: 20px; font-size: 24px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+    </style>
+</head>
+<body id="body-container">
+
+    <div id="door-left" class="airlock-door"><div class="door-handle"></div></div>
+    <div id="door-right" class="airlock-door"><div class="door-handle"></div></div>
+
+    <div id="flash-overlay"></div>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <h2>System Locked</h2>
+            <input type="password" id="passInput" placeholder="ENTER PASSCODE">
+            <button class="btn" onclick="unlockSystem()">Initialize Airlock</button>
+        </div>
+    </div>
+
+    <div id="main-interface">
+        
+        <div class="tabs-header">
+            <button id="tab-btn-comms" class="tab-btn active" onclick="switchTab('comms')">// COMMS CHANNEL</button>
+            <button id="tab-btn-media" class="tab-btn" onclick="switchTab('media')">// MEDIA DECK</button>
+        </div>
+
+        <div class="content-area">
+            
+            <div id="view-comms" class="view-section active">
+                <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
+            </div>
+
+            <div id="view-media" class="view-section">
+                <div class="media-center">
+                    <div class="monitor-frame">
+                        <div class="video-container">
+                            <div id="player"></div>
+                        </div>
+                    </div>
+                    <div class="track-info" id="track-title">System Standby</div>
+                    <div class="media-controls">
+                        <button class="control-btn" onclick="prevTrack()">&#9664;</button>
+                        <button class="control-btn" onclick="togglePlay()">&#9654;&#10074;&#10074;</button>
+                        <button class="control-btn" onclick="nextTrack()">&#9654;&#9654;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- ANIMATION SEQUENCE ---
         function unlockSystem() {
             var pass = document.getElementById("passInput").value;
+            
+            // --- CHANGE PASSWORD HERE ---
             if(pass === "12345") {
+                
+                // 1. Remove Login Card
                 var login = document.getElementById("login-screen");
                 login.style.opacity = "0";
-                login.style.pointerEvents = "none";
+                setTimeout(() => login.style.display = "none", 500);
+
+                // 2. Open Doors
+                document.body.classList.add("doors-open");
+
+                // 3. Trigger Flash (Light)
+                var flash = document.getElementById("flash-overlay");
                 
-                var main = document.getElementById("main-interface");
-                main.style.opacity = "1";
-                main.style.transform = "scale(1)";
+                // Wait 0.5s for doors to start moving, then flash
+                setTimeout(function() {
+                    flash.style.opacity = "1"; // Blind the user
+                }, 800);
+
+                // 4. Reveal Interface (Fade Flash out, Reveal Main in)
+                setTimeout(function() {
+                    flash.style.opacity = "0"; // Fade light out
+                    
+                    var main = document.getElementById("main-interface");
+                    main.style.opacity = "1";
+                    main.style.transform = "scale(1)"; // Zoom in effect
+                }, 2000); // 2 seconds into the animation
+
             } else {
-                alert("ACCESS DENIED"); 
+                var btn = document.querySelector(".btn");
+                btn.innerText = "INVALID PASSCODE";
+                btn.style.background = "#ed4245";
+                setTimeout(() => {
+                    btn.innerText = "Initialize Airlock";
+                    btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)";
+                }, 1000);
             }
         }
         
@@ -30,22 +289,20 @@
             document.getElementById("view-" + tabName).classList.add("active");
         }
 
-        // --- YOUTUBE DEBUGGER ---
+        // --- YOUTUBE LOGIC ---
         var player;
         function onYouTubeIframeAPIReady() {
-            console.log("YouTube API Ready");
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
                 playerVars: {
                     listType: 'playlist',
-                    // YOUR PLAYLIST ID
-                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', 
+                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', // YOUR PLAYLIST ID
                     autoplay: 0,
                     loop: 1,
                     modestbranding: 1,
                     rel: 0,
-                    origin: window.location.origin // Security Fix
+                    origin: window.location.origin
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -56,8 +313,8 @@
         }
 
         function onPlayerReady(event) {
-            document.getElementById("track-title").innerText = "System Online. Click Play.";
-            document.getElementById("track-title").style.color = "#00ff00"; // Green for success
+            document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
+            document.getElementById("track-title").style.color = "#00ff00";
         }
 
         function onPlayerStateChange(event) {
@@ -70,33 +327,20 @@
             }
         }
 
-        // --- ERROR DETECTOR ---
         function onPlayerError(event) {
-            var errorMsg = "Unknown Error";
-            var color = "#ed4245"; // Red
-
-            if(event.data === 150 || event.data === 101) {
-                errorMsg = "ERROR: Song Blocked by Owner (Copyright)";
-            } else if (event.data === 2) {
-                errorMsg = "ERROR: Playlist ID Invalid";
-            } else if (event.data === 5) {
-                errorMsg = "ERROR: HTML5 Player Error";
-            } else if (event.data === 100) {
-                errorMsg = "ERROR: Video Not Found (or Private)";
-            }
-
-            console.log("YouTube Error Code: " + event.data);
+            var errorMsg = "System Error";
+            if(event.data === 150 || event.data === 101) errorMsg = "Song Blocked (Copyright)";
+            else if (event.data === 2) errorMsg = "Invalid Playlist ID";
+            else if (event.data === 100) errorMsg = "Video Private/Deleted";
+            
             document.getElementById("track-title").innerText = errorMsg;
-            document.getElementById("track-title").style.color = color;
+            document.getElementById("track-title").style.color = "#ed4245";
         }
 
-        function togglePlay() {
-            if(!player) return;
-            var state = player.getPlayerState();
-            if (state === 1) player.pauseVideo();
-            else player.playVideo();
-        }
+        function togglePlay() { if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } }
         function nextTrack() { if(player) player.nextVideo(); }
         function prevTrack() { if(player) player.previousVideo(); }
 
     </script>
+</body>
+</html>
