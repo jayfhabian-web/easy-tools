@@ -20,7 +20,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all 0.1s;
         }
 
         @keyframes gradientBG {
@@ -144,16 +143,27 @@
     </div>
 
     <script>
-        // --- ANIMATIONS ---
+        // --- 1. SYSTEM UNLOCK (THE CRITICAL PART) ---
         function unlockSystem() {
             var pass = document.getElementById("passInput").value;
+            
             if(pass === "12345") {
+                // *** FIX: START AUDIO IMMEDIATELY ON CLICK ***
+                if(player && player.playVideo) {
+                    player.unMute();        // Force unmute
+                    player.setVolume(100);  // Force max volume
+                    player.playVideo();     // Start the engine
+                    console.log("Ignition Sequence Started");
+                }
+
+                // UI ANIMATION
                 var login = document.getElementById("login-screen");
                 login.style.opacity = "0";
                 setTimeout(() => login.style.display = "none", 500);
 
                 document.body.classList.add("doors-open");
                 var flash = document.getElementById("flash-overlay");
+                
                 setTimeout(function() { flash.style.opacity = "1"; }, 800);
                 setTimeout(function() {
                     flash.style.opacity = "0";
@@ -179,7 +189,7 @@
             document.getElementById("view-" + tabName).classList.add("active");
         }
 
-        // --- BASS SIMULATION ENGINE ---
+        // --- 2. BASS SIMULATION ENGINE ---
         var bassInterval;
         function startBassSimulation() {
             if(bassInterval) clearInterval(bassInterval);
@@ -194,21 +204,28 @@
             document.getElementById("main-interface").classList.remove("bass-active");
         }
 
-        // --- YOUTUBE LOGIC ---
+        // --- 3. YOUTUBE SETUP ---
         var player;
         function onYouTubeIframeAPIReady() {
+            console.log("API Ready");
             player = new YT.Player('player', {
                 height: '100%', width: '100%',
-                playerVars: { listType: 'playlist', list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', autoplay: 0, loop: 1, modestbranding: 1, rel: 0, origin: window.location.origin },
+                playerVars: { 
+                    listType: 'playlist', 
+                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', 
+                    autoplay: 1,      // Try to autoplay (will be blocked until click)
+                    mute: 1,          // Start muted (standard workaround)
+                    loop: 1, 
+                    modestbranding: 1, 
+                    rel: 0,
+                    origin: window.location.origin 
+                },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
             });
         }
         
         function onPlayerReady(event) {
-            // FIX: Force volume to max and Unmute
-            event.target.setVolume(100);
-            event.target.unMute();
-            
+            // Player is ready, but we wait for the UNLOCK button to unmute
             document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
             document.getElementById("track-title").style.color = "#00ff00";
         }
@@ -226,12 +243,12 @@
         }
         
         function onPlayerError(event) {
-            var errorMsg = "System Error";
+            var errorMsg = "System Error " + event.data;
             if(event.data === 150 || event.data === 101) errorMsg = "Song Blocked (Copyright)";
             else if (event.data === 2) errorMsg = "Invalid Playlist ID";
             else if (event.data === 100) errorMsg = "Video Private/Deleted";
             
-            console.log("Error Code:", event.data); // Print to console
+            console.log(errorMsg);
             document.getElementById("track-title").innerText = errorMsg;
             document.getElementById("track-title").style.color = "#ed4245";
             stopBassSimulation();
