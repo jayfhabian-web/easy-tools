@@ -26,50 +26,85 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- 2. AIRLOCK DOORS --- */
-        .airlock-door {
-            position: fixed; top: 0; height: 100%; width: 51%; background: #111; z-index: 800;
-            transition: transform 2.5s cubic-bezier(0.6, 0.05, 0.2, 0.9);
-            background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px), linear-gradient(to bottom, #1a1a2e, #000);
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
+        /* --- 2. LOGIN SCREEN (Clean & Centered) --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 12, 41, 0.95); /* Dark overlay */
+            z-index: 999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        #door-left { left: 0; border-right: 4px solid #333; }
-        #door-right { right: 0; border-left: 4px solid #333; }
-        .door-handle { width: 20px; height: 150px; background: #444; border: 1px solid #666; box-shadow: 0 0 10px #000; }
-        .doors-open #door-left { transform: translateX(-100%); }
-        .doors-open #door-right { transform: translateX(100%); }
-
-        /* --- 3. ANIMATION OVERLAYS --- */
-        #flash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 1.5s ease-out; }
         
-        /* --- 4. LOGIN SCREEN --- */
-        #login-screen { position: absolute; z-index: 999; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; transition: opacity 0.5s ease; }
-        .login-card { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(88, 101, 242, 0.3); padding: 50px; width: 320px; border-radius: 20px; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px #5865F2; }
-        input { background: rgba(0, 0, 0, 0.4); border: 2px solid #333; color: #fff; padding: 15px; width: 80%; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 20px; text-align: center; letter-spacing: 3px; outline: none; transition: 0.3s; margin-bottom: 20px; }
-        input:focus { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
-        .btn { background: linear-gradient(90deg, #5865F2, #4752c4); color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.2s; width: 100%; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4); }
+        .login-card { 
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(88, 101, 242, 0.3); 
+            padding: 60px; 
+            width: 350px; 
+            border-radius: 20px; 
+            text-align: center; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
 
-        /* --- 5. MAIN INTERFACE --- */
+        /* When system unlocks, this class is added to hide the login */
+        .system-unlocked #login-screen {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1); /* Slight zoom out as it fades */
+        }
+
+        h2 { margin: 0 0 20px 0; font-size: 36px; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 15px #5865F2; }
+        
+        input { 
+            background: rgba(0, 0, 0, 0.4); border: 2px solid #333; color: #fff; 
+            padding: 15px; width: 85%; border-radius: 8px; 
+            font-family: 'Rajdhani', sans-serif; font-size: 24px; 
+            text-align: center; letter-spacing: 5px; outline: none; 
+            transition: 0.3s; margin-bottom: 25px; 
+        }
+        input:focus { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
+        
+        .btn { 
+            background: linear-gradient(90deg, #5865F2, #4752c4); color: white; 
+            padding: 15px 30px; border: none; border-radius: 8px; 
+            font-size: 20px; font-weight: bold; text-transform: uppercase; 
+            letter-spacing: 3px; cursor: pointer; transition: 0.2s; width: 100%; 
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(88, 101, 242, 0.5); }
+
+        /* --- 3. MAIN INTERFACE (Starts Hidden) --- */
         #main-interface {
             width: 95vw; height: 90vh;
-            background: rgba(20, 20, 35, 0.9);
+            background: rgba(20, 20, 35, 0.8);
             border: 2px solid rgba(88, 101, 242, 0.5);
             box-shadow: 0 0 20px rgba(88, 101, 242, 0.2);
             border-radius: 15px;
             display: flex; flex-direction: column; overflow: hidden;
-            opacity: 0; transform: scale(0.8);
-            transition: opacity 1.5s, transform 1.5s, border-color 0.05s, box-shadow 0.05s; 
+            
+            /* BOOT ANIMATION START STATE */
+            opacity: 0;
+            transform: scale(0.9);
+            filter: blur(10px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.8s ease;
         }
 
-        /* BASS HIT CLASS (Used by both engines) */
+        /* BOOT ANIMATION END STATE */
+        .system-unlocked #main-interface {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+        }
+
+        /* --- BASS REACTION (Shared by both engines) --- */
         .bass-active {
             border-color: #ff0055 !important;
-            box-shadow: 0 0 60px rgba(255, 0, 85, 0.8), inset 0 0 30px rgba(255,0,85, 0.3) !important;
-            transform: scale(1.01) !important; 
+            box-shadow: 0 0 60px rgba(255, 0, 85, 0.7), inset 0 0 40px rgba(255,0,85, 0.2) !important;
+            transform: scale(1.005) !important; 
         }
 
+        /* --- TABS & CONTENT --- */
         .tabs-header { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); height: 60px; flex-shrink: 0; }
         .tab-btn { flex: 1; background: transparent; border: none; color: #666; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; position: relative; }
         .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
@@ -88,9 +123,11 @@
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        /* NEW AUDIO ELEMENT (Hidden) */
+        /* HIDDEN AUDIO ELEMENTS */
         #local-audio { display: none; }
+        #file-upload { display: none; }
 
+        /* CONTROLS */
         .media-controls { margin-top: 30px; display: flex; gap: 20px; background: rgba(0,0,0,0.4); padding: 20px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
         .control-btn { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .control-btn:hover { border-color: #ff0055; color: #ff0055; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); transform: scale(1.1); }
@@ -99,32 +136,26 @@
         .upload-btn:hover { border-color: #fff; color: #fff; box-shadow: 0 0 20px #5865F2; }
 
         .track-info { margin-top: 20px; font-size: 24px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        /* Hidden Input */
-        #file-upload { display: none; }
 
     </style>
 </head>
 <body id="body-container">
 
-    <div id="door-left" class="airlock-door"><div class="door-handle"></div></div>
-    <div id="door-right" class="airlock-door"><div class="door-handle"></div></div>
-    <div id="flash-overlay"></div>
-
     <audio id="local-audio" controls></audio>
 
     <div id="login-screen">
         <div class="login-card">
-            <h2>System Locked</h2>
-            <input type="password" id="passInput" placeholder="ENTER PASSCODE">
-            <button class="btn" onclick="unlockSystem()">Initialize Airlock</button>
+            <h2>NEXUS OS</h2>
+            <input type="password" id="passInput" placeholder="ACCESS CODE">
+            <button class="btn" onclick="bootSystem()">BOOT SYSTEM</button>
         </div>
     </div>
 
     <div id="main-interface">
         
         <div class="tabs-header">
-            <button id="tab-btn-comms" class="tab-btn active" onclick="switchTab('comms')">// COMMS CHANNEL</button>
-            <button id="tab-btn-media" class="tab-btn" onclick="switchTab('media')">// MEDIA DECK</button>
+            <button id="tab-btn-comms" class="tab-btn active" onclick="switchTab('comms')">// COMMS</button>
+            <button id="tab-btn-media" class="tab-btn" onclick="switchTab('media')">// MEDIA</button>
         </div>
 
         <div class="content-area">
@@ -142,7 +173,7 @@
                     
                     <div class="media-controls">
                         <input type="file" id="file-upload" accept="audio/*">
-                        <button class="control-btn upload-btn" onclick="document.getElementById('file-upload').click()">&#8679;</button>
+                        <button class="control-btn upload-btn" title="Upload Local File" onclick="document.getElementById('file-upload').click()">&#8679;</button>
                         
                         <button class="control-btn" onclick="prevTrack()">&#9664;</button>
                         <button class="control-btn" onclick="togglePlay()">&#9654;&#10074;&#10074;</button>
@@ -154,82 +185,81 @@
     </div>
 
     <script>
-        // --- VARIABLES ---
-        var isLocalFile = false; // Are we playing an upload?
+        // --- GLOBAL VARIABLES ---
+        var isLocalFile = false;
         var audioCtx, analyser, source;
         var audioEl = document.getElementById("local-audio");
-        
-        // --- 1. UNLOCK & IGNITION ---
-        function unlockSystem() {
+        var bassInterval; // For YouTube simulation
+
+        // --- 1. BOOT SEQUENCE (Replaced Airlock) ---
+        function bootSystem() {
             var pass = document.getElementById("passInput").value;
+            
             if(pass === "12345") {
-                // Initialize YouTube Audio Context
+                // A. VISUALS: Add class to trigger CSS transition
+                document.body.classList.add("system-unlocked");
+
+                // B. AUDIO: Immediate Ignition
                 if(player && player.playVideo) {
                     player.unMute();
                     player.setVolume(100);
                     player.playVideo();
                 }
-
-                // Initialize Web Audio API (for future uploads)
+                
+                // C. SETUP: Prepare AudioContext for later
                 initAudioContext();
-
-                // UI Animation
-                var login = document.getElementById("login-screen");
-                login.style.opacity = "0";
-                setTimeout(() => login.style.display = "none", 500);
-                document.body.classList.add("doors-open");
-                var flash = document.getElementById("flash-overlay");
-                setTimeout(function() { flash.style.opacity = "1"; }, 800);
-                setTimeout(function() {
-                    flash.style.opacity = "0";
-                    var main = document.getElementById("main-interface");
-                    main.style.opacity = "1";
-                    main.style.transform = "scale(1)";
-                }, 2000);
+                
             } else {
+                // Error Shake
+                var card = document.querySelector(".login-card");
+                card.style.transform = "translateX(10px)";
+                setTimeout(() => card.style.transform = "translateX(-10px)", 100);
+                setTimeout(() => card.style.transform = "translateX(10px)", 200);
+                setTimeout(() => card.style.transform = "scale(1)", 300);
+                
                 var btn = document.querySelector(".btn");
-                btn.innerText = "INVALID PASSCODE";
+                btn.innerText = "ACCESS DENIED";
                 btn.style.background = "#ed4245";
-                setTimeout(() => { btn.innerText = "Initialize Airlock"; btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)"; }, 1000);
+                setTimeout(() => { 
+                    btn.innerText = "BOOT SYSTEM"; 
+                    btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)"; 
+                }, 1000);
             }
         }
-        document.getElementById("passInput").addEventListener("keypress", function(e) { if (e.key === "Enter") unlockSystem(); });
+        document.getElementById("passInput").addEventListener("keypress", function(e) { if (e.key === "Enter") bootSystem(); });
 
-        // --- 2. FILE UPLOAD LOGIC ---
+        // --- 2. LOCAL FILE UPLOAD & REAL BASS ENGINE ---
         document.getElementById("file-upload").addEventListener("change", function(e) {
             var file = e.target.files[0];
             if (!file) return;
 
             // Stop YouTube
             if(player) player.pauseVideo();
-            stopBassSimulation(); // Stop the fake bass
+            stopBassSimulation(); 
             
-            // Setup Local File
+            // Play Local
             isLocalFile = true;
             var fileURL = URL.createObjectURL(file);
             audioEl.src = fileURL;
             audioEl.play();
             
-            // Update Text
+            // Visual Update
             document.getElementById("track-title").innerText = "LOCAL FILE: " + file.name;
             document.getElementById("track-title").style.color = "#5865F2";
             
-            // Start Real Bass Analyzer
+            // Start Analyzer
             analyzeAudio();
         });
 
-        // --- 3. REAL BASS DETECTION ENGINE (WEB AUDIO API) ---
         function initAudioContext() {
-            // Create Context only once
             if(!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
                 analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256; // Precision
-                
-                // Connect HTML audio element to Analyzer
+                analyser.fftSize = 256; 
                 source = audioCtx.createMediaElementSource(audioEl);
                 source.connect(analyser);
-                analyser.connect(audioCtx.destination); // Connect to speakers
+                analyser.connect(audioCtx.destination);
             } else if(audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
@@ -242,23 +272,22 @@
             var dataArray = new Uint8Array(bufferLength);
             
             function renderFrame() {
-                if(!isLocalFile || audioEl.paused) return; // Stop if we switch back
+                if(!isLocalFile || audioEl.paused) return;
                 requestAnimationFrame(renderFrame);
                 
                 analyser.getByteFrequencyData(dataArray);
 
-                // --- THE ALGORITHM ---
-                // We check the first few "bins" of data (Deep Bass frequencies)
+                // Calculate Deep Bass (Lowest frequencies)
                 var bassSum = 0;
-                var bassBins = 10; // Check lowest 10 frequency bands
+                var bassBins = 8; 
                 for(var i = 0; i < bassBins; i++) {
                     bassSum += dataArray[i];
                 }
                 var bassAverage = bassSum / bassBins;
 
-                // THRESHOLD: If bass is louder than 200 (out of 255)
+                // Threshold for "Flash" (Sensitivity)
                 var interface = document.getElementById("main-interface");
-                if(bassAverage > 210) {
+                if(bassAverage > 215) { // High threshold for strong beats
                     interface.classList.add("bass-active");
                 } else {
                     interface.classList.remove("bass-active");
@@ -267,10 +296,10 @@
             renderFrame();
         }
 
-        // --- 4. FAKE BASS ENGINE (YOUTUBE) ---
-        var bassInterval;
+        // --- 3. YOUTUBE SIMULATION ENGINE ---
         function startBassSimulation() {
             if(bassInterval) clearInterval(bassInterval);
+            // Simulate 120 BPM Thump
             bassInterval = setInterval(function() {
                 var interface = document.getElementById("main-interface");
                 interface.classList.add("bass-active");
@@ -282,7 +311,53 @@
             document.getElementById("main-interface").classList.remove("bass-active");
         }
 
-        // --- 5. CONTROLS & LOGIC ---
+        // --- 4. YOUTUBE PLAYER ---
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%', width: '100%',
+                playerVars: { 
+                    listType: 'playlist', 
+                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', // The PL ID
+                    index: 0, // Starts at song 1
+                    autoplay: 1, 
+                    mute: 1, 
+                    loop: 1, 
+                    modestbranding: 1, 
+                    rel: 0, 
+                    origin: window.location.origin 
+                },
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
+            });
+        }
+        function onPlayerReady(event) {
+            document.getElementById("track-title").innerText = "SYSTEM READY. AWAITING BOOT.";
+            document.getElementById("track-title").style.color = "#00ff00";
+        }
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                isLocalFile = false; 
+                audioEl.pause(); 
+                var data = player.getVideoData();
+                document.getElementById("track-title").innerText = data.title;
+                document.getElementById("track-title").style.color = "#fff";
+                startBassSimulation();
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                if(!isLocalFile) stopBassSimulation();
+            }
+        }
+        function onPlayerError(event) { console.log("YT Error:", event.data); stopBassSimulation(); }
+
+        // --- 5. CONTROLS ---
+        function switchTab(tabName) {
+            document.getElementById("tab-btn-comms").classList.remove("active");
+            document.getElementById("tab-btn-media").classList.remove("active");
+            document.getElementById("view-comms").classList.remove("active");
+            document.getElementById("view-media").classList.remove("active");
+            document.getElementById("tab-btn-" + tabName).classList.add("active");
+            document.getElementById("view-" + tabName).classList.add("active");
+        }
+
         function togglePlay() { 
             if(isLocalFile) {
                 if(audioEl.paused) { 
@@ -297,51 +372,11 @@
                 if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } 
             }
         }
-        
-        function nextTrack() { 
-            if(isLocalFile) { alert("Playlist is YouTube Only"); } 
-            else if(player) player.nextVideo(); 
-        }
+        function nextTrack() { if(!isLocalFile && player) player.nextVideo(); }
         function prevTrack() { 
-            if(isLocalFile) { audioEl.currentTime = 0; } 
+            if(isLocalFile) audioEl.currentTime = 0; 
             else if(player) player.previousVideo(); 
         }
-
-        function switchTab(tabName) {
-            document.getElementById("tab-btn-comms").classList.remove("active");
-            document.getElementById("tab-btn-media").classList.remove("active");
-            document.getElementById("view-comms").classList.remove("active");
-            document.getElementById("view-media").classList.remove("active");
-            document.getElementById("tab-btn-" + tabName).classList.add("active");
-            document.getElementById("view-" + tabName).classList.add("active");
-        }
-
-        // --- 6. YOUTUBE API ---
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '100%', width: '100%',
-                playerVars: { listType: 'playlist', list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', autoplay: 1, mute: 1, loop: 1, modestbranding: 1, rel: 0, origin: window.location.origin },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
-            });
-        }
-        function onPlayerReady(event) {
-            document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
-            document.getElementById("track-title").style.color = "#00ff00";
-        }
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                isLocalFile = false; // We are back on YouTube
-                audioEl.pause(); // Stop local
-                var data = player.getVideoData();
-                document.getElementById("track-title").innerText = "YouTube: " + data.title;
-                document.getElementById("track-title").style.color = "#fff";
-                startBassSimulation(); // Use FAKE Bass
-            } else if (event.data === YT.PlayerState.PAUSED) {
-                if(!isLocalFile) stopBassSimulation();
-            }
-        }
-        function onPlayerError(event) { console.log(event); stopBassSimulation(); }
 
     </script>
 </body>
