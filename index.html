@@ -3,11 +3,8 @@
 <head>
     <title>Nexus Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
-
     <style>
-        /* --- 1. THE VIBE (BACKGROUND & FONTS) --- */
+        /* --- 1. THE VISUALS --- */
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
 
         body {
@@ -17,11 +14,11 @@
             color: white;
             font-family: 'Rajdhani', sans-serif;
             margin: 0;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -32,19 +29,21 @@
 
         /* --- 2. THE LOGIN CARD --- */
         #login-card {
+            position: relative;
+            z-index: 100; /* Always on top */
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 50px;
             width: 350px;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            z-index: 10; /* Keeps login on top */
+            transition: all 0.5s ease;
         }
 
-        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(114, 137, 218, 0.5); }
+        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 2px; }
         p { color: #aaa; margin-bottom: 30px; font-size: 14px; }
 
         input {
@@ -84,29 +83,43 @@
 
         /* --- 3. THE DISCORD CONTAINER --- */
         #discord-container {
-            position: absolute;
-            top: 0; left: 0;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
             width: 100%; height: 100%;
+            z-index: 1; /* Behind the login card initially */
+            
+            /* Hidden state */
             opacity: 0;
             pointer-events: none;
-            transform: scale(0.8);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: scale(0.9);
             filter: blur(10px);
-            z-index: 1;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* This styles the new Smart Widget */
-        widgetbot-embed {
-            width: 100%;
-            height: 100%;
-            border: none;
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- 4. ANIMATION STATES --- */
+        
+        /* Applied to Login Card on success */
+        .unlock-fade {
+            transform: scale(1.2);
+            opacity: 0;
+            pointer-events: none;
         }
 
-        /* --- 4. ANIMATIONS --- */
-        .zoom-out { transform: scale(1.5) !important; opacity: 0 !important; filter: blur(20px); pointer-events: none; }
-        .zoom-in { opacity: 1 !important; transform: scale(1) !important; filter: blur(0px) !important; pointer-events: auto !important; }
+        /* Applied to Discord on success */
+        .reveal-discord {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            filter: blur(0px) !important;
+            pointer-events: auto !important;
+            z-index: 200 !important; /* Bring to front */
+        }
+
+        /* Error Shake */
         .shake { animation: shake 0.4s ease-in-out; border-color: #ed4245 !important; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        
         .success-btn { background: #3ba55c !important; box-shadow: 0 0 20px #3ba55c !important; }
 
     </style>
@@ -121,12 +134,7 @@
     </div>
 
     <div id="discord-container">
-        
-        <widgetbot-embed 
-            server="1415812467719802995" 
-            channel="1415812468755660864"
-        ></widgetbot-embed>
-
+        <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
     </div>
 
     <script>
@@ -142,15 +150,19 @@
             // ----------------
 
             if(password === correctPass) {
+                // Success Visuals
                 btn.innerHTML = "ACCESS GRANTED";
                 btn.classList.add("success-btn");
                 inputField.style.borderColor = "#3ba55c";
                 
+                // Trigger Animations
                 setTimeout(function() {
-                    card.classList.add("zoom-out");
-                    discord.classList.add("zoom-in");
-                }, 400);
+                    card.classList.add("unlock-fade");      // Hide Login
+                    discord.classList.add("reveal-discord"); // Show Discord
+                }, 500);
+
             } else {
+                // Failure Visuals
                 inputField.classList.add("shake");
                 btn.innerHTML = "DENIED";
                 btn.style.background = "#ed4245";
