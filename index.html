@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Nexus Hub</title>
+    <title>Nexus Hub OS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.youtube.com/iframe_api"></script>
     <style>
-        /* --- 1. GLOBAL STYLES --- */
+        /* --- 1. GLOBAL AESTHETICS --- */
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
 
         body {
@@ -27,195 +28,317 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- 2. LOGIN CARD --- */
-        #login-card {
-            position: relative;
-            z-index: 100;
+        /* --- 2. LOGIN OVERLAY (The Lock Screen) --- */
+        #login-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .login-card {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 50px;
-            width: 350px;
+            width: 320px;
             border-radius: 20px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transition: all 0.5s ease;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 2px; }
-        p { color: #aaa; margin-bottom: 30px; font-size: 14px; }
-
+        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px #5865F2; }
         input {
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255,255,255,0.1);
-            color: white;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #333;
+            color: #fff;
             padding: 15px;
-            width: 85%;
-            border-radius: 12px;
-            font-size: 18px;
+            width: 80%;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 20px;
             text-align: center;
+            letter-spacing: 3px;
             outline: none;
             transition: 0.3s;
-            font-family: 'Rajdhani', sans-serif;
-            letter-spacing: 2px;
+            margin-bottom: 20px;
         }
-        input:focus { border-color: #5865F2; box-shadow: 0 0 15px rgba(88, 101, 242, 0.4); transform: scale(1.02); }
+        input:focus { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
 
-        .main-btn {
-            margin-top: 20px;
+        .btn {
             background: linear-gradient(90deg, #5865F2, #4752c4);
             color: white;
-            padding: 15px;
-            width: 100%;
+            padding: 15px 30px;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             font-size: 18px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.3);
+            transition: 0.2s;
+            width: 100%;
         }
-        .main-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(88, 101, 242, 0.5); }
-        .main-btn:active { transform: scale(0.95); }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4); }
 
-        /* --- 3. DISCORD CONTAINER --- */
-        #discord-container {
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
+        /* --- 3. MAIN INTERFACE (Tabs & Content) --- */
+        #main-interface {
+            width: 90%;
+            height: 90%;
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            opacity: 0; /* Hidden initially */
+            transform: scale(0.95);
+            transition: 0.8s ease;
+        }
+
+        /* TABS HEADER */
+        .tabs-header {
+            display: flex;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            height: 60px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        
+        .tab-btn.active {
+            color: #fff;
+            text-shadow: 0 0 15px currentColor;
+        }
+        
+        /* The glowing line under active tab */
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 3px;
+            background: #5865F2; /* Default blue */
+            box-shadow: 0 -2px 10px #5865F2;
+        }
+        
+        /* Different color for Media tab */
+        #tab-btn-media.active { text-shadow: 0 0 15px #ff0055; }
+        #tab-btn-media.active::after { background: #ff0055; box-shadow: 0 -2px 10px #ff0055; }
+
+        /* CONTENT AREA */
+        .content-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-section {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0;
             pointer-events: none;
-            transform: scale(0.9);
-            filter: blur(10px);
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: 0.5s ease;
+            transform: translateY(20px);
         }
 
-        iframe { width: 100%; height: 100%; border: none; }
+        .view-section.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
 
-        /* --- 4. MUSIC PLAYER WIDGET --- */
-        #music-deck {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 280px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(88, 101, 242, 0.3);
+        /* --- 4. MEDIA PLAYER STYLES --- */
+        .media-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(255,0,85,0.1), transparent 70%);
+        }
+
+        .monitor-frame {
+            width: 70%;
+            max-width: 800px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 15px;
-            z-index: 200; /* On top of everything */
-            display: none; /* Hidden until login */
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            animation: slideUp 1s ease forwards;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            background: black;
+            position: relative;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
         }
 
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .deck-title { font-size: 12px; color: #5865F2; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-        .status-text { font-size: 14px; color: white; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .controls { display: flex; justify-content: space-between; gap: 5px; }
-        
-        .music-btn {
-            background: rgba(255,255,255,0.1);
+        .media-controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            background: rgba(0,0,0,0.4);
+            padding: 20px 40px;
+            border-radius: 50px;
             border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            flex-grow: 1;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: bold;
-            transition: 0.2s;
         }
-        .music-btn:hover { background: #5865F2; color: white; }
 
-        /* --- 5. ANIMATION STATES --- */
-        .unlock-fade { transform: scale(1.2); opacity: 0; pointer-events: none; }
-        .reveal-discord { opacity: 1 !important; transform: scale(1) !important; filter: blur(0px) !important; pointer-events: auto !important; z-index: 2 !important; }
-        .success-btn { background: #3ba55c !important; box-shadow: 0 0 20px #3ba55c !important; }
-        .shake { animation: shake 0.4s ease-in-out; border-color: #ed4245 !important; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .control-btn {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .control-btn:hover {
+            border-color: #ff0055;
+            color: #ff0055;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+            transform: scale(1.1);
+        }
+
+        .track-info {
+            margin-top: 20px;
+            font-size: 24px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* Helper Classes */
+        .hidden { display: none; }
+        iframe { border: none; width: 100%; height: 100%; }
 
     </style>
-    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
-    <div id="login-card">
-        <h2>Nexus Hub</h2>
-        <p>Identity Verification Required</p>
-        <input type="password" id="passInput" placeholder="ENTER PASSCODE">
-        <button id="loginBtn" class="main-btn" onclick="attemptLogin()">Initialize</button>
+    <div id="login-screen">
+        <div class="login-card">
+            <h2>System Locked</h2>
+            <input type="password" id="passInput" placeholder="ENTER PASSCODE">
+            <button class="btn" onclick="unlockSystem()">Unlock</button>
+        </div>
     </div>
 
-    <div id="discord-container">
-        <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
-    </div>
-
-    <div id="music-deck">
-        <div class="deck-title">AUDIO SUBSYSTEM</div>
-        <div class="status-text" id="track-name">System Ready...</div>
+    <div id="main-interface">
         
-        <div id="player" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
+        <div class="tabs-header">
+            <button id="tab-btn-comms" class="tab-btn active" onclick="switchTab('comms')">// COMMS CHANNEL</button>
+            <button id="tab-btn-media" class="tab-btn" onclick="switchTab('media')">// MEDIA DECK</button>
+        </div>
 
-        <div class="controls">
-            <button class="music-btn" onclick="prevTrack()">&#9664;</button> <button class="music-btn" onclick="togglePlay()">&#9654; / &#10074;&#10074;</button> <button class="music-btn" onclick="nextTrack()">&#9654;&#9654;</button> </div>
+        <div class="content-area">
+            
+            <div id="view-comms" class="view-section active">
+                <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
+            </div>
+
+            <div id="view-media" class="view-section">
+                <div class="media-center">
+                    
+                    <div class="monitor-frame">
+                        <div class="video-container">
+                            <div id="player"></div>
+                        </div>
+                    </div>
+
+                    <div class="track-info" id="track-title">System Standby</div>
+
+                    <div class="media-controls">
+                        <button class="control-btn" onclick="prevTrack()">&#9664;</button>
+                        <button class="control-btn" onclick="togglePlay()">&#9654;&#10074;&#10074;</button>
+                        <button class="control-btn" onclick="nextTrack()">&#9654;&#9654;</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
-        // --- 1. LOGIN LOGIC ---
-        function attemptLogin() {
-            var inputField = document.getElementById("passInput");
-            var btn = document.getElementById("loginBtn");
-            var card = document.getElementById("login-card");
-            var discord = document.getElementById("discord-container");
-            var musicDeck = document.getElementById("music-deck");
-            
-            if(inputField.value === "12345") { // CHANGE PASSWORD HERE
-                btn.innerHTML = "ACCESS GRANTED";
-                btn.classList.add("success-btn");
-                inputField.style.borderColor = "#3ba55c";
+        // --- SYSTEM UNLOCK ---
+        function unlockSystem() {
+            var pass = document.getElementById("passInput").value;
+            if(pass === "12345") {
+                // Fade out login
+                var login = document.getElementById("login-screen");
+                login.style.opacity = "0";
+                login.style.pointerEvents = "none";
                 
-                setTimeout(function() {
-                    card.classList.add("unlock-fade");
-                    discord.classList.add("reveal-discord");
-                    musicDeck.style.display = "block"; // Show Music Player
-                }, 500);
+                // Scale in Main Interface
+                var main = document.getElementById("main-interface");
+                main.style.opacity = "1";
+                main.style.transform = "scale(1)";
             } else {
-                inputField.classList.add("shake");
-                btn.innerHTML = "DENIED";
-                btn.style.background = "#ed4245";
-                setTimeout(function() {
-                    inputField.classList.remove("shake");
-                    btn.innerHTML = "Initialize";
-                    btn.style.background = "";
-                    inputField.value = ""; 
-                }, 1000);
+                alert("ACCESS DENIED"); // Simple alert for now
             }
         }
         
+        // Allow Enter key
         document.getElementById("passInput").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") attemptLogin();
+            if (e.key === "Enter") unlockSystem();
         });
 
-        // --- 2. MUSIC PLAYER LOGIC ---
+        // --- TAB SWITCHING ---
+        function switchTab(tabName) {
+            // 1. Reset Buttons
+            document.getElementById("tab-btn-comms").classList.remove("active");
+            document.getElementById("tab-btn-media").classList.remove("active");
+            
+            // 2. Hide Views
+            document.getElementById("view-comms").classList.remove("active");
+            document.getElementById("view-media").classList.remove("active");
+
+            // 3. Activate Selected
+            document.getElementById("tab-btn-" + tabName).classList.add("active");
+            document.getElementById("view-" + tabName).classList.add("active");
+        }
+
+        // --- YOUTUBE LOGIC ---
         var player;
-        
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '0',
-                width: '0',
+                height: '100%',
+                width: '100%',
                 playerVars: {
-                    // PASTE YOUR PLAYLIST ID BELOW WHERE IT SAYS list: '...'
                     listType: 'playlist',
-                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', // <--- PASTE HERE
+                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', // YOUR PLAYLIST ID
                     autoplay: 0,
-                    loop: 1
+                    loop: 1,
+                    modestbranding: 1,
+                    rel: 0
                 },
                 events: {
                     'onStateChange': onPlayerStateChange
@@ -224,28 +347,22 @@
         }
 
         function onPlayerStateChange(event) {
-            // Update text when song changes
             if (event.data === YT.PlayerState.PLAYING) {
                 var data = player.getVideoData();
-                document.getElementById("track-name").innerText = data.title;
+                document.getElementById("track-title").innerText = data.title;
             } else if (event.data === YT.PlayerState.PAUSED) {
-                document.getElementById("track-name").innerText = "Paused";
+                document.getElementById("track-title").innerText = "Paused";
             }
         }
 
         function togglePlay() {
             var state = player.getPlayerState();
-            if (state === 1) { // If playing
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
+            if (state === 1) player.pauseVideo();
+            else player.playVideo();
         }
-
         function nextTrack() { player.nextVideo(); }
         function prevTrack() { player.previousVideo(); }
 
     </script>
-
 </body>
 </html>
