@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Private Hub</title>
+    <title>Secure Gateway</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        /* --- MODERN DISCORD THEME --- */
         body {
-            background-color: #1a1a1a; 
-            color: white;
-            font-family: Arial, sans-serif;
+            background-color: #202225; /* Deep Dark Background */
+            color: #dcddde;
+            font-family: "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -15,66 +16,108 @@
             height: 100vh;
             overflow: hidden;
         }
-        
-        /* The container for the Discord Window */
-        #discord-window {
-            display: none; /* Hidden until password is entered */
-            background-color: #2c2f33;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            
-            /* This makes it fill most of the screen */
-            width: 90vw;
-            height: 90vh;
-            border-radius: 10px;
-            overflow: hidden;
+
+        /* --- LOGIN BOX STYLING --- */
+        #login-area {
+            background-color: #36393f; /* Lighter Dark Grey */
+            padding: 40px;
+            width: 320px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
+            text-align: center;
+            transition: opacity 0.5s ease;
         }
 
-        /* The Login Box */
-        #login-area {
-            text-align: center;
-            background-color: #2c2f33;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: white;
+            font-weight: 600;
         }
-        
-        h2 { margin-top: 0; }
-        
-        input { 
-            padding: 10px; 
-            border-radius: 5px; 
-            border: none; 
-            margin-right: 5px;
+
+        p { font-size: 14px; color: #b9bbbe; margin-bottom: 20px; }
+
+        input {
+            background-color: #202225;
+            border: 1px solid #202225;
+            color: white;
+            padding: 10px;
+            width: 90%;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.2s;
         }
-        
-        button { 
-            padding: 10px 20px; 
-            border-radius: 5px; 
-            border: none; 
-            background-color: #7289da; 
-            color: white; 
-            cursor: pointer; 
-            font-weight: bold;
-        }
-        
-        button:hover { background-color: #5b6eae; }
-        
-        /* The Actual WidgetBot Frame */
-        iframe {
+
+        input:focus { border-color: #5865F2; }
+
+        button {
+            background-color: #5865F2; /* Discord Blurple */
+            color: white;
+            padding: 12px;
             width: 100%;
-            height: 100%;
             border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover { background-color: #4752c4; }
+
+        /* --- DISCORD WINDOW STYLING --- */
+        #discord-window {
+            opacity: 0; /* Starts invisible for fade effect */
+            pointer-events: none; /* Can't click while invisible */
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #202225;
+            transition: opacity 1s ease;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- ANIMATIONS --- */
+        
+        /* Shake animation for wrong password */
+        .shake {
+            animation: shake 0.5s;
+            border: 1px solid #ed4245 !important;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Success Button Style */
+        .success-btn {
+            background-color: #3ba55c !important; /* Green */
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
     <div id="login-area">
-        <h2>SECURE LOGIN</h2>
-        <p>Enter password to access Discord</p>
-        <input type="password" id="passInput" placeholder="Password">
-        <button onclick="checkPass()">Unlock</button>
-        <p id="error-msg" style="color: #ff5555; display: none; margin-top: 10px;">Wrong password!</p>
+        <h2>Welcome Back!</h2>
+        <p>We're so excited to see you again!</p>
+        
+        <input type="password" id="passInput" placeholder="Enter Password">
+        
+        <button id="loginBtn" onclick="checkPass()">Log In</button>
+        
+        <p id="status-msg" style="margin-top: 15px; height: 20px; font-size: 12px; color: #ed4245;"></p>
     </div>
 
     <div id="discord-window">
@@ -83,21 +126,55 @@
 
     <script>
         function checkPass() {
-            var input = document.getElementById("passInput").value;
+            var inputField = document.getElementById("passInput");
+            var input = inputField.value;
+            var btn = document.getElementById("loginBtn");
+            var status = document.getElementById("status-msg");
+            var loginArea = document.getElementById("login-area");
+            var discordWin = document.getElementById("discord-window");
+
+            // 1. Show "Loading" state
+            btn.innerHTML = "Authenticating...";
+            status.innerHTML = ""; // Clear errors
             
-            // --- CHANGE PASSWORD HERE ---
-            // Replace "12345" with whatever password you want
-            if(input === "Zeus2010:)") { 
-            // ----------------------------
+            // 2. Wait a split second to make it feel like it's thinking
+            setTimeout(function() {
                 
-                document.getElementById("login-area").style.display = "none"; 
-                document.getElementById("discord-window").style.display = "block"; 
-            } else {
-                document.getElementById("error-msg").style.display = "block"; 
-            }
+                // --- CHANGE PASSWORD HERE (Currently 12345) ---
+                if(input === "12345") { 
+                // ----------------------------------------------
+                
+                    // SUCCESS: Turn button green
+                    btn.innerHTML = "Access Granted";
+                    btn.classList.add("success-btn");
+                    
+                    // Fade out login, Fade in Discord
+                    setTimeout(function() {
+                        loginArea.style.opacity = "0";
+                        setTimeout(function(){
+                            loginArea.style.display = "none";
+                            discordWin.style.opacity = "1";
+                            discordWin.style.pointerEvents = "auto";
+                        }, 500);
+                    }, 800);
+
+                } else {
+                    // FAIL: Reset button, shake input
+                    btn.innerHTML = "Log In";
+                    status.innerHTML = "Password Incorrect.";
+                    
+                    // Add shake effect
+                    inputField.classList.add("shake");
+                    
+                    // Remove shake effect after 0.5s so it can happen again
+                    setTimeout(function() {
+                        inputField.classList.remove("shake");
+                    }, 500);
+                }
+            }, 600); // 600ms delay for "fake loading" effect
         }
         
-        // Allow pressing "Enter" key to submit password
+        // Allow "Enter" key
         document.getElementById("passInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 checkPass();
