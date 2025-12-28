@@ -20,6 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: all 0.1s; /* Fast transition for the shake effect */
         }
 
         @keyframes gradientBG {
@@ -28,78 +29,54 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- 2. THE AIRLOCK DOORS --- */
+        /* --- 2. AIRLOCK DOORS --- */
         .airlock-door {
-            position: fixed;
-            top: 0;
-            height: 100%;
-            width: 51%;
-            background: #111;
-            z-index: 800;
+            position: fixed; top: 0; height: 100%; width: 51%; background: #111; z-index: 800;
             transition: transform 2.5s cubic-bezier(0.6, 0.05, 0.2, 0.9);
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px),
-                linear-gradient(to bottom, #1a1a2e, #000);
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 10px), linear-gradient(to bottom, #1a1a2e, #000);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
         }
-
         #door-left { left: 0; border-right: 4px solid #333; }
         #door-right { right: 0; border-left: 4px solid #333; }
         .door-handle { width: 20px; height: 150px; background: #444; border: 1px solid #666; box-shadow: 0 0 10px #000; }
         .doors-open #door-left { transform: translateX(-100%); }
         .doors-open #door-right { transform: translateX(100%); }
 
-        /* --- 3. THE LIGHT FLASH --- */
-        #flash-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 500; opacity: 0; pointer-events: none;
-            transition: opacity 1.5s ease-out;
-        }
+        /* --- 3. ANIMATION OVERLAYS --- */
+        #flash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 1.5s ease-out; }
         
-        /* --- 4. LOGIN OVERLAY --- */
-        #login-screen {
-            position: absolute; z-index: 999;
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; height: 100%; transition: opacity 0.5s ease;
-        }
-        .login-card {
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
-            border: 1px solid rgba(88, 101, 242, 0.3); padding: 50px;
-            width: 320px; border-radius: 20px; text-align: center;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
+        /* --- 4. LOGIN SCREEN --- */
+        #login-screen { position: absolute; z-index: 999; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; transition: opacity 0.5s ease; }
+        .login-card { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(88, 101, 242, 0.3); padding: 50px; width: 320px; border-radius: 20px; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px #5865F2; }
-        input {
-            background: rgba(0, 0, 0, 0.4); border: 2px solid #333; color: #fff;
-            padding: 15px; width: 80%; border-radius: 8px; font-family: 'Rajdhani', sans-serif;
-            font-size: 20px; text-align: center; letter-spacing: 3px; outline: none; transition: 0.3s; margin-bottom: 20px;
-        }
+        input { background: rgba(0, 0, 0, 0.4); border: 2px solid #333; color: #fff; padding: 15px; width: 80%; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 20px; text-align: center; letter-spacing: 3px; outline: none; transition: 0.3s; margin-bottom: 20px; }
         input:focus { border-color: #5865F2; box-shadow: 0 0 20px rgba(88, 101, 242, 0.3); }
-        .btn {
-            background: linear-gradient(90deg, #5865F2, #4752c4); color: white;
-            padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.2s; width: 100%;
-        }
+        .btn { background: linear-gradient(90deg, #5865F2, #4752c4); color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.2s; width: 100%; }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4); }
 
         /* --- 5. MAIN INTERFACE --- */
         #main-interface {
-            width: 95vw; /* FIX: Use 95% of viewport width */
-            height: 90vh; /* FIX: Use 90% of viewport height */
-            background: rgba(20, 20, 35, 0.85); /* Slightly darker for better contrast */
-            border: 1px solid rgba(255,255,255,0.1);
+            width: 95vw; height: 90vh;
+            background: rgba(20, 20, 35, 0.9);
+            
+            /* LED BORDER BASE STATE */
+            border: 2px solid rgba(88, 101, 242, 0.5);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.2);
+            
             border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; overflow: hidden;
             opacity: 0; transform: scale(0.8);
-            transition: all 1.5s cubic-bezier(0.2, 1, 0.3, 1);
+            transition: opacity 1.5s, transform 1.5s, border-color 0.1s, box-shadow 0.1s; /* Fast transition for bass hit */
         }
 
+        /* --- THE BASS HIT CLASS (Added via JS) --- */
+        .bass-active {
+            border-color: #ff0055 !important;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 0.6), inset 0 0 20px rgba(255,0,85, 0.2) !important;
+            transform: scale(1.005) !important; /* Slight Zoom thump */
+        }
+
+        /* TABS */
         .tabs-header { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); height: 60px; flex-shrink: 0; }
         .tab-btn { flex: 1; background: transparent; border: none; color: #666; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s; position: relative; }
         .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
@@ -108,28 +85,16 @@
         #tab-btn-media.active { text-shadow: 0 0 15px #ff0055; }
         #tab-btn-media.active::after { background: #ff0055; box-shadow: 0 -2px 10px #ff0055; }
         
+        /* CONTENT */
         .content-area { flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%; }
-        
-        .view-section { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            opacity: 0; pointer-events: none; transition: 0.5s ease; transform: translateY(20px); 
-        }
+        .view-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: 0.5s ease; transform: translateY(20px); }
         .view-section.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-        /* --- FIX: FULL SCREEN CHAT STYLES --- */
-        #view-comms {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-        #view-comms iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
+        /* CHAT VIEW */
+        #view-comms { display: flex; width: 100%; height: 100%; }
+        #view-comms iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* --- MEDIA STYLES --- */
+        /* MEDIA VIEW */
         .media-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; background: radial-gradient(circle at center, rgba(255,0,85,0.1), transparent 70%); }
         .monitor-frame { width: 70%; max-width: 800px; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 15px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5); background: black; position: relative; }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
@@ -146,7 +111,6 @@
 
     <div id="door-left" class="airlock-door"><div class="door-handle"></div></div>
     <div id="door-right" class="airlock-door"><div class="door-handle"></div></div>
-
     <div id="flash-overlay"></div>
 
     <div id="login-screen">
@@ -165,11 +129,9 @@
         </div>
 
         <div class="content-area">
-            
             <div id="view-comms" class="view-section active">
                 <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
             </div>
-
             <div id="view-media" class="view-section">
                 <div class="media-center">
                     <div class="monitor-frame">
@@ -185,45 +147,35 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
+        // --- ANIMATIONS ---
         function unlockSystem() {
             var pass = document.getElementById("passInput").value;
-            // PASSWORD
             if(pass === "12345") {
                 var login = document.getElementById("login-screen");
                 login.style.opacity = "0";
                 setTimeout(() => login.style.display = "none", 500);
 
                 document.body.classList.add("doors-open");
-
                 var flash = document.getElementById("flash-overlay");
                 setTimeout(function() { flash.style.opacity = "1"; }, 800);
-
                 setTimeout(function() {
                     flash.style.opacity = "0";
                     var main = document.getElementById("main-interface");
                     main.style.opacity = "1";
                     main.style.transform = "scale(1)";
                 }, 2000);
-
             } else {
                 var btn = document.querySelector(".btn");
                 btn.innerText = "INVALID PASSCODE";
                 btn.style.background = "#ed4245";
-                setTimeout(() => {
-                    btn.innerText = "Initialize Airlock";
-                    btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)";
-                }, 1000);
+                setTimeout(() => { btn.innerText = "Initialize Airlock"; btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)"; }, 1000);
             }
         }
-        
-        document.getElementById("passInput").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") unlockSystem();
-        });
+        document.getElementById("passInput").addEventListener("keypress", function(e) { if (e.key === "Enter") unlockSystem(); });
 
         function switchTab(tabName) {
             document.getElementById("tab-btn-comms").classList.remove("active");
@@ -234,35 +186,60 @@
             document.getElementById("view-" + tabName).classList.add("active");
         }
 
+        // --- BASS SIMULATION ENGINE ---
+        var bassInterval;
+        
+        function startBassSimulation() {
+            if(bassInterval) clearInterval(bassInterval);
+            
+            // "Thump" every 500ms (120 BPM)
+            bassInterval = setInterval(function() {
+                var interface = document.getElementById("main-interface");
+                
+                // Add the thump class
+                interface.classList.add("bass-active");
+                
+                // Remove it very quickly (100ms) to create a sharp "kick"
+                setTimeout(function() {
+                    interface.classList.remove("bass-active");
+                }, 100);
+                
+            }, 500); 
+        }
+
+        function stopBassSimulation() {
+            if(bassInterval) clearInterval(bassInterval);
+            document.getElementById("main-interface").classList.remove("bass-active");
+        }
+
+        // --- YOUTUBE LOGIC ---
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                playerVars: {
-                    listType: 'playlist',
-                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', // YOUR PLAYLIST ID
-                    autoplay: 0,
-                    loop: 1,
-                    modestbranding: 1,
-                    rel: 0,
-                    origin: window.location.origin
-                },
+                height: '100%', width: '100%',
+                playerVars: { listType: 'playlist', list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', autoplay: 0, loop: 1, modestbranding: 1, rel: 0, origin: window.location.origin },
                 events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
             });
         }
-
-        function onPlayerReady(event) {
-            document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
-            document.getElementById("track-title").style.color = "#00ff00";
-        }
+        function onPlayerReady(event) { document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online."; document.getElementById("track-title").style.color = "#00ff00"; }
+        
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
                 var data = player.getVideoData();
                 document.getElementById("track-title").innerText = "Playing: " + data.title;
                 document.getElementById("track-title").style.color = "#fff";
-            } else if (event.data === YT.PlayerState.PAUSED) document.getElementById("track-title").innerText = "Paused";
+                
+                // START THE LED KICK
+                startBassSimulation();
+                
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                document.getElementById("track-title").innerText = "Paused";
+                
+                // STOP THE LED KICK
+                stopBassSimulation();
+            }
         }
+        
         function onPlayerError(event) {
             var errorMsg = "System Error";
             if(event.data === 150 || event.data === 101) errorMsg = "Song Blocked (Copyright)";
@@ -270,6 +247,7 @@
             else if (event.data === 100) errorMsg = "Video Private/Deleted";
             document.getElementById("track-title").innerText = errorMsg;
             document.getElementById("track-title").style.color = "#ed4245";
+            stopBassSimulation();
         }
         function togglePlay() { if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } }
         function nextTrack() { if(player) player.nextVideo(); }
