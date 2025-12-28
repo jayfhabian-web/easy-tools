@@ -3,6 +3,9 @@
 <head>
     <title>Nexus Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
+
     <style>
         /* --- 1. THE VIBE (BACKGROUND & FONTS) --- */
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
@@ -12,7 +15,7 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: white;
-            font-family: 'Rajdhani', sans-serif; /* Tech/Sci-fi font */
+            font-family: 'Rajdhani', sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -27,32 +30,23 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- 2. THE LOGIN CARD (GLASS EFFECT) --- */
+        /* --- 2. THE LOGIN CARD --- */
         #login-card {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px); /* Frosted glass */
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 50px;
             width: 350px;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth physics */
-            transform: scale(1);
-            opacity: 1;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 10; /* Keeps login on top */
         }
 
-        h2 {
-            margin: 0 0 10px 0;
-            font-size: 32px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(114, 137, 218, 0.5);
-        }
-
+        h2 { margin: 0 0 10px 0; font-size: 32px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(114, 137, 218, 0.5); }
         p { color: #aaa; margin-bottom: 30px; font-size: 14px; }
 
-        /* --- 3. INPUTS & BUTTONS (INTERACTIVE) --- */
         input {
             background: rgba(0, 0, 0, 0.3);
             border: 2px solid rgba(255,255,255,0.1);
@@ -67,12 +61,7 @@
             font-family: 'Rajdhani', sans-serif;
             letter-spacing: 2px;
         }
-
-        input:focus {
-            border-color: #5865F2;
-            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
-            transform: scale(1.02);
-        }
+        input:focus { border-color: #5865F2; box-shadow: 0 0 15px rgba(88, 101, 242, 0.4); transform: scale(1.02); }
 
         button {
             margin-top: 20px;
@@ -90,59 +79,35 @@
             transition: all 0.2s;
             box-shadow: 0 5px 15px rgba(88, 101, 242, 0.3);
         }
-
-        /* Button "Press" effect */
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(88, 101, 242, 0.5); }
         button:active { transform: scale(0.95); }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(88, 101, 242, 0.5);
-        }
 
-        /* --- 4. THE DISCORD CONTAINER --- */
+        /* --- 3. THE DISCORD CONTAINER --- */
         #discord-container {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             opacity: 0;
             pointer-events: none;
-            transform: scale(0.8); /* Starts zoomed out */
+            transform: scale(0.8);
             transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
             filter: blur(10px);
+            z-index: 1;
         }
 
-        iframe {
-            width: 100%; height: 100%; border: none;
+        /* This styles the new Smart Widget */
+        widgetbot-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
-        /* --- 5. ANIMATION CLASSES --- */
-        
-        /* When unlocked, the login card blasts away */
-        .zoom-out {
-            transform: scale(1.5) !important;
-            opacity: 0 !important;
-            filter: blur(20px);
-        }
-
-        /* When unlocked, Discord zooms in */
-        .zoom-in {
-            opacity: 1 !important;
-            transform: scale(1) !important;
-            filter: blur(0px) !important;
-            pointer-events: auto !important;
-        }
-
-        /* Shake effect for wrong password */
+        /* --- 4. ANIMATIONS --- */
+        .zoom-out { transform: scale(1.5) !important; opacity: 0 !important; filter: blur(20px); pointer-events: none; }
+        .zoom-in { opacity: 1 !important; transform: scale(1) !important; filter: blur(0px) !important; pointer-events: auto !important; }
         .shake { animation: shake 0.4s ease-in-out; border-color: #ed4245 !important; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .success-btn {
-            background: #3ba55c !important;
-            box-shadow: 0 0 20px #3ba55c !important;
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .success-btn { background: #3ba55c !important; box-shadow: 0 0 20px #3ba55c !important; }
 
     </style>
 </head>
@@ -151,14 +116,17 @@
     <div id="login-card">
         <h2>System Locked</h2>
         <p>Identity Verification Required</p>
-        
         <input type="password" id="passInput" placeholder="ENTER PASSCODE">
-        
         <button id="loginBtn" onclick="attemptLogin()">Unlock Interface</button>
     </div>
 
     <div id="discord-container">
-        <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
+        
+        <widgetbot-embed 
+            server="1415812467719802995" 
+            channel="1415812468755660864"
+        ></widgetbot-embed>
+
     </div>
 
     <script>
@@ -169,24 +137,20 @@
             var discord = document.getElementById("discord-container");
             var password = inputField.value;
 
-            // --- SET PASSWORD HERE ---
+            // --- PASSWORD ---
             var correctPass = "12345"; 
-            // -------------------------
+            // ----------------
 
             if(password === correctPass) {
-                // 1. Success Feedback
                 btn.innerHTML = "ACCESS GRANTED";
                 btn.classList.add("success-btn");
                 inputField.style.borderColor = "#3ba55c";
                 
-                // 2. Play the "Warp" Animation after a tiny delay
                 setTimeout(function() {
-                    card.classList.add("zoom-out"); // Login fades/zooms out
-                    discord.classList.add("zoom-in"); // Discord zooms in
+                    card.classList.add("zoom-out");
+                    discord.classList.add("zoom-in");
                 }, 400);
-
             } else {
-                // Failure Feedback
                 inputField.classList.add("shake");
                 btn.innerHTML = "DENIED";
                 btn.style.background = "#ed4245";
@@ -195,16 +159,13 @@
                     inputField.classList.remove("shake");
                     btn.innerHTML = "Unlock Interface";
                     btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)";
-                    inputField.value = ""; // Clear input
+                    inputField.value = ""; 
                 }, 1000);
             }
         }
 
-        // Allow pressing Enter to login
         document.getElementById("passInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                attemptLogin();
-            }
+            if (event.key === "Enter") { attemptLogin(); }
         });
     </script>
 
