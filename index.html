@@ -17,9 +17,7 @@
             margin: 0;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
         @keyframes gradientBG {
@@ -62,14 +60,14 @@
             border-radius: 15px;
             display: flex; flex-direction: column; overflow: hidden;
             opacity: 0; transform: scale(0.8);
-            transition: opacity 1.5s, transform 1.5s, border-color 0.1s, box-shadow 0.1s; 
+            transition: opacity 1.5s, transform 1.5s, border-color 0.05s, box-shadow 0.05s; 
         }
 
-        /* BASS HIT CLASS */
+        /* BASS HIT CLASS (Used by both engines) */
         .bass-active {
             border-color: #ff0055 !important;
-            box-shadow: 0 0 50px rgba(255, 0, 85, 0.6), inset 0 0 20px rgba(255,0,85, 0.2) !important;
-            transform: scale(1.005) !important; 
+            box-shadow: 0 0 60px rgba(255, 0, 85, 0.8), inset 0 0 30px rgba(255,0,85, 0.3) !important;
+            transform: scale(1.01) !important; 
         }
 
         .tabs-header { display: flex; background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.1); height: 60px; flex-shrink: 0; }
@@ -77,8 +75,6 @@
         .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
         .tab-btn.active { color: #fff; text-shadow: 0 0 15px currentColor; background: rgba(255,255,255,0.02); }
         .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #5865F2; box-shadow: 0 -2px 10px #5865F2; }
-        #tab-btn-media.active { text-shadow: 0 0 15px #ff0055; }
-        #tab-btn-media.active::after { background: #ff0055; box-shadow: 0 -2px 10px #ff0055; }
         
         .content-area { flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%; }
         .view-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: 0.5s ease; transform: translateY(20px); }
@@ -92,10 +88,19 @@
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
+        /* NEW AUDIO ELEMENT (Hidden) */
+        #local-audio { display: none; }
+
         .media-controls { margin-top: 30px; display: flex; gap: 20px; background: rgba(0,0,0,0.4); padding: 20px 40px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
         .control-btn { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: white; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .control-btn:hover { border-color: #ff0055; color: #ff0055; box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); transform: scale(1.1); }
+        
+        .upload-btn { border-color: #5865F2; }
+        .upload-btn:hover { border-color: #fff; color: #fff; box-shadow: 0 0 20px #5865F2; }
+
         .track-info { margin-top: 20px; font-size: 24px; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        /* Hidden Input */
+        #file-upload { display: none; }
 
     </style>
 </head>
@@ -104,6 +109,8 @@
     <div id="door-left" class="airlock-door"><div class="door-handle"></div></div>
     <div id="door-right" class="airlock-door"><div class="door-handle"></div></div>
     <div id="flash-overlay"></div>
+
+    <audio id="local-audio" controls></audio>
 
     <div id="login-screen">
         <div class="login-card">
@@ -132,7 +139,11 @@
                         </div>
                     </div>
                     <div class="track-info" id="track-title">System Standby</div>
+                    
                     <div class="media-controls">
+                        <input type="file" id="file-upload" accept="audio/*">
+                        <button class="control-btn upload-btn" onclick="document.getElementById('file-upload').click()">&#8679;</button>
+                        
                         <button class="control-btn" onclick="prevTrack()">&#9664;</button>
                         <button class="control-btn" onclick="togglePlay()">&#9654;&#10074;&#10074;</button>
                         <button class="control-btn" onclick="nextTrack()">&#9654;&#9654;</button>
@@ -143,27 +154,31 @@
     </div>
 
     <script>
-        // --- 1. SYSTEM UNLOCK (THE CRITICAL PART) ---
+        // --- VARIABLES ---
+        var isLocalFile = false; // Are we playing an upload?
+        var audioCtx, analyser, source;
+        var audioEl = document.getElementById("local-audio");
+        
+        // --- 1. UNLOCK & IGNITION ---
         function unlockSystem() {
             var pass = document.getElementById("passInput").value;
-            
             if(pass === "12345") {
-                // *** FIX: START AUDIO IMMEDIATELY ON CLICK ***
+                // Initialize YouTube Audio Context
                 if(player && player.playVideo) {
-                    player.unMute();        // Force unmute
-                    player.setVolume(100);  // Force max volume
-                    player.playVideo();     // Start the engine
-                    console.log("Ignition Sequence Started");
+                    player.unMute();
+                    player.setVolume(100);
+                    player.playVideo();
                 }
 
-                // UI ANIMATION
+                // Initialize Web Audio API (for future uploads)
+                initAudioContext();
+
+                // UI Animation
                 var login = document.getElementById("login-screen");
                 login.style.opacity = "0";
                 setTimeout(() => login.style.display = "none", 500);
-
                 document.body.classList.add("doors-open");
                 var flash = document.getElementById("flash-overlay");
-                
                 setTimeout(function() { flash.style.opacity = "1"; }, 800);
                 setTimeout(function() {
                     flash.style.opacity = "0";
@@ -180,16 +195,79 @@
         }
         document.getElementById("passInput").addEventListener("keypress", function(e) { if (e.key === "Enter") unlockSystem(); });
 
-        function switchTab(tabName) {
-            document.getElementById("tab-btn-comms").classList.remove("active");
-            document.getElementById("tab-btn-media").classList.remove("active");
-            document.getElementById("view-comms").classList.remove("active");
-            document.getElementById("view-media").classList.remove("active");
-            document.getElementById("tab-btn-" + tabName).classList.add("active");
-            document.getElementById("view-" + tabName).classList.add("active");
+        // --- 2. FILE UPLOAD LOGIC ---
+        document.getElementById("file-upload").addEventListener("change", function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+
+            // Stop YouTube
+            if(player) player.pauseVideo();
+            stopBassSimulation(); // Stop the fake bass
+            
+            // Setup Local File
+            isLocalFile = true;
+            var fileURL = URL.createObjectURL(file);
+            audioEl.src = fileURL;
+            audioEl.play();
+            
+            // Update Text
+            document.getElementById("track-title").innerText = "LOCAL FILE: " + file.name;
+            document.getElementById("track-title").style.color = "#5865F2";
+            
+            // Start Real Bass Analyzer
+            analyzeAudio();
+        });
+
+        // --- 3. REAL BASS DETECTION ENGINE (WEB AUDIO API) ---
+        function initAudioContext() {
+            // Create Context only once
+            if(!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 256; // Precision
+                
+                // Connect HTML audio element to Analyzer
+                source = audioCtx.createMediaElementSource(audioEl);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination); // Connect to speakers
+            } else if(audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
 
-        // --- 2. BASS SIMULATION ENGINE ---
+        function analyzeAudio() {
+            if(!isLocalFile || audioEl.paused) return;
+
+            var bufferLength = analyser.frequencyBinCount;
+            var dataArray = new Uint8Array(bufferLength);
+            
+            function renderFrame() {
+                if(!isLocalFile || audioEl.paused) return; // Stop if we switch back
+                requestAnimationFrame(renderFrame);
+                
+                analyser.getByteFrequencyData(dataArray);
+
+                // --- THE ALGORITHM ---
+                // We check the first few "bins" of data (Deep Bass frequencies)
+                var bassSum = 0;
+                var bassBins = 10; // Check lowest 10 frequency bands
+                for(var i = 0; i < bassBins; i++) {
+                    bassSum += dataArray[i];
+                }
+                var bassAverage = bassSum / bassBins;
+
+                // THRESHOLD: If bass is louder than 200 (out of 255)
+                var interface = document.getElementById("main-interface");
+                if(bassAverage > 210) {
+                    interface.classList.add("bass-active");
+                } else {
+                    interface.classList.remove("bass-active");
+                }
+            }
+            renderFrame();
+        }
+
+        // --- 4. FAKE BASS ENGINE (YOUTUBE) ---
         var bassInterval;
         function startBassSimulation() {
             if(bassInterval) clearInterval(bassInterval);
@@ -204,59 +282,66 @@
             document.getElementById("main-interface").classList.remove("bass-active");
         }
 
-        // --- 3. YOUTUBE SETUP ---
-        var player;
-        function onYouTubeIframeAPIReady() {
-            console.log("API Ready");
-            player = new YT.Player('player', {
-                height: '100%', width: '100%',
-                playerVars: { 
-                    listType: 'playlist', 
-                    list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', 
-                    autoplay: 1,      // Try to autoplay (will be blocked until click)
-                    mute: 1,          // Start muted (standard workaround)
-                    loop: 1, 
-                    modestbranding: 1, 
-                    rel: 0,
-                    origin: window.location.origin 
-                },
-                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
-            });
-        }
-        
-        function onPlayerReady(event) {
-            // Player is ready, but we wait for the UNLOCK button to unmute
-            document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
-            document.getElementById("track-title").style.color = "#00ff00";
-        }
-        
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                var data = player.getVideoData();
-                document.getElementById("track-title").innerText = "Playing: " + data.title;
-                document.getElementById("track-title").style.color = "#fff";
-                startBassSimulation();
-            } else if (event.data === YT.PlayerState.PAUSED) {
-                document.getElementById("track-title").innerText = "Paused";
-                stopBassSimulation();
+        // --- 5. CONTROLS & LOGIC ---
+        function togglePlay() { 
+            if(isLocalFile) {
+                if(audioEl.paused) { 
+                    audioEl.play(); 
+                    analyzeAudio(); 
+                    document.getElementById("track-title").innerText = "Resuming Local File...";
+                } else { 
+                    audioEl.pause(); 
+                    document.getElementById("track-title").innerText = "Paused";
+                }
+            } else {
+                if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } 
             }
         }
         
-        function onPlayerError(event) {
-            var errorMsg = "System Error " + event.data;
-            if(event.data === 150 || event.data === 101) errorMsg = "Song Blocked (Copyright)";
-            else if (event.data === 2) errorMsg = "Invalid Playlist ID";
-            else if (event.data === 100) errorMsg = "Video Private/Deleted";
-            
-            console.log(errorMsg);
-            document.getElementById("track-title").innerText = errorMsg;
-            document.getElementById("track-title").style.color = "#ed4245";
-            stopBassSimulation();
+        function nextTrack() { 
+            if(isLocalFile) { alert("Playlist is YouTube Only"); } 
+            else if(player) player.nextVideo(); 
         }
-        
-        function togglePlay() { if(player) { var state = player.getPlayerState(); (state === 1) ? player.pauseVideo() : player.playVideo(); } }
-        function nextTrack() { if(player) player.nextVideo(); }
-        function prevTrack() { if(player) player.previousVideo(); }
+        function prevTrack() { 
+            if(isLocalFile) { audioEl.currentTime = 0; } 
+            else if(player) player.previousVideo(); 
+        }
+
+        function switchTab(tabName) {
+            document.getElementById("tab-btn-comms").classList.remove("active");
+            document.getElementById("tab-btn-media").classList.remove("active");
+            document.getElementById("view-comms").classList.remove("active");
+            document.getElementById("view-media").classList.remove("active");
+            document.getElementById("tab-btn-" + tabName).classList.add("active");
+            document.getElementById("view-" + tabName).classList.add("active");
+        }
+
+        // --- 6. YOUTUBE API ---
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%', width: '100%',
+                playerVars: { listType: 'playlist', list: 'PLjfvigiRyKiQssXQlwq1Miytkk6wJV3aX', autoplay: 1, mute: 1, loop: 1, modestbranding: 1, rel: 0, origin: window.location.origin },
+                events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange, 'onError': onPlayerError }
+            });
+        }
+        function onPlayerReady(event) {
+            document.getElementById("track-title").innerText = "Airlock Sealed. Systems Online.";
+            document.getElementById("track-title").style.color = "#00ff00";
+        }
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                isLocalFile = false; // We are back on YouTube
+                audioEl.pause(); // Stop local
+                var data = player.getVideoData();
+                document.getElementById("track-title").innerText = "YouTube: " + data.title;
+                document.getElementById("track-title").style.color = "#fff";
+                startBassSimulation(); // Use FAKE Bass
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                if(!isLocalFile) stopBassSimulation();
+            }
+        }
+        function onPlayerError(event) { console.log(event); stopBassSimulation(); }
 
     </script>
 </body>
