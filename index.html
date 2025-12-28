@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Secure Gateway</title>
+    <title>Nexus Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        /* --- MODERN DISCORD THEME --- */
+        /* --- 1. THE VIBE (BACKGROUND & FONTS) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
+
         body {
-            background-color: #202225; /* Deep Dark Background */
-            color: #dcddde;
-            font-family: "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            font-family: 'Rajdhani', sans-serif; /* Tech/Sci-fi font */
             margin: 0;
             display: flex;
             justify-content: center;
@@ -17,167 +21,189 @@
             overflow: hidden;
         }
 
-        /* --- LOGIN BOX STYLING --- */
-        #login-area {
-            background-color: #36393f; /* Lighter Dark Grey */
-            padding: 40px;
-            width: 320px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- 2. THE LOGIN CARD (GLASS EFFECT) --- */
+        #login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); /* Frosted glass */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            width: 350px;
+            border-radius: 20px;
             text-align: center;
-            transition: opacity 0.5s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); /* Smooth physics */
+            transform: scale(1);
+            opacity: 1;
         }
 
         h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: white;
-            font-weight: 600;
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(114, 137, 218, 0.5);
         }
 
-        p { font-size: 14px; color: #b9bbbe; margin-bottom: 20px; }
+        p { color: #aaa; margin-bottom: 30px; font-size: 14px; }
 
+        /* --- 3. INPUTS & BUTTONS (INTERACTIVE) --- */
         input {
-            background-color: #202225;
-            border: 1px solid #202225;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255,255,255,0.1);
             color: white;
-            padding: 10px;
-            width: 90%;
-            border-radius: 3px;
-            margin-bottom: 20px;
-            font-size: 16px;
+            padding: 15px;
+            width: 85%;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
             outline: none;
-            transition: border 0.2s;
+            transition: 0.3s;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 2px;
         }
 
-        input:focus { border-color: #5865F2; }
+        input:focus {
+            border-color: #5865F2;
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
+            transform: scale(1.02);
+        }
 
         button {
-            background-color: #5865F2; /* Discord Blurple */
+            margin-top: 20px;
+            background: linear-gradient(90deg, #5865F2, #4752c4);
             color: white;
-            padding: 12px;
+            padding: 15px;
             width: 100%;
             border: none;
-            border-radius: 3px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 18px;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(88, 101, 242, 0.3);
         }
 
-        button:hover { background-color: #4752c4; }
+        /* Button "Press" effect */
+        button:active { transform: scale(0.95); }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(88, 101, 242, 0.5);
+        }
 
-        /* --- DISCORD WINDOW STYLING --- */
-        #discord-window {
-            opacity: 0; /* Starts invisible for fade effect */
-            pointer-events: none; /* Can't click while invisible */
+        /* --- 4. THE DISCORD CONTAINER --- */
+        #discord-container {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #202225;
-            transition: opacity 1s ease;
-        }
-
-        iframe { width: 100%; height: 100%; border: none; }
-
-        /* --- ANIMATIONS --- */
-        
-        /* Shake animation for wrong password */
-        .shake {
-            animation: shake 0.5s;
-            border: 1px solid #ed4245 !important;
-        }
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-
-        /* Success Button Style */
-        .success-btn {
-            background-color: #3ba55c !important; /* Green */
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
             pointer-events: none;
+            transform: scale(0.8); /* Starts zoomed out */
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: blur(10px);
         }
+
+        iframe {
+            width: 100%; height: 100%; border: none;
+        }
+
+        /* --- 5. ANIMATION CLASSES --- */
+        
+        /* When unlocked, the login card blasts away */
+        .zoom-out {
+            transform: scale(1.5) !important;
+            opacity: 0 !important;
+            filter: blur(20px);
+        }
+
+        /* When unlocked, Discord zooms in */
+        .zoom-in {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            filter: blur(0px) !important;
+            pointer-events: auto !important;
+        }
+
+        /* Shake effect for wrong password */
+        .shake { animation: shake 0.4s ease-in-out; border-color: #ed4245 !important; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .success-btn {
+            background: #3ba55c !important;
+            box-shadow: 0 0 20px #3ba55c !important;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="login-area">
-        <h2>Welcome Back!</h2>
-        <p>We're so excited to see you again!</p>
+    <div id="login-card">
+        <h2>System Locked</h2>
+        <p>Identity Verification Required</p>
         
-        <input type="password" id="passInput" placeholder="Enter Password">
+        <input type="password" id="passInput" placeholder="ENTER PASSCODE">
         
-        <button id="loginBtn" onclick="checkPass()">Log In</button>
-        
-        <p id="status-msg" style="margin-top: 15px; height: 20px; font-size: 12px; color: #ed4245;"></p>
+        <button id="loginBtn" onclick="attemptLogin()">Unlock Interface</button>
     </div>
 
-    <div id="discord-window">
+    <div id="discord-container">
         <iframe src="https://e.widgetbot.io/channels/1415812467719802995/1415812468755660864" allow="clipboard-write; fullscreen"></iframe>
     </div>
 
     <script>
-        function checkPass() {
+        function attemptLogin() {
             var inputField = document.getElementById("passInput");
-            var input = inputField.value;
             var btn = document.getElementById("loginBtn");
-            var status = document.getElementById("status-msg");
-            var loginArea = document.getElementById("login-area");
-            var discordWin = document.getElementById("discord-window");
+            var card = document.getElementById("login-card");
+            var discord = document.getElementById("discord-container");
+            var password = inputField.value;
 
-            // 1. Show "Loading" state
-            btn.innerHTML = "Authenticating...";
-            status.innerHTML = ""; // Clear errors
-            
-            // 2. Wait a split second to make it feel like it's thinking
-            setTimeout(function() {
-                
-                // --- CHANGE PASSWORD HERE (Currently 12345) ---
-                if(input === "12345") { 
-                // ----------------------------------------------
-                
-                    // SUCCESS: Turn button green
-                    btn.innerHTML = "Access Granted";
-                    btn.classList.add("success-btn");
-                    
-                    // Fade out login, Fade in Discord
-                    setTimeout(function() {
-                        loginArea.style.opacity = "0";
-                        setTimeout(function(){
-                            loginArea.style.display = "none";
-                            discordWin.style.opacity = "1";
-                            discordWin.style.pointerEvents = "auto";
-                        }, 500);
-                    }, 800);
+            // --- SET PASSWORD HERE ---
+            var correctPass = "12345"; 
+            // -------------------------
 
-                } else {
-                    // FAIL: Reset button, shake input
-                    btn.innerHTML = "Log In";
-                    status.innerHTML = "Password Incorrect.";
-                    
-                    // Add shake effect
-                    inputField.classList.add("shake");
-                    
-                    // Remove shake effect after 0.5s so it can happen again
-                    setTimeout(function() {
-                        inputField.classList.remove("shake");
-                    }, 500);
-                }
-            }, 600); // 600ms delay for "fake loading" effect
+            if(password === correctPass) {
+                // 1. Success Feedback
+                btn.innerHTML = "ACCESS GRANTED";
+                btn.classList.add("success-btn");
+                inputField.style.borderColor = "#3ba55c";
+                
+                // 2. Play the "Warp" Animation after a tiny delay
+                setTimeout(function() {
+                    card.classList.add("zoom-out"); // Login fades/zooms out
+                    discord.classList.add("zoom-in"); // Discord zooms in
+                }, 400);
+
+            } else {
+                // Failure Feedback
+                inputField.classList.add("shake");
+                btn.innerHTML = "DENIED";
+                btn.style.background = "#ed4245";
+                
+                setTimeout(function() {
+                    inputField.classList.remove("shake");
+                    btn.innerHTML = "Unlock Interface";
+                    btn.style.background = "linear-gradient(90deg, #5865F2, #4752c4)";
+                    inputField.value = ""; // Clear input
+                }, 1000);
+            }
         }
-        
-        // Allow "Enter" key
+
+        // Allow pressing Enter to login
         document.getElementById("passInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
-                checkPass();
+                attemptLogin();
             }
         });
     </script>
